@@ -13,7 +13,7 @@ Group:		Networking
 # warning: according to README, Source0 may require license to export outside USA
 Source0:	http://www.crypto-publish.org/dist/mit-kerberos5/%{name}-%{version}.tar.gz
 # Source0-md5:	73f868cf65bec56d7c718834ca5665fd
-Source1:	kerberos.init
+Source1:	krb5kdc.init
 Source2:	krb524d.init
 Source3:	kadm5.acl
 Source4:	kerberos.logrotate
@@ -27,6 +27,8 @@ Source11:	kftpd.inetd
 Source12:	ktelnetd.inetd
 Source13:	kshell.inetd
 Source14:	propagation
+Source15:	kpropd.init
+Source16:	kadmind.init
 URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-gcc33.patch
 Patch1:		%{name}-telnetd.patch
@@ -340,7 +342,6 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
 install %{SOURCE6} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE3} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE4}                      $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
-install %{SOURCE1}                      $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
 install %{SOURCE7}                      $RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE14}                     $RPM_BUILD_ROOT%{_sbindir}/propagation
 install %{SOURCE8}      %{SOURCE9}      $RPM_BUILD_ROOT/etc/profile.d
@@ -349,6 +350,10 @@ install %{SOURCE10}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/k
 install %{SOURCE11}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
 install %{SOURCE12}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
 install %{SOURCE13}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshell
+
+install %{SOURCE1}                      $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
+install %{SOURCE15}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
+install %{SOURCE16}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{?_with_krb4:1}%{!?_with_krb4:0}
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
@@ -370,7 +375,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %post server
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
-/sbin/chkconfig --add kerberos
+/sbin/chkconfig --add krb5kdc
+/sbin/chkconfig --add kadmind
+/sbin/chkconfig --add kpropd
 %{?_with_krb4:/sbin/chkconfig --add krb524d}
 
 %post libs -p /sbin/ldconfig
@@ -378,10 +385,20 @@ rm -rf $RPM_BUILD_ROOT
 %postun server
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 if [ "$1" = 0 ]; then
-	if [ -f /var/lock/subsys/kerberos ]; then
-                /etc/rc.d/init.d/kerberos stop 1>&2
+	if [ -f /var/lock/subsys/krb5kdc ]; then
+                /etc/rc.d/init.d/krb5kdc stop 1>&2
 	fi
-	/sbin/chkconfig --del kerberos
+	/sbin/chkconfig --del krb5kdc
+
+        if [ -f /var/lock/subsys/kadmind ]; then
+                /etc/rc.d/init.d/kadmind stop 1>&2
+        fi
+        /sbin/chkconfig --del kadmind
+
+        if [ -f /var/lock/subsys/kpropd ]; then
+                /etc/rc.d/init.d/kpropd stop 1>&2
+        fi
+        /sbin/chkconfig --del kpropd
 
 	%if %{?_with_krb4:1}%{!?_with_krb4:0}
 	if [ -f /var/lock/subsys/krb524d ]; then
@@ -397,7 +414,9 @@ fi
 %defattr(644,root,root,755)
 %doc doc/kadmin/* doc/krb5-install.inf* doc/krb5-admin.inf*
 
-%attr(754,root,root) /etc/rc.d/init.d/kerberos
+%attr(754,root,root) /etc/rc.d/init.d/krb5kdc
+%attr(754,root,root) /etc/rc.d/init.d/kadmind
+%attr(754,root,root) /etc/rc.d/init.d/kpropd
 %{?_with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
 
 %attr(640,root,root) /etc/logrotate.d/*
