@@ -3,7 +3,7 @@
 # kpropd.init  	kerberos V propagation client
 #
 # chkconfig:   	35 41 41
-# description: 	kpropd is a kerberos V propagation client that allows
+# description: 	kpropd is a kerberos V propagation client that allows \
 #		KDC running on a host to receive updates from the master KDC
 #
 # processname: kpropd

@@ -4,7 +4,7 @@
 #
 # chkconfig:	345 41 41
 #
-# description:	krb524d converts Kerberos V5 credentials to Kerberos IV
+# description:	krb524d converts Kerberos V5 credentials to Kerberos IV \
 #		credentials
 #
 # processname:	krb524d

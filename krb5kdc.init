@@ -4,7 +4,7 @@
 #
 # chkconfig:	35 41 41
 #
-# description:	krb5kdc is a server that Kerberos IV and V5 clients
+# description:	krb5kdc is a server that Kerberos IV and V5 clients \
 #		need to connect to in order to obtain credentials
 #
 # processname: krb5kdc

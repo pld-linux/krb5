@@ -4,8 +4,8 @@
 #
 # chkconfig:	35 41 41
 #
-# description:	kadmind is a Kerberos V5 administrative server
-#		which should only be run on the master server for a realm
+# description:	kadmind is a Kerberos V5 administrative server which \
+#		should only be run on the master server for a realm.
 #
 # processname: kadmind
 
