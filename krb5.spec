@@ -240,9 +240,9 @@ install src/config-files/krb5.conf $RPM_BUILD_ROOT/etc/kerberos
 install src/config-files/kdc.conf $RPM_BUILD_ROOT/var/krb5kdc
 
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
-install %{SOURCE4} $RPM_BUILD_ROOT/usr/sbin/propagation
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/propagation
 
-strip $RPM_BUILD_ROOT/usr/sbin/* || :
+strip $RPM_BUILD_ROOT%{_sbindir}/* || :
 strip $RPM_BUILD_ROOT%{_bindir}/* || :
 
 echo .so kadmin.8.bz2 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
@@ -250,7 +250,7 @@ echo .so kadmin.8.bz2 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 ln -s /usr/dict/linux.words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
 touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
 
-rm -rf $RPM_BUILD_ROOT/usr/include/asn.1.bz2
+rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1.bz2
 
 find doc -size 0 -print | xargs rm -f
 
@@ -282,16 +282,16 @@ rm -rf $RPM_BUILD_ROOT
 %attr(700,root,root) %dir /var/krb5kdc
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /var/krb5kdc/*
 
-%attr(711,root,root) /usr/sbin/kadmin
-%attr(711,root,root) /usr/sbin/kadmin.local
-%attr(711,root,root) /usr/sbin/propagation
-%attr(711,root,root) /usr/sbin/kdb5_util
-%attr(711,root,root) /usr/sbin/kprop
-%attr(711,root,root) /usr/sbin/kpropd
-%attr(755,root,root) /usr/sbin/krb5-send-pr
-%attr(711,root,root) /usr/sbin/krb5kdc
-%attr(711,root,root) /usr/sbin/kadmind
-%attr(711,root,root) /usr/sbin/ktutil
+%attr(711,root,root) %{_sbindir}/kadmin
+%attr(711,root,root) %{_sbindir}/kadmin.local
+%attr(711,root,root) %{_sbindir}/propagation
+%attr(711,root,root) %{_sbindir}/kdb5_util
+%attr(711,root,root) %{_sbindir}/kprop
+%attr(711,root,root) %{_sbindir}/kpropd
+%attr(755,root,root) %{_sbindir}/krb5-send-pr
+%attr(711,root,root) %{_sbindir}/krb5kdc
+%attr(711,root,root) %{_sbindir}/kadmind
+%attr(711,root,root) %{_sbindir}/ktutil
 
 %{_mandir}/man8/kadmin.8.bz2
 %{_mandir}/man8/kadmin.local.8.bz2
@@ -335,10 +335,10 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc doc/inetd.conf*
 
-%attr(711,root,root) /usr/sbin/ftpd
-%attr(711,root,root) /usr/sbin/klogind
-%attr(711,root,root) /usr/sbin/kshd
-%attr(711,root,root) /usr/sbin/telnetd
+%attr(711,root,root) %{_sbindir}/ftpd
+%attr(711,root,root) %{_sbindir}/klogind
+%attr(711,root,root) %{_sbindir}/kshd
+%attr(711,root,root) %{_sbindir}/telnetd
 
 %{_mandir}/man8/ftpd.8.bz2
 %{_mandir}/man8/klogind.8.bz2
@@ -352,7 +352,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %attr(755,root,root) %{_libdir}/*.so.*
 %attr(755,root,root) %{_libdir}/*.so
-%attr(711,root,root) /usr/sbin/login.krb5
+%attr(711,root,root) %{_sbindir}/login.krb5
 
 %{_mandir}/man8/login.krb5.8.bz2
 %{_mandir}/man5/krb5.conf.5.bz2
@@ -360,7 +360,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %doc doc/krb5-protocol/*
-/usr/include/*
+%{_includedir}/*
 
 %files static
 %attr(644,root,root) %{_libdir}/*.a
