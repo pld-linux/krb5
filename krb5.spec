@@ -2,7 +2,7 @@ Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
 Name:		krb5
 Version:	1.0.6
-Release:	1
+Release:	2
 Source0:	%{name}-%{version}.src.tar.gz
 Source1:	%{name}-%{version}.crypto.tar.gz
 Source2:	%{name}-%{version}.doc.tar.gz
@@ -15,15 +15,22 @@ Source7:	kerberos.logrotate
 Source8:	%{name}.conf
 Source9:	kdc.conf
 Source10:	kerberos.sysconfig
+Source11:	kerberos.sh
+Source12:	kerberos.csh
 Patch0:		%{name}-ftp.patch
 Patch1:		%{name}-telnetd.patch
 Patch2:		%{name}-kadmin.patch
 Patch3:		%{name}-rpc.patch
-Patch4:		pam_krb5-pld.patch
+Patch4:		%{name}-paths.patch
+Patch5:		pam_krb5-pld.patch
+Patch6:		pam_krb5-Makefile.patch
 Copyright:	MIT
 Group:		Networking
 Group(pl):	Sieciowe
 BuildRoot:	/tmp/%{name}-%{version}-root
+
+%define		_prefix /usr/athena
+%define		_mandir /usr/athena/man
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
@@ -45,7 +52,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package clients 
+%package	clients 
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
@@ -76,7 +83,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package daemons
+%package	daemons
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
 Group:		Networking
@@ -108,14 +115,13 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package server
+%package	server
 Summary:	Kerberos Server 
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
 Group(pl):	Sieciowe
 Requires:	%{name}-lib = %{version}
 Requires:	words
-Prereq:		/sbin/chkconfig
 
 %description server
 Master KDC.
@@ -141,12 +147,11 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package lib
+%package	lib
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
 Group(pl):	Biblioteki
-Prereq:		/sbin/ldconfig
 
 %description lib
 Libraries for Kerberos V5 Server and Client
@@ -154,7 +159,7 @@ Libraries for Kerberos V5 Server and Client
 %description -l pl lib
 Biblioteki dynamiczne dla systemu kerberos.
 
-%package devel
+%package	devel
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 Group:		Libraries
@@ -167,7 +172,7 @@ Header files for Kerberos libraries and development documentation
 %description -l pl devel
 Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 
-%package static
+%package	static
 Summary:	Static Kerberos libraries
 Summary(pl):	Biblioteki statyczne Kerberosa
 Group:		Libraries
@@ -180,7 +185,7 @@ Sattic Kerberos libraries.
 %description -l pl static
 Biblioteki statyczne Kerberosa.
 
-%package pam
+%package	pam
 Summary:	PAM - Kerberos 5 module
 Summary(pl):	PAM - Kerberos 5 modu³
 Requires:	pam >= 0.66
@@ -197,18 +202,18 @@ W pakiecie znajduje siê modu³ PAM wspomagaj±cy autoryzacjê przez
 Kerberosa V5. 
 
 %prep
-%setup -q -b1 -b2 -b6
+%setup  -q -b1 -b2 -b6
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 #kerberos pam
-(cd ../pam_krb5-1.0-1; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-pld.patch)
+( cd ../pam_krb5-1.0-1; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-pld.patch; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-Makefile.patch )
 
 %build
 cd src
-autoconf
 ./configure \
 	--prefix=/usr/athena \
 	--enable-shared \
@@ -224,7 +229,7 @@ make CCOPTS="$RPM_OPT_FLAGS"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{etc/rc.d/init.d,var/krb5kdc}
-install -d $RPM_BUILD_ROOT/etc/{athena,sysconfig}
+install -d $RPM_BUILD_ROOT/etc/{athena,sysconfig,profile.d}
 
 (cd src; make install DESTDIR=$RPM_BUILD_ROOT)
 
@@ -232,19 +237,21 @@ install %{SOURCE8} $RPM_BUILD_ROOT/etc/athena
 install %{SOURCE9} $RPM_BUILD_ROOT/var/krb5kdc
 
 install -d $RPM_BUILD_ROOT/etc/logrotate.d
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
+install %{SOURCE7}			$RPM_BUILD_ROOT/etc/logrotate.d/kerberos
+install %{SOURCE3}			$RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
+install %{SOURCE10}			$RPM_BUILD_ROOT/etc/sysconfig/kerberos
+install %{SOURCE4}			$RPM_BUILD_ROOT%{_sbindir}/propagation
+install %{SOURCE11}	%{SOURCE12}	$RPM_BUILD_ROOT/etc/profile.d
 
-install %{SOURCE3}  $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
-install %{SOURCE10} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
-install %{SOURCE4}  $RPM_BUILD_ROOT%{_sbindir}/propagation
 
 strip $RPM_BUILD_ROOT{%{_bindir}/*,%{_sbindir}/*} || :
+strip --strip-debug $RPM_BUILD_ROOT%{_libdir}/*.so.*
 
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
 touch $RPM_BUILD_ROOT/etc/athena/krb5.keytab
 
-ln -s /usr/dict/linux.words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
+ln -s /usr/share/dict/words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
 
 touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
 
@@ -252,11 +259,9 @@ rm -rf $RPM_BUILD_ROOT/usr/include/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
-strip $RPM_BUILD_ROOT%{_libdir}/*.so.*.*
-
 gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
 	doc/kadmin/* doc/krb5-protocol/* doc/*.info* \
-	../pam_krb5-1.0-1/README 
+	../pam_krb5-1.0-1/README $RPM_BUILD_ROOT%{_mandir}/man5/.k5*
 
 # Kerberos5 PAM
 
@@ -287,7 +292,7 @@ fi
 %defattr(644,root,root,755)
 %doc doc/kadmin/* doc/krb5-install.inf* doc/krb5-admin.inf*
 
-%attr(750,root,root) /etc/rc.d/init.d/kerberos
+%attr(755,root,root) /etc/rc.d/init.d/kerberos
 %attr(640,root,root) /etc/logrotate.d/*
 %attr(640,root,root) /etc/sysconfig/*
 
@@ -320,6 +325,7 @@ fi
 %files clients
 %defattr(644,root,root,755)
 %doc doc/krb5-user.inf*
+%attr(755,root,root) /etc/profile.d/kerberos.* 
 
 %attr(755,root,root) %{_bindir}/ftp
 %attr(755,root,root) %{_bindir}/telnet
@@ -331,7 +337,7 @@ fi
 %attr(755,root,root) %{_bindir}/v5passwd
 %attr(755,root,root) %{_bindir}/klist
 
-%attr(4755,root,root) %{_bindir}/ksu
+%attr(4711,root,root) %{_bindir}/ksu
 
 %attr(755,root,root) %{_bindir}/kpasswd
 %attr(755,root,root) %{_bindir}/rcp
