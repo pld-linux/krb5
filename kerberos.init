@@ -18,9 +18,13 @@
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
-if [ "${NETWORKING}" = "no" ]; then
-	echo "WARNING: Networking is down. KerberosV service can't be runed."
-	exit 1
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down "KerberosV service"
+		exit 1
+	fi
+else
+	exit 0
 fi
 
 
@@ -29,22 +33,29 @@ case "$1" in
   start)
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/krb5server ]; then
-		show Starting Kerberos KDC
+		show "Starting Kerberos KDC"
 		daemon krb5kdc
 
 		show Starting Administration Server
 		daemon kadmind
+		touch /var/lock/subsys/krb5server
 	else
-		echo "krb5server already is running"
+		msg_already_running "KerberosV service"
+		exit 1
 	fi
-	touch /var/lock/subsys/krb5server
 	;;
   stop)
-	show Stopping Kerberos KDC
-	killproc kadmind
-	show Stopping Administration Server
-	killproc krb5kdc
-	rm -f /var/lock/subsys/krb5server
+	# Check if the service is already running?
+	if [ -f /var/lock/subsys/krb5server ]; then
+		show "Stopping Kerberos KDC"
+		killproc kadmind
+		show "Stopping Administration Server"
+		killproc krb5kdc
+		rm -f /var/lock/subsys/krb5server
+	else
+		msg_already_running "KerberosV service"
+		exit 1
+	fi
 	;;
 restart|reload)
 	$0 stop
@@ -55,7 +66,7 @@ status)
 	status	krb5kdc
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart|reload}"
+	msg_usage "$0 {start|stop|restart|reload|status}"
 	exit 1
 esac
 
