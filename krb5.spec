@@ -54,7 +54,7 @@ Patch15:	%{name}-varargs.patch
 Patch16:	%{name}-norpath.patch
 Patch17:	%{name}-paths.patch
 BuildRequires:	automake
-BuildRequires:  autoconf
+BuildRequires:	autoconf
 BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
@@ -64,7 +64,7 @@ PreReq:		rc-scripts
 Requires:	setup >= 2.4.6-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define         _localstatedir  /var/lib/kerberos
+%define		_localstatedir	/var/lib/kerberos
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed
@@ -151,12 +151,12 @@ pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package ftpd
-Summary:        The standard UNIX FTP (file transfer protocol) server
-Summary(pl):    Serwer FTP
-Group:          Networking/Daemons
-PreReq:         rc-inetd >= 0.8.1
-Requires:       %{name}-libs = %{version}
-Obsoletes:      ftpd
+Summary:	The standard UNIX FTP (file transfer protocol) server
+Summary(pl):	Serwer FTP
+Group:		Networking/Daemons
+PreReq:		rc-inetd >= 0.8.1
+Requires:	%{name}-libs = %{version}
+Obsoletes:	ftpd
 
 %description ftpd
 FTP is the file transfer protocol, which is a widely used Internet
@@ -167,11 +167,11 @@ FTP jest protoko³em trasmisji plików szeroko rozpowszechnionym w
 Internecie.
 
 %package kshd
-Summary:        Kerberized remote shell server
-Summary(pl):    Skerberyzowany serwer zdalnego dostêpu
-Group:          Networking/Daemons
-PreReq:         rc-inetd >= 0.8.1
-Requires:       %{name}-libs = %{version}
+Summary:	Kerberized remote shell server
+Summary(pl):	Skerberyzowany serwer zdalnego dostêpu
+Group:		Networking/Daemons
+PreReq:		rc-inetd >= 0.8.1
+Requires:	%{name}-libs = %{version}
 Obsoletes:	rshd
 
 %description kshd
@@ -185,12 +185,12 @@ który umo¿liwia zdalne wykonywanie poleceñ w oparciu o system
 autentykacji Kerberos.
 
 %package telnetd
-Summary:        Server for the telnet remote login
-Summary(pl):    Serwer protoko³u telnet
-Group:          Networking/Daemons
-PreReq:         rc-inetd >= 0.8.1
-Requires:       %{name}-libs = %{version}
-Obsoletes:      telnetd
+Summary:	Server for the telnet remote login
+Summary(pl):	Serwer protoko³u telnet
+Group:		Networking/Daemons
+PreReq:		rc-inetd >= 0.8.1
+Requires:	%{name}-libs = %{version}
+Obsoletes:	telnetd
 
 %description telnetd
 Telnet is a popular protocol for remote logins across the Internet.
@@ -203,11 +203,11 @@ zawiera serwer pozwalaj±cy na zdalne logowanie siê klientów na maszynê
 na której dzia³a.
 
 %package klogind
-Summary:        Remote login server
-Summary(pl):    Serwer zdalnego logowania 
-Group:          Networking/Daemons
-PreReq:         rc-inetd >= 0.8.1
-Requires:       %{name}-libs = %{version}
+Summary:	Remote login server
+Summary(pl):	Serwer zdalnego logowania 
+Group:		Networking/Daemons
+PreReq:		rc-inetd >= 0.8.1
+Requires:	%{name}-libs = %{version}
 Obsoletes:	rlogind
 
 %description klogind
@@ -356,18 +356,18 @@ CC=%{__cc}
 CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
 %configure \
 	--libexecdir=%{_libdir} \
-        --enable-shared \
-        --enable-static \
+	--enable-shared \
+	--enable-static \
 	%{?with_krb4: --with-krb4}%{?!with_krb4: --without-krb4} \
-        --with-vague-errors \
-        --enable-dns \
-        --enable-dns-for-kdc \
-        --enable-dns-for-realm \
-        --with-netlib=-lresolv \
-        %{!?with_tcl: --with-tcl=%{_prefix}} \
+	--with-vague-errors \
+	--enable-dns \
+	--enable-dns-for-kdc \
+	--enable-dns-for-realm \
+	--with-netlib=-lresolv \
+	%{!?with_tcl: --with-tcl=%{_prefix}} \
 	--with-system-et \
 	--with-system-ss \
-        %{_target_platform}
+	%{_target_platform}
 
 %{__make}
 
@@ -417,50 +417,50 @@ rm -rf $RPM_BUILD_ROOT
 %post server
 /sbin/chkconfig --add krb5kdc
 if [ -f /var/lock/subsys/krb5kdc ]; then
-        /etc/rc.d/init.d/krb5kdc restart 1>&2
+	/etc/rc.d/init.d/krb5kdc restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/krb5kdc start\" to start krb5kdc daemon."
+	echo "Run \"/etc/rc.d/init.d/krb5kdc start\" to start krb5kdc daemon."
 fi
 
 /sbin/chkconfig --add kadmind
 if [ -f /var/lock/subsys/kadmind ]; then
-        /etc/rc.d/init.d/kadmind restart 1>&2
+	/etc/rc.d/init.d/kadmind restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/kadmind start\" to start kadmind daemon."
+	echo "Run \"/etc/rc.d/init.d/kadmind start\" to start kadmind daemon."
 fi
 
 /sbin/chkconfig --add kpropd
 if [ -f /var/lock/subsys/kpropd ]; then
-        /etc/rc.d/init.d/kpropd restart 1>&2
+	/etc/rc.d/init.d/kpropd restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/kpropd start\" to start kpropd daemon."
+	echo "Run \"/etc/rc.d/init.d/kpropd start\" to start kpropd daemon."
 fi
 
 %if %{with krb4}
 /sbin/chkconfig --add krb524d
 if [ -f /var/lock/subsys/krb524d ]; then
-        /etc/rc.d/init.d/krb524d restart 1>&2
+	/etc/rc.d/init.d/krb524d restart 1>&2
 else
-        echo "Run \"/etc/rc.d/init.d/krb524d start\" to start krb524d daemon."
+	echo "Run \"/etc/rc.d/init.d/krb524d start\" to start krb524d daemon."
 fi
 %endif
 
 %postun server
 if [ "$1" = 0 ]; then
 	if [ -f /var/lock/subsys/krb5kdc ]; then
-                /etc/rc.d/init.d/krb5kdc stop 1>&2
+		/etc/rc.d/init.d/krb5kdc stop 1>&2
 	fi
 	/sbin/chkconfig --del krb5kdc
 
-        if [ -f /var/lock/subsys/kadmind ]; then
-                /etc/rc.d/init.d/kadmind stop 1>&2
-        fi
-        /sbin/chkconfig --del kadmind
+	if [ -f /var/lock/subsys/kadmind ]; then
+		/etc/rc.d/init.d/kadmind stop 1>&2
+	fi
+	/sbin/chkconfig --del kadmind
 
-        if [ -f /var/lock/subsys/kpropd ]; then
-                /etc/rc.d/init.d/kpropd stop 1>&2
-        fi
-        /sbin/chkconfig --del kpropd
+	if [ -f /var/lock/subsys/kpropd ]; then
+		/etc/rc.d/init.d/kpropd stop 1>&2
+	fi
+	/sbin/chkconfig --del kpropd
 
 	%if %{?_with_krb4:1}%{!?_with_krb4:0}
 	if [ -f /var/lock/subsys/krb524d ]; then
@@ -472,52 +472,52 @@ fi
 
 %post ftpd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload 1>&2
+	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
-        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 
 %postun ftpd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload
+	/etc/rc.d/init.d/rc-inetd reload
 fi
 
 %post kshd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload 1>&2
+	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
-        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 
 %postun kshd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload
+	/etc/rc.d/init.d/rc-inetd reload
 fi
 
 %post telnetd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload 1>&2
+	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
-        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 
 %postun telnetd
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload
+	/etc/rc.d/init.d/rc-inetd reload
 fi
 
 %post klogind
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload 1>&2
+	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
-        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 
 %postun klogind
 if [ -f /var/lock/subsys/rc-inetd ]; then
-        /etc/rc.d/init.d/rc-inetd reload 1>&2
+	/etc/rc.d/init.d/rc-inetd reload 1>&2
 else
-        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
 fi
 
 %post libs
