@@ -33,10 +33,11 @@ fi
 case "$1" in
   start)
         if [ ! -f /var/lib/kerberos/principal ] ; then
-        	exit 0
+        	exit 1
         fi
-        if [ ! -f /var/lib/kerberos/kadm5.acl ] ; then
-        	exit 0
+        if [ -f /var/lib/kerberos/kpropd.acl ] ; then
+		show "This service should only be run on the master server for a realm!"
+        	exit 1
         fi
         if [ ! -f /var/lib/kerberos/kadm5.keytab ] ; then
         	show "Extracting kadm5 Service Keys"
