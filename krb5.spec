@@ -61,6 +61,7 @@ BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
+BuildRequires:	ncurses-devel
 %{?with_tcl:BuildRequires:	tcl-devel}
 PreReq:		rc-scripts
 Requires:	setup >= 2.4.6-2
