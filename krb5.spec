@@ -82,7 +82,7 @@ identity.
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
 systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go spowrotem do
+u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
 klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
@@ -113,7 +113,7 @@ Oprogramowanie klienckie do korzystania z us³ug systemu Kerberos V5.
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
 systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go spowrotem do
+u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
 klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
@@ -145,7 +145,7 @@ G³ówne centrum dystrybucji kluczy (KDC).
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
 systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go spowrotem do
+u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
 klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
@@ -163,7 +163,7 @@ FTP is the file transfer protocol, which is a widely used Internet
 protocol for transferring files and for archiving files.
 
 %description ftpd -l pl
-FTP jest protoko³em trasmisji plików szeroko rozpowszechnionym w
+FTP jest protoko³em transmisji plików szeroko rozpowszechnionym w
 Internecie.
 
 %package kshd
