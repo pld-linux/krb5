@@ -1,7 +1,9 @@
 #
 # TODO:
-#	- split kdc/kadmind/krb524d/kpropd to separate subpackages
-#	- finish config files and init scripts
+# - split kdc/kadmind/krb524d/kpropd to separate subpackages
+# - finish config files and init scripts
+# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011107.html
+# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011106.html
 #
 # Conditional build:
 %bcond_with krb4	# build with Kerberos V4 support
