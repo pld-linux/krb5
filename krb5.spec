@@ -243,7 +243,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
 install %{SOURCE4} $RPM_BUILD_ROOT/usr/sbin/propagation
 
 strip $RPM_BUILD_ROOT/usr/sbin/* || :
-strip $RPM_BUILD_ROOT/usr/bin/* || :
+strip $RPM_BUILD_ROOT%{_bindir}/* || :
 
 echo .so kadmin.8.bz2 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
@@ -306,18 +306,18 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc doc/inetd.conf* doc/krb5-user.inf*
 
-%attr(711,root,root) /usr/bin/ftp
-%attr(711,root,root) /usr/bin/telnet
-%attr(711,root,root) /usr/bin/rsh
-%attr(711,root,root) /usr/bin/kdestroy
-%attr(711,root,root) /usr/bin/kinit
-%attr(711,root,root) /usr/bin/klist
+%attr(711,root,root) %{_bindir}/ftp
+%attr(711,root,root) %{_bindir}/telnet
+%attr(711,root,root) %{_bindir}/rsh
+%attr(711,root,root) %{_bindir}/kdestroy
+%attr(711,root,root) %{_bindir}/kinit
+%attr(711,root,root) %{_bindir}/klist
 
-%attr(4711,root,root) /usr/bin/ksu
+%attr(4711,root,root) %{_bindir}/ksu
 
-%attr(711,root,root) /usr/bin/kpasswd
-%attr(711,root,root) /usr/bin/rcp
-%attr(711,root,root) /usr/bin/rlogin
+%attr(711,root,root) %{_bindir}/kpasswd
+%attr(711,root,root) %{_bindir}/rcp
+%attr(711,root,root) %{_bindir}/rlogin
 
 %{_mandir}/man1/ftp.1.bz2
 %{_mandir}/man1/telnet.1.bz2
