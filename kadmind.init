@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# kadmind	kerberos V administrative service
+#
+# chkconfig:	35 41 41
+#
+# description:	kadmind is a kerberos V administrative server
+#		which should only be run on the master server for a realm
+#
+# processname: kadmind
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+        if [ ! -f /var/lock/subsys/network ]; then
+                msg_network_down "Kerberos V Administrative Server"
+                exit 1
+        fi
+else
+        exit 0
+fi
+
+
+# See how we were called.
+case "$1" in
+  start)
+        if [ ! -f /etc/kerberos/principal ] ; then
+        	exit 0
+        fi
+        if [ -f /etc/kerberos/kpropd.acl ] ; then
+        	exit 0
+        fi
+        if [ ! -f /var/lib/kerberos/kadm5.keytab ] ; then
+        	show "Extracting kadm5 Service Keys"
+        	kadmin.local -q "ktadd -k /var/lib/kerberos/kadm5.keytab kadmin/admin kadmin/changepw" 
+		$RETVAL=$?
+		if  [ $RETVAL -eq 0 ]; then
+			ok
+		else
+			fail
+			exit 1
+		fi
+        fi
+
+        # Check if the service is already running?
+        if [ ! -f /var/lock/subsys/kadmind ]; then
+                msg_starting "Kerberos V Administrative Server"
+                daemon kadmind
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/kadmind
+        else
+                msg_already_running "Kerberos V Administrative Server"
+        fi
+        ;;
+  stop)
+        if [ -f /var/lock/subsys/kadmind ]; then
+                msg_stopping "Kerberos V Administrative Server"
+                killproc kadmind
+                rm -f /var/lock/subsys/kadmind
+        else
+                msg_not_running "Kerberos V Administrative Server"
+        fi
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        exit $?
+        ;;
+  reload)
+        if [ -f /var/lock/subsys/kadmind ]; then
+                msg_reloading "Kerberos V Administrative Server"
+                killproc kadmind -HUP
+                RETVAL=$?
+        else
+                msg_not_running "Kerberos V Administrative Server" >&2
+                RETVAL=7
+        fi
+        ;;
+  status)
+        status kadmind
+        RETVAL=$?
+        ;;
+  *)
+        msg_usage "$0 {start|stop|restart|reload|status}"
+        exit 3
+esac
+
+exit $RETVAL
+
+# This must be last line !
+# vi:syntax=sh:tw=78:ts=8:sw=4

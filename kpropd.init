@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# kpropd.init  	kerberos V propagation client
+#
+# chkconfig:   	35 41 41
+# description: 	kpropd is a kerberos V propagation client that allows
+#		KDC running on a host to receive updates from the master KDC
+#
+# processname: kpropd
+
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+        if [ ! -f /var/lock/subsys/network ]; then
+                msg_network_down "Kerberos V Propagation Server"
+                exit 1
+        fi
+else
+        exit 0
+fi
+
+# See how we were called.
+case "$1" in
+  start)
+        if [ -f /etc/kerberos/kpropd.acl ] ; then
+            exit 0
+        fi
+
+        # Check if the service is already running?
+        if [ ! -f /var/lock/subsys/kpropd ]; then
+                msg_starting "Kerberos V Propagation Server"
+                daemon kpropd -S
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/kpropd
+        else
+                msg_already_running "Kerberos V Propagation Server"
+        fi
+        ;;
+  stop)
+        if [ -f /var/lock/subsys/kpropd ]; then
+                msg_stopping "Kerberos V Propagation Server"
+                killproc kpropd
+                rm -f /var/lock/subsys/kpropd
+        else
+                msg_not_running "Kerberos V Propagation Server"
+        fi
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        exit $?
+        ;;
+  reload)
+        if [ -f /var/lock/subsys/kpropd ]; then
+                msg_reloading "Kerberos V Propagation Server"
+                killproc kpropd -HUP
+                RETVAL=$?
+        else
+                msg_not_running "Kerberos V Propagation Server" >&2
+                RETVAL=7
+        fi
+        ;;
+  status)
+        status kpropd
+        RETVAL=$?
+        ;;
+  *)
+        msg_usage "$0 {start|stop|restart|reload|status}"
+        exit 3
+esac
+
+exit $RETVAL
+
+
+# This must be last line !
+# vi:syntax=sh:tw=78:ts=8:sw=4

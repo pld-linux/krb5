@@ -1,13 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 #
-# krb524d      Start and stop the krb524d service.
+# krb524d	krb524d compatibility service
 #
-# chkconfig:   2345 41 41
-# description: Kerberos 5 is a trusted third-party authentication system.  \
-#	       This script starts and stops krb524d, which converts \
-#              Kerberos 5 credentials to Kerberos IV credentials.
+# chkconfig:	345 41 41
 #
-# processname: krb524d
+# description:	krb524d converts Kerberos V credentials to Kerberos IV
+#		credentials
+#
+# processname:	krb524d
+
 
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -15,52 +16,70 @@
 # Get network config
 . /etc/sysconfig/network
 
-# Get service config
+# Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
-if [ "${NETWORKING}" = "no" ]; then
-	echo "WARNING: Network is down. Kerberos 524 service can't be runed."
-	exit 1
+if is_yes "${NETWORKING}"; then
+        if [ ! -f /var/lock/subsys/network ]; then
+                msg_network_down "Kerberos V-to-IV Server"
+                exit 1
+        fi
+else
+        exit 0
 fi
 
 # See how we were called.
 case "$1" in
   start)
-	# ???
 	if [ ! -f /var/lib/kerberos/principal ] ; then
 		exit 0
 	fi
 
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/krb524d ]; then
-		show Starting Kerberos 5-to-4 Server
+		msg_starting "Kerberos V-to-IV Server"
 		daemon krb524d
+		RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb524d
 	else
-		echo "Kerberos 5-to-4 is already running"
+		msg_already_running "Kerberos V-to-IV Server"
 	fi
-	touch /var/lock/subsys/krb524d
 	;;
   stop)
-	show Stopping Kerberos 5-to-4 Server
-	killproc krb524d
-	rm -f /var/lock/subsys/krb524d
+	if [ -f /var/lock/subsys/krb524d ]; then
+                msg_stopping "Kerberos V-to-IV Server"
+                killproc krb524d
+                rm -f /var/lock/subsys/krb524d
+        else
+                msg_not_running "Kerberos V-to-IV Server"
+        fi
 	;;
-reload)
-        show Reloading Kerberos 5-to-4 Server
-        killproc krb524d -HUP
+  restart)
+        $0 stop
+        $0 start
+        exit $?
 	;;
-
-restart)
-	$0 stop
-	$0 start
-	;;
-status)
+  reload)
+	if [ -f /var/lock/subsys/krb524d ]; then
+                msg_reloading "Kerberos V-to-IV Server"
+                killproc krb524d -HUP
+                RETVAL=$?
+        else
+                msg_not_running "Kerberos V-to-IV Server" >&2
+                RETVAL=7
+        fi
+        ;;
+  status)
 	status	krb524d
+	RETVAL=$?
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart|reload}"
-	exit 1
+	msg_usage "$0 {start|stop|restart|reload|status}"
+        exit 3
 esac
 
-exit 0
+exit $RETVAL
+
+# This must be last line !
+# vi:syntax=sh:tw=78:ts=8:sw=4

@@ -1,0 +1,85 @@
+#!/bin/sh
+#
+# krb5kdc	krb5kdc server
+#
+# chkconfig:	35 41 41
+#
+# description:	krb5kdc is a server that Kerberos IV and V clients
+#		need to connect to in order to obtain credentials
+#
+# processname: krb5kdc
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+        if [ ! -f /var/lock/subsys/network ]; then
+                msg_network_down "Kerberos V KDC"
+                exit 1
+        fi
+else
+        exit 0
+fi
+
+
+# See how we were called.
+case "$1" in
+  start)
+        if [ ! -f /etc/kerberos/principal ] ; then
+            exit 0
+        fi
+
+        # Check if the service is already running?
+        if [ ! -f /var/lock/subsys/krb5kdc ]; then
+                msg_starting "Kerberos V KDC"
+                daemon krb5kdc
+                RETVAL=$?
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb5kdc
+        else
+                msg_already_running "Kerberos V KDC"
+        fi
+        ;;
+  stop)
+        if [ -f /var/lock/subsys/krb5kdc ]; then
+                msg_stopping "Kerberos V KDC"
+                killproc krb5kdc
+                rm -f /var/lock/subsys/krb5kdc
+        else
+                msg_not_running "Kerberos V KDC"
+        fi
+        ;;
+  restart)
+        $0 stop
+        $0 start
+        exit $?
+        ;;
+  reload)
+        if [ -f /var/lock/subsys/krb5kdc ]; then
+                msg_reloading "Kerberos V KDC"
+                killproc krb5kdc -HUP
+                RETVAL=$?
+        else
+                msg_not_running "Kerberos V KDC" >&2
+                RETVAL=7
+        fi
+        ;;
+  status)
+        status krb5kdc
+        RETVAL=$?
+        ;;
+  *)
+        msg_usage "$0 {start|stop|restart|reload|status}"
+        exit 3
+esac
+
+exit $RETVAL
+
+# This must be last line !
+# vi:syntax=sh:tw=78:ts=8:sw=4
