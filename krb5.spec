@@ -2,7 +2,7 @@ Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
 Name:		krb5
 Version:	1.0.6
-Release:	2
+Release:	3
 License:	MIT
 Group:		Networking
 Group(de):	Netzwerkwesen
@@ -211,7 +211,7 @@ Group(pl):	Programowanie/Biblioteki
 Group(pt_BR):	Desenvolvimento/Bibliotecas
 Group(ru):	Разработка/Библиотеки
 Group(uk):	Розробка/Б╕бл╕отеки
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-devel = %{version}
 
 %description static
 Static Kerberos libraries.
