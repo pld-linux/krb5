@@ -27,7 +27,7 @@ Copyright:	MIT
 Group:		Networking
 Group(pl):	Sieciowe
 Requires:	rc-scripts
-BuildRoot:	/tmp/%{name}-%{version}-root
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_prefix /usr/athena
 %define		_mandir /usr/athena/man
@@ -242,7 +242,6 @@ install %{SOURCE3}			$RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
 install %{SOURCE10}			$RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sbindir}/propagation
 install %{SOURCE11}	%{SOURCE12}	$RPM_BUILD_ROOT/etc/profile.d
-
 
 strip $RPM_BUILD_ROOT{%{_bindir}/*,%{_sbindir}/*} || :
 strip --strip-debug $RPM_BUILD_ROOT%{_libdir}/*.so.*
