@@ -20,9 +20,9 @@ fi
 case "$1" in
   start)
 	show Starting Kerberos KDC
-	daemon $KDC_NICE krb5kdc
+	daemon krb5kdc
 	show Starting Administration Server
-	daemon $KADMIN_NICE kadmind
+	daemon kadmind
 	touch /var/lock/subsys/krb5server
 	;;
   stop)
