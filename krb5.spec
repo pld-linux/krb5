@@ -86,7 +86,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 
 %description clients
 Kerberos Clients.
@@ -117,7 +117,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 
 %description daemons
 Kerberos Daemons.
@@ -148,7 +148,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos Server
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 Requires:	words
 
 %description server
@@ -180,7 +180,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	rlogin is used when signing onto a system
 Summary(pl):	Narzêdzie do logowania w systemie
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 Provides:	rlogin
 
 %description rlogin
@@ -199,7 +199,7 @@ zawiera skerberyzowan± wersjê programu rlogin.
 Summary:	Clients for remote access commands (rsh, rlogin, rcp)
 Summary(pl):	Klient zdalnego dostêpu (rsh, rlogin, rcp)
 Group:		Applications/Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 Obsoletes:	rsh
 Obsoletes:	rcp
 
@@ -219,7 +219,7 @@ kopiowanie plików pomiêdzy maszynami (rsh, rlogin, rcp).
 Summary:	The standard UNIX FTP (file transfer protocol) client
 Summary(pl):	Klient protoko³u FTP
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 
 %description ftp
 The ftp package provides the standard UNIX command-line FTP client
@@ -236,7 +236,7 @@ rozpowszechnionym w Internecie.
 Summary:	Client for the telnet remote login
 Summary(pl):	Klient us³ugi telnet
 Group:		Networking
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 Obsoletes:	telnet
 
 %description telnet
@@ -253,7 +253,7 @@ Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
 Requires(post,preun):	grep
 Requires(post):		/sbin/ldconfig
-Requires(preun):	fileutils
+Requires(preun):	coreutils
 Obsoletes: 	krb5-configs, krb5-lib
 
 %description libs
@@ -266,7 +266,7 @@ Biblioteki dynamiczne dla systemu kerberos.
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 Group:		Development/Libraries
-Requires:	%{name}-lib = %{version}
+Requires:	%{name}-libs = %{version}
 
 %description devel
 Header files for Kerberos libraries and development documentation.
