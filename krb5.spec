@@ -154,6 +154,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:        The standard UNIX FTP (file transfer protocol) server
 Summary(pl):    Serwer FTP
 Group:          Networking/Daemons
+PreReq:         rc-inetd >= 0.8.1
 Requires:       %{name}-libs = %{version}
 Obsoletes:      ftpd
 
@@ -169,6 +170,7 @@ Internecie.
 Summary:        Kerberized remote shell server
 Summary(pl):    Skerberyzowany serwer zdalnego dostêpu
 Group:          Networking/Daemons
+PreReq:         rc-inetd >= 0.8.1
 Requires:       %{name}-libs = %{version}
 Obsoletes:	rshd
 
@@ -186,6 +188,7 @@ autentykacji Kerberos.
 Summary:        Server for the telnet remote login
 Summary(pl):    Serwer protoko³u telnet
 Group:          Networking/Daemons
+PreReq:         rc-inetd >= 0.8.1
 Requires:       %{name}-libs = %{version}
 Obsoletes:      telnetd
 
@@ -203,6 +206,7 @@ na której dzia³a.
 Summary:        Remote login server
 Summary(pl):    Serwer zdalnego logowania 
 Group:          Networking/Daemons
+PreReq:         rc-inetd >= 0.8.1
 Requires:       %{name}-libs = %{version}
 Obsoletes:	rlogind
 
