@@ -253,9 +253,6 @@ rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
-gzip -9nf doc/kadmin/* doc/krb5-protocol/* doc/*.info* \
-	../pam_krb5-1.0-1/README
-
 # Kerberos5 PAM
 
 cd ../pam_krb5-1.0-1
@@ -391,6 +388,6 @@ fi
 
 %files pam
 %defattr(644,root,root,755)
-%doc ../pam_krb5-1.0-1/README.gz
+%doc ../pam_krb5-1.0-1/README
 
 %attr(755,root,root) /lib/security/pam_krb5.so
