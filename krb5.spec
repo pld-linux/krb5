@@ -31,6 +31,7 @@ Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
 Prereq:		rc-scripts
+BuildRequires:	automake
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_prefix		/usr/athena
@@ -254,6 +255,7 @@ Kerberosa V5.
 
 %build
 cd src
+ln -sf /usr/share/automake/config.sub config.sub
 ./configure \
 	--prefix=%{_prefix} \
 	--enable-shared \
