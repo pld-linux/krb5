@@ -33,7 +33,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sysconfdir	/etc/athena
 # ??? not FHS-compliant!
 %define		_prefix		/usr/athena
-%define		_mandir		/usr/athena/man
 %define		_vardir		/var/krb5kdc
 
 %description
