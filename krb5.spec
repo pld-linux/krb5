@@ -87,7 +87,7 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package daemons
 Summary:	Kerberos daemons programs for use on servers
-Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
+Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa
 Group:		Networking
 Requires:	%{name}-lib = %{version}
 
