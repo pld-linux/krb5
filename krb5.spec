@@ -26,7 +26,7 @@ Patch5:		pam_krb5-pld.patch
 Copyright:	MIT
 Group:		Networking
 Group(pl):	Sieciowe
-Requires:	rc-scripts
+Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_prefix /usr/athena
