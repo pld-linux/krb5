@@ -48,7 +48,7 @@ Patch13:	%{name}-check.patch
 Patch14:	%{name}-double-free.patch
 Patch15:	%{name}-varargs.patch
 Patch16:	%{name}-norpath.patch
-#Patch17:	%{name}-paths.patch
+Patch17:	%{name}-paths.patch
 BuildRequires:	automake
 BuildRequires:  autoconf
 BuildRequires:	bison
@@ -305,7 +305,7 @@ Biblioteki statyczne Kerberosa.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
-#patch17 -p1
+%patch17 -p1
 
 %build
 cd src
@@ -338,7 +338,7 @@ cd src
 	DESTDIR=$RPM_BUILD_ROOT
 cd ..
 
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/
 install %{SOURCE6} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE3} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE4}                      $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
