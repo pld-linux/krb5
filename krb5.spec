@@ -214,7 +214,7 @@ Kerberosa V5.
 %build
 cd src
 ./configure \
-	--prefix=/usr/athena \
+	--prefix=%{_prefix} \
 	--enable-shared \
 	--with-vague-errors \
 	--sysconfdir=/etc/athena \
@@ -254,7 +254,7 @@ ln -s /usr/share/dict/words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
 
 touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
 
-rm -rf $RPM_BUILD_ROOT/usr/include/asn.1
+rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
@@ -266,8 +266,8 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
 
 cd ../pam_krb5-1.0-1
 make clean
-make KRBINCLUDE=-I$RPM_BUILD_ROOT/usr/athena/include \
-	KRBLIB=-L$RPM_BUILD_ROOT/usr/athena/lib \
+make KRBINCLUDE=-I$RPM_BUILD_ROOT%{_includedir} \
+	KRBLIB=-L$RPM_BUILD_ROOT%{_libdir} \
 	EXTRAS="$RPM_OPT_FLAGS" WANT_PWDB=no
 
 install -d $RPM_BUILD_ROOT/lib/security
