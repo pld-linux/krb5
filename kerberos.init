@@ -18,7 +18,7 @@
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
-[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down"; exit 0
+[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down" && exit 0
 
 
 # See how we were called.
