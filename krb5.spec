@@ -664,7 +664,9 @@ fi
 %doc doc/{kadmin,krb5-protocol}
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/*.so
-%{_includedir}/*
+%{_includedir}/gssapi
+%{?with_krb4:%{_includedir}/kerberosIV}
+%{_includedir}/*.h
 
 %files static
 %defattr(644,root,root,755)
