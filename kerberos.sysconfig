@@ -1,0 +1,8 @@
+# Customized setings for Kerberos V5
+
+# Nicelevel for Kerberos KDC Server
+KDC_NICE="-1"
+
+# Nicelevel for Kerberos Administration Server
+KADMIN_NICE="-1"
+ 

@@ -1,0 +1,12 @@
+diff -Nur krb5-1.0.5/src/kadmin/cli/kadmin.c krb5-1.0.5.pld/src/kadmin/cli/kadmin.c
+--- krb5-1.0.5/src/kadmin/cli/kadmin.c	Sat Feb  7 04:42:21 1998
++++ krb5-1.0.5.pld/src/kadmin/cli/kadmin.c	Wed Feb 17 15:21:58 1999
+@@ -421,7 +421,7 @@
+ 	 exit(1);
+     }
+     {
+-#define DEFAULT_KEYTAB "WRFILE:/etc/krb5.keytab"
++#define DEFAULT_KEYTAB "WRFILE:/etc/athena/krb5.keytab"
+ 	 /* XXX krb5_defkeyname is an internal library global and
+             should go away */
+ 	 extern char *krb5_defkeyname;

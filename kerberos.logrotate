@@ -1,0 +1,11 @@
+/var/log/kadmin {
+    postrotate
+	/etc/rc.d/init.d/kerberos restart
+    endscript
+}
+
+/var/log/krb5kdc {
+    postrotate
+	/etc/rc.d/init.d/kerberos restart
+    endscript
+}

@@ -1,0 +1,42 @@
+diff -Nur krb5-1.0.5/src/appl/gssftp/ftp/ftp.c krb5-1.0.5.orig/src/appl/gssftp/ftp/ftp.c
+--- krb5-1.0.5/src/appl/gssftp/ftp/ftp.c	Sat Feb  7 04:41:23 1998
++++ krb5-1.0.5.orig/src/appl/gssftp/ftp/ftp.c	Sat Oct 10 17:49:58 1998
+@@ -499,7 +499,6 @@
+ 	sigtype cmdabort();
+ 	char ibuf[FTP_BUFSIZ], obuf[FTP_BUFSIZ];
+ 	int safe = 0;
+-	extern char *strpbrk(), *strstr();
+ 
+ 	ibuf[0] = '\0';
+ 	if (reply_parse) reply_ptr = reply_buf;
+diff -Nur krb5-1.0.5/src/appl/gssftp/ftpd/ftpd.c krb5-1.0.5.orig/src/appl/gssftp/ftpd/ftpd.c
+--- krb5-1.0.5/src/appl/gssftp/ftpd/ftpd.c	Sat Feb  7 04:41:25 1998
++++ krb5-1.0.5.orig/src/appl/gssftp/ftpd/ftpd.c	Sat Oct 10 17:49:58 1998
+@@ -1681,7 +1681,6 @@
+ myoob()
+ {
+ 	char *cp, *cs;
+-	extern char *strpbrk();
+ 
+ 	/* only process if transfer occurring */
+ 	if (!transflag)
+@@ -2117,7 +2116,6 @@
+ 	FILE *dout = NULL;
+ 	register char **dirlist, *dirname;
+ 	int simple = 0;
+-	char *strpbrk();
+ 	int ret = 0;
+ 
+ 	if (strpbrk(whichfiles, "~{[*?") != NULL) {
+diff -Nur krb5-1.0.5/src/appl/telnet/telnet/telnet.c krb5-1.0.5.orig/src/appl/telnet/telnet/telnet.c
+--- krb5-1.0.5/src/appl/telnet/telnet/telnet.c	Sat Feb  7 04:41:45 1998
++++ krb5-1.0.5.orig/src/appl/telnet/telnet/telnet.c	Sat Oct 10 17:49:58 1998
+@@ -2334,7 +2334,7 @@
+ 	    }
+ 	    if (printed_encrypt == 0) {
+ 		    printed_encrypt = 1;
+-		    printf("Waiting for encryption to be negotiated...");
++		    printf("Waiting for encryption to be negotiated...\n");
+ 		    /*
+ 		     * Turn on MODE_TRAPSIG and then turn off localchars 
+ 		     * so that ^C will cause telnet to exit.

@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# chkconfig: 2345 41 41
+# description: Kerberos V server daemons
+#
+# processname: kadmind krb5kdc
+# config: /etc/kerberos/krb5.conf
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Kerberos config
+if [ -f /etc/sysconfig/kerberos ]; then
+    . /etc/sysconfig/kerberos
+fi
+# Check that networking is up...
+[ "${NETWORKING}" = "no" ] && exit 0
+
+# See how we were called.
+case "$1" in
+  start)
+	show Starting Kerberos KDC
+	daemon $KDC_NICE krb5kdc
+	show Starting Administration Server
+	daemon $KADMIN_NICE kadmind
+	touch /var/lock/subsys/krb5server
+	;;
+  stop)
+	show Stopping Kerberos KDC
+	killproc kadmind
+	show Stopping Administration Server
+	killproc krb5kdc
+	rm -f /var/lock/subsys/krb5server
+	;;
+restart)
+	$0 stop
+	$0 start
+	;;
+status)
+	status	kadmind 
+	status	krb5kdc
+	;;
+  *)
+	echo "Usage: $0 {start|stop|status|restart}"
+	exit 1
+esac
+
+exit 0
