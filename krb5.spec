@@ -224,7 +224,7 @@ cd src
 
 install %{SOURCE5} ../doc
 
-make CCOPTS="$RPM_OPT_FLAGS"
+%{__make} CCOPTS="$RPM_OPT_FLAGS"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -265,8 +265,8 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
 # Kerberos5 PAM
 
 cd ../pam_krb5-1.0-1
-make clean
-make KRBINCLUDE=-I$RPM_BUILD_ROOT%{_includedir} \
+%{__make} clean
+%{__make} KRBINCLUDE=-I$RPM_BUILD_ROOT%{_includedir} \
 	KRBLIB=-L$RPM_BUILD_ROOT%{_libdir} \
 	EXTRAS="$RPM_OPT_FLAGS" WANT_PWDB=no
 
