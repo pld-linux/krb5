@@ -26,12 +26,15 @@ Patch2:		%{name}-kadmin.patch
 Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
-Prereq:		rc-scripts
 BuildRequires:	automake
+PreReq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
+%define		_sysconfdir	/etc/athena
+# ??? not FHS-compliant!
 %define		_prefix		/usr/athena
 %define		_mandir		/usr/athena/man
+%define		_vardir		/var/krb5kdc
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed
@@ -152,6 +155,9 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
+Requires(post,preun):	grep
+Requires(post):	/sbin/ldconfig
+Requires(preun):	fileutils
 
 %description lib
 Libraries for Kerberos V5 Server and Client
@@ -207,7 +213,8 @@ Kerberosa V5.
 %patch4 -p1
 
 #kerberos pam
-( cd ../pam_krb5-1.0-1; patch -p1 < %{PATCH5} )
+cd ../pam_krb5-1.0-1
+%patch5 -p1
 
 %build
 cd src
@@ -216,7 +223,7 @@ ln -sf /usr/share/automake/config.sub config.sub
 	--prefix=%{_prefix} \
 	--enable-shared \
 	--with-vague-errors \
-	--sysconfdir=/etc/athena \
+	--sysconfdir=%{_sysconfdir} \
 	--with-krb4 \
 	--localstatedir=/var %{_target_platform}
 
@@ -226,13 +233,16 @@ install %{SOURCE5} ../doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/{etc/rc.d/init.d,var/krb5kdc}
-install -d $RPM_BUILD_ROOT/etc/{athena,sysconfig,profile.d}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{vardir}}
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,profile.d}
 
-(cd src; make install DESTDIR=$RPM_BUILD_ROOT)
+cd src
+%{__make} install \
+	DESTDIR=$RPM_BUILD_ROOT
+cd ..
 
-install %{SOURCE8} $RPM_BUILD_ROOT/etc/athena
-install %{SOURCE9} $RPM_BUILD_ROOT/var/krb5kdc
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sysconfdir}
+install %{SOURCE9} $RPM_BUILD_ROOT%{_vardir}
 
 install -d $RPM_BUILD_ROOT/etc/logrotate.d
 install %{SOURCE7}			$RPM_BUILD_ROOT/etc/logrotate.d/kerberos
@@ -243,11 +253,11 @@ install %{SOURCE11}	%{SOURCE12}	$RPM_BUILD_ROOT/etc/profile.d
 
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
-touch $RPM_BUILD_ROOT/etc/athena/krb5.keytab
+touch $RPM_BUILD_ROOT%{_sysconfdir}/krb5.keytab
 
-ln -sf /usr/share/dict/words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
+ln -sf /usr/share/dict/words $RPM_BUILD_ROOT%{_vardir}/kadm5.dict
 
-touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
+touch $RPM_BUILD_ROOT%{_vardir}/kadm5.acl
 
 rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 
@@ -268,13 +278,15 @@ install pam_krb5.so $RPM_BUILD_ROOT/lib/security
 rm -rf $RPM_BUILD_ROOT
 
 %post lib
-grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
-[ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf
+umask 022
+grep -qs "^%{_libdir}$" /etc/ld.so.conf
+[ $? -ne 0 ] && echo "%{_libdir}" >> /etc/ld.so.conf
 /sbin/ldconfig
 
 %preun lib
 if [ "$1" = "0" ]; then
-        grep -v "/usr/athena/lib" /etc/ld.so.conf > /etc/ld.so.conf.new
+	umask 022
+        grep -v "%{_libdir}" /etc/ld.so.conf > /etc/ld.so.conf.new
 	mv -f /etc/ld.so.conf.new /etc/ld.so.conf
 fi
 
@@ -288,8 +300,8 @@ fi
 %attr(640,root,root) /etc/logrotate.d/*
 %attr(640,root,root) /etc/sysconfig/*
 
-%attr(700,root,root) %dir /var/krb5kdc
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /var/krb5kdc/*
+%attr(700,root,root) %dir %{_vardir}
+%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_vardir}/*
 
 %attr(755,root,root) %{_sbindir}/kadmin
 %attr(755,root,root) %{_sbindir}/kadmin.local
@@ -329,7 +341,7 @@ fi
 %attr(755,root,root) %{_bindir}/v5passwd
 %attr(755,root,root) %{_bindir}/klist
 
-%attr(4711,root,root) %{_bindir}/ksu
+%attr(4755,root,root) %{_bindir}/ksu
 
 %attr(755,root,root) %{_bindir}/kpasswd
 %attr(755,root,root) %{_bindir}/rcp
@@ -363,10 +375,9 @@ fi
 
 %files lib
 %defattr(644,root,root,755)
-
-%dir /etc/athena
-%config(noreplace) %verify(not size mtime md5) /etc/athena/krb5.conf
-%attr(400,root,root) %ghost /etc/athena/krb5.keytab
+%dir %{_sysconfdir}
+%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/krb5.conf
+%attr(400,root,root) %ghost %{_sysconfdir}/krb5.keytab
 
 %attr(755,root,root) %{_libdir}/*.so.*
 %attr(755,root,root) %{_libdir}/*.so
@@ -378,16 +389,13 @@ fi
 %files devel
 %defattr(644,root,root,755)
 %doc doc/krb5-protocol/*
-
 %{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
-
 %{_libdir}/*.a
 
 %files pam
 %defattr(644,root,root,755)
 %doc ../pam_krb5-1.0-1/README
-
 %attr(755,root,root) /lib/security/pam_krb5.so
