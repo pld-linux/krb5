@@ -1,23 +1,29 @@
-Summary:     Kerberos V5 System
-Name:        krb5
-Version:     1.0.5
-Release:     4d
-Source:      %{name}-%{version}.src.tar.gz
-Source1:     %{name}-%{version}.crypto.tar.gz
-Source2:     %{name}-%{version}.doc.tar.gz
-Source3:     kerberos.init
-Source4:     propagation
-Source5:     inetd.conf.secure
-########     http://www-personal.engin.umich.edu/~itoi/index.html
-Source6:     pam_krb5-1.0-1.tar.gz
-Patch:       %{name}.patch
-Patch1:      %{name}-select.patch
-Patch2:      pam_krb5-pld.patch
-Copyright:   MIT
-Group:       Networking
-Group(pl):   Sieci
-BuildRoot:   /tmp/%{name}-%{version}-root
-Summary(pl): System Kerberos V5
+Summary:	Kerberos V5 System
+Summary(pl):	System Kerberos V5
+Name:		krb5
+Version:	1.0.6
+Release:	1
+Source0:	%{name}-%{version}.src.tar.gz
+Source1:	%{name}-%{version}.crypto.tar.gz
+Source2:	%{name}-%{version}.doc.tar.gz
+Source3:	kerberos.init
+Source4:	propagation
+Source5:	inetd.conf.secure
+########	http://www-personal.engin.umich.edu/~itoi/index.html
+Source6:	pam_krb5-1.0-1.tar.gz
+Source7:	kerberos.logrotate
+Source8:	%{name}.conf
+Source9:	kdc.conf
+Source10:	kerberos.sysconfig
+Patch0:		%{name}-ftp.patch
+Patch1:		%{name}-telnetd.patch
+Patch2:		%{name}-kadmin.patch
+Patch3:		%{name}-rpc.patch
+Patch4:		pam_krb5-pld.patch
+Copyright:	MIT
+Group:		Networking
+Group(pl):	Sieciowe
+BuildRoot:	/tmp/%{name}-%{version}-root
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
@@ -39,14 +45,12 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package clients 
-Summary:     Kerberos programs for use on workstations
-Group:       Networking/Utilities
-Group(pl):   Sieci/U¿ytki
-Requires:    %{name}-lib = %{version}
-Obsoletes:   telnet, rsh, ftp
-Provides:    ftp, rsh, telnet 
-Summary(pl): Oprogramowanie klienckie dla stacji roboczej kerberosa
+%package	clients 
+Summary:	Kerberos programs for use on workstations
+Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
+Group:		Networking
+Group(pl):	Sieciowe
+Requires:	%{name}-lib = %{version}
 
 %description clients
 Kerberos Clients.
@@ -72,12 +76,12 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package daemons
-Summary:     Kerberos daemons programs for use on servers
-Group:       Networking/Utilities
-Group(pl):   Sieci/U¿ytki
-Requires:    %{name}-lib = %{version}
-Summary(pl): Daemony popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
+%package	daemons
+Summary:	Kerberos daemons programs for use on servers
+Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
+Group:		Networking
+Group(pl):	Sieciowe
+Requires:	%{name}-lib = %{version}
 
 %description daemons
 Kerberos Daemons.
@@ -104,14 +108,14 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package server
-Summary:     Kerberos Server 
-Group:       Networking/Daemons
-Group(pl):   Sieci/Demony
-Requires:    %{name}-lib = %{version}
-Requires:    words
-Prereq:	     /sbin/chkconfig
-Summary(pl): Serwer Kerberosa
+%package	server
+Summary:	Kerberos Server 
+Summary(pl):	Serwer Kerberosa
+Group:		Networking
+Group(pl):	Sieciowe
+Requires:	%{name}-lib = %{version}
+Requires:	words
+Prereq:		/sbin/chkconfig
 
 %description server
 Master KDC.
@@ -137,11 +141,12 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package lib
-Summary:     Kerberos shared libraries
-Group:       Libraries
-Group(pl):   Biblioteki
-Summary(pl): Biblioteki dynamiczne dla kerberosa
+%package	lib
+Summary:	Kerberos shared libraries
+Summary(pl):	Biblioteki dzielone dla kerberosa
+Group:		Libraries
+Group(pl):	Biblioteki
+Prereq:		/sbin/ldconfig
 
 %description lib
 Libraries for Kerberos V5 Server and Client
@@ -149,12 +154,12 @@ Libraries for Kerberos V5 Server and Client
 %description -l pl lib
 Biblioteki dynamiczne dla systemu kerberos.
 
-%package devel
-Summary:     Header files for Kerberos libraries and development documentation
-Group:       Libraries
-Group(pl):   Biblioteki
-Requires:    %{name}-lib = %{version}
-Summary(pl): Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
+%package	devel
+Summary:	Header files for Kerberos libraries and documentation
+Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
+Group:		Libraries
+Group(pl):	Biblioteki
+Requires:	%{name}-lib = %{version}
 
 %description devel
 Header files for Kerberos libraries and development documentation
@@ -162,12 +167,12 @@ Header files for Kerberos libraries and development documentation
 %description -l pl devel
 Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 
-%package static
-Summary:     Static Kerberos libraries
-Group:       Libraries
-Group(pl):   Biblioteki
-Requires:    %{name}-lib = %{version}
-Summary(pl): Biblioteki statyczne Kerberosa
+%package	static
+Summary:	Static Kerberos libraries
+Summary(pl):	Biblioteki statyczne Kerberosa
+Group:		Libraries
+Group(pl):	Biblioteki
+Requires:	%{name}-lib = %{version}
 
 %description static
 Sattic Kerberos libraries.
@@ -175,13 +180,13 @@ Sattic Kerberos libraries.
 %description -l pl static
 Biblioteki statyczne Kerberosa.
 
-%package pam
-Summary:     PAM - Kerberos 5 module
-Requires:    pam >= 0.65
-Group:       Base/PAM
-Group:       Podstawy/PAM
-Requires:    %{name}-lib = %{version}
-Summary(pl): PAM - Kerberos 5 modu³
+%package	pam
+Summary:	PAM - Kerberos 5 module
+Summary(pl):	PAM - Kerberos 5 modu³
+Requires:	pam >= 0.66
+Group:		Libraries
+Group:		Libraries
+Requires:	%{name}-lib = %{version}
 
 %description pam
 This is a PAM - Kerberos 5 module for PLD Linux.
@@ -193,38 +198,23 @@ Kerberosa V5.
 
 %prep
 %setup -q -b1 -b2 -b6
-%patch  -p1
+%patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 #kerberos pam
 (cd ../pam_krb5-1.0-1; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-pld.patch)
 
 %build
 cd src
-ARCH=`uname -m`
-if [ "$ARCH" = "i686" ]; then
 ./configure \
-	--prefix=/usr \
+	--prefix=/usr/athena \
 	--enable-shared \
 	--with-vague-errors \
-	--without-tcl \
-	--sysconfdir=/etc/kerberos \
-	--without-krb4 --localstatedir=/var i586-linux-gnu
-else
-./configure \
-	--prefix=/usr \
-	--enable-shared \
-	--with-vague-errors \
-	--without-tcl \
-	--sysconfdir=/etc/kerberos \
-	--without-krb4 --localstatedir=/var 
-fi
-
-# There is still problem with STREAMSPTY... 
-if [ -f /lib/libc-2.0.10* ]; then
-cat appl/telnet/telnetd/Makefile | sed s/-DSTREAMSPTY=1/""/g > \
-appl/telnet/telnetd/Makefile
-fi
+	--sysconfdir=/etc/athena \
+	--with-krb4 \
+	--localstatedir=/var %{_target_platform}
 
 install %{SOURCE5} ../doc
 
@@ -233,31 +223,42 @@ make CCOPTS="$RPM_OPT_FLAGS"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/{etc/rc.d/init.d,var/krb5kdc}
-install -d $RPM_BUILD_ROOT/etc/kerberos
+install -d $RPM_BUILD_ROOT/etc/{athena,sysconfig}
+
 (cd src; make install DESTDIR=$RPM_BUILD_ROOT)
 
-install src/config-files/krb5.conf $RPM_BUILD_ROOT/etc/kerberos
-install src/config-files/kdc.conf $RPM_BUILD_ROOT/var/krb5kdc
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/athena
+install %{SOURCE9} $RPM_BUILD_ROOT/var/krb5kdc
 
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/propagation
+install -d $RPM_BUILD_ROOT/etc/logrotate.d
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
 
-strip $RPM_BUILD_ROOT%{_sbindir}/* || :
-strip $RPM_BUILD_ROOT%{_bindir}/* || :
+install %{SOURCE3}  $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
+install %{SOURCE10} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
+install %{SOURCE4}  $RPM_BUILD_ROOT/usr/athena/sbin/propagation
 
-echo .so kadmin.8.bz2 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
+strip $RPM_BUILD_ROOT/usr/athena/{bin/*,sbin/*} || :
+
+echo .so kadmin.8 > $RPM_BUILD_ROOT/usr/athena/man/man8/kadmin.local.8
+
+touch $RPM_BUILD_ROOT/etc/athena/krb5.keytab
 
 ln -s /usr/dict/linux.words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
+
 touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
 
-rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1.bz2
+rm -rf $RPM_BUILD_ROOT/usr/include/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
-chmod 755 $RPM_BUILD_ROOT%{_libdir}/*.so.*
+strip $RPM_BUILD_ROOT/usr/athena/lib/*.so.*.*
+chmod 755 $RPM_BUILD_ROOT/usr/athena/lib/*.so.*
 
-bzip2 -9 $RPM_BUILD_ROOT%{_mandir}/{man1/*,man8/*}
-bzip2 -9 $RPM_BUILD_ROOT%{_mandir}/{man5/*,man5/.*}
+gzip -9fn $RPM_BUILD_ROOT/usr/athena/man/man[158]/*
+gzip -9fn $RPM_BUILD_ROOT/usr/athena/man/man5/.k5login.5
+gzip -9fn doc/kadmin/* doc/krb5-protocol/* doc/*.info* 
+
+gzip -9fn ../pam_krb5-1.0-1/README 
 
 # Kerberos5 PAM
 
@@ -266,129 +267,179 @@ make clean
 make COPTFLAGS="$RPM_OPT_FLAGS" WANT_PWDB=no
 
 install -d $RPM_BUILD_ROOT/lib/security
-install pam_krb5.so $RPM_BUILD_ROOT/lib/security
+install -s pam_krb5.so $RPM_BUILD_ROOT/lib/security
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post   lib -p /sbin/ldconfig
+%post lib
+grep "^/usr/athena/lib$" /etc/ld.so.conf >/dev/null 2>&1
+[ $? -ne 0 ] && echo "/usr/athena/lib" >> /etc/ld.so.conf
+/sbin/ldconfig
+
+%preun lib
+if [ "$1" = "0" ]; then
+        grep -v "/usr/athena/lib" /etc/ld.so.conf > /etc/ld.so.conf.new
+	mv -f /etc/ld.so.conf.new /etc/ld.so.conf
+fi
+
 %postun lib -p /sbin/ldconfig
 
 %files server
 %defattr(644,root,root,755)
 %doc doc/kadmin/* doc/krb5-install.inf* doc/krb5-admin.inf*
 
-%attr(700,root,root) %config /etc/rc.d/init.d/kerberos
+%attr(750,root,root) /etc/rc.d/init.d/kerberos
+%attr(640,root,root) /etc/logrotate.d/*
+%attr(640,root,root) /etc/sysconfig/*
+
 %attr(700,root,root) %dir /var/krb5kdc
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /var/krb5kdc/*
 
-%attr(711,root,root) %{_sbindir}/kadmin
-%attr(711,root,root) %{_sbindir}/kadmin.local
-%attr(711,root,root) %{_sbindir}/propagation
-%attr(711,root,root) %{_sbindir}/kdb5_util
-%attr(711,root,root) %{_sbindir}/kprop
-%attr(711,root,root) %{_sbindir}/kpropd
-%attr(755,root,root) %{_sbindir}/krb5-send-pr
-%attr(711,root,root) %{_sbindir}/krb5kdc
-%attr(711,root,root) %{_sbindir}/kadmind
-%attr(711,root,root) %{_sbindir}/ktutil
+%attr(755,root,root) /usr/athena/sbin/kadmin
+%attr(755,root,root) /usr/athena/sbin/kadmin.local
+%attr(755,root,root) /usr/athena/sbin/propagation
+%attr(755,root,root) /usr/athena/sbin/kdb5_util
+%attr(755,root,root) /usr/athena/sbin/kprop
+%attr(755,root,root) /usr/athena/sbin/kpropd
+%attr(755,root,root) /usr/athena/sbin/krb5-send-pr
+%attr(755,root,root) /usr/athena/sbin/krb5kdc
+%attr(755,root,root) /usr/athena/sbin/kadmind
+%attr(755,root,root) /usr/athena/sbin/ktutil
+%attr(755,root,root) /usr/athena/sbin/kadmind4
+%attr(755,root,root) /usr/athena/sbin/krb524d
+%attr(755,root,root) /usr/athena/sbin/v5passwdd
 
-%{_mandir}/man8/kadmin.8.bz2
-%{_mandir}/man8/kadmin.local.8.bz2
-%{_mandir}/man8/kdb5_util.8.bz2
-%{_mandir}/man8/kprop.8.bz2
-%{_mandir}/man8/kpropd.8.bz2
-%{_mandir}/man8/krb5kdc.8.bz2
-%{_mandir}/man8/kadmind.8.bz2
-%{_mandir}/man8/ktutil.8.bz2
+/usr/athena/man/man8/kadmin.8.gz
+/usr/athena/man/man8/kadmin.local.8.gz
+/usr/athena/man/man8/kdb5_util.8.gz
+/usr/athena/man/man8/kprop.8.gz
+/usr/athena/man/man8/kpropd.8.gz
+/usr/athena/man/man8/krb5kdc.8.gz
+/usr/athena/man/man8/kadmind.8.gz
+/usr/athena/man/man8/ktutil.8.gz
 
 %files clients
 %defattr(644,root,root,755)
-%doc doc/inetd.conf* doc/krb5-user.inf*
+%doc doc/krb5-user.inf*
 
-%attr(711,root,root) %{_bindir}/ftp
-%attr(711,root,root) %{_bindir}/telnet
-%attr(711,root,root) %{_bindir}/rsh
-%attr(711,root,root) %{_bindir}/kdestroy
-%attr(711,root,root) %{_bindir}/kinit
-%attr(711,root,root) %{_bindir}/klist
+%attr(755,root,root) /usr/athena/bin/ftp
+%attr(755,root,root) /usr/athena/bin/telnet
+%attr(755,root,root) /usr/athena/bin/rsh
+%attr(755,root,root) /usr/athena/bin/kdestroy
+%attr(755,root,root) /usr/athena/bin/kinit
+%attr(755,root,root) /usr/athena/bin/krb524init
+%attr(755,root,root) /usr/athena/bin/v4rcp
+%attr(755,root,root) /usr/athena/bin/v5passwd
+%attr(755,root,root) /usr/athena/bin/klist
 
-%attr(4711,root,root) %{_bindir}/ksu
+%attr(4711,root,root) /usr/athena/bin/ksu
 
-%attr(711,root,root) %{_bindir}/kpasswd
-%attr(711,root,root) %{_bindir}/rcp
-%attr(711,root,root) %{_bindir}/rlogin
+%attr(755,root,root) /usr/athena/bin/kpasswd
+%attr(755,root,root) /usr/athena/bin/rcp
+%attr(755,root,root) /usr/athena/bin/rlogin
 
-%{_mandir}/man1/ftp.1.bz2
-%{_mandir}/man1/telnet.1.bz2
-%{_mandir}/man1/rsh.1.bz2
-%{_mandir}/man1/kdestroy.1.bz2
-%{_mandir}/man1/kinit.1.bz2
-%{_mandir}/man1/klist.1.bz2
-%{_mandir}/man1/ksu.1.bz2
-%{_mandir}/man1/kpasswd.1.bz2
-%{_mandir}/man1/rcp.1.bz2
-%{_mandir}/man1/rlogin.1.bz2
-%{_mandir}/man5/.k5login.5.bz2
+/usr/athena/man/man1/ftp.1.gz
+/usr/athena/man/man1/telnet.1.gz
+/usr/athena/man/man1/rsh.1.gz
+/usr/athena/man/man1/kdestroy.1.gz
+/usr/athena/man/man1/kinit.1.gz
+/usr/athena/man/man1/klist.1.gz
+/usr/athena/man/man1/ksu.1.gz
+/usr/athena/man/man1/kpasswd.1.gz
+/usr/athena/man/man1/rcp.1.gz
+/usr/athena/man/man1/rlogin.1.gz
+/usr/athena/man/man5/.k5login.5.gz
 
 %files daemons
 %defattr(644,root,root,755)
 %doc doc/inetd.conf*
 
-%attr(711,root,root) %{_sbindir}/ftpd
-%attr(711,root,root) %{_sbindir}/klogind
-%attr(711,root,root) %{_sbindir}/kshd
-%attr(711,root,root) %{_sbindir}/telnetd
+%attr(755,root,root) /usr/athena/sbin/ftpd
+%attr(755,root,root) /usr/athena/sbin/klogind
+%attr(755,root,root) /usr/athena/sbin/kshd
+%attr(755,root,root) /usr/athena/sbin/telnetd
 
-%{_mandir}/man8/ftpd.8.bz2
-%{_mandir}/man8/klogind.8.bz2
-%{_mandir}/man8/kshd.8.bz2
-%{_mandir}/man8/telnetd.8.bz2
+/usr/athena/man/man8/ftpd.8.gz
+/usr/athena/man/man8/klogind.8.gz
+/usr/athena/man/man8/kshd.8.gz
+/usr/athena/man/man8/telnetd.8.gz
 
 %files lib
 %defattr(644,root,root,755)
-%dir /etc/kerberos
-%config(noreplace) %verify(not size mtime md5) /etc/kerberos/krb5.conf
 
-%attr(755,root,root) %{_libdir}/*.so.*
-%attr(755,root,root) %{_libdir}/*.so
-%attr(711,root,root) %{_sbindir}/login.krb5
+%dir /etc/athena
+%config(noreplace) %verify(not size mtime md5) /etc/athena/krb5.conf
+%attr(400,root,root) %ghost /etc/athena/krb5.keytab
 
-%{_mandir}/man8/login.krb5.8.bz2
-%{_mandir}/man5/krb5.conf.5.bz2
+%attr(755,root,root) /usr/athena/lib/*.so.*
+%attr(755,root,root) /usr/athena/lib/*.so
+%attr(755,root,root) /usr/athena/sbin/login.krb5
+
+/usr/athena/man/man8/login.krb5.8.gz
+/usr/athena/man/man5/krb5.conf.5.gz
 
 %files devel
 %defattr(644,root,root,755)
 %doc doc/krb5-protocol/*
-%{_includedir}/*
+
+/usr/athena/include
 
 %files static
-%attr(644,root,root) %{_libdir}/*.a
+%defattr(644,root,root,755)
+
+/usr/athena/lib/*.a
 
 %files pam
 %defattr(644,root,root,755)
-%doc ../pam_krb5-1.0-1/README 
+%doc ../pam_krb5-1.0-1/README.gz
+
 %attr(755,root,root) /lib/security/pam_krb5.so
 
 %changelog
-* Sun Dec 13 1998 Willy The Hacker <willy@the.hacker.ogr>
-[1.0.5-4d]
+* Tue May 18 1999 Road Runner <runner@wb.com>
+  [1.0.6-1]
+- update to 1.0.6
+- fixed slave_propagation script,
+- added some patches,
+- 1st prepare to use on 1.0 PLD Linux System
+  -- /dev/pts for telnetd most wanted
+  -- PAM support for klogind && krb5.login needed
+  
+* Thu Feb 18 1999 Road Runner <runner@wb.com>
+  [1.0.5-5d]
+- changed prefix to /usr/athena -- conflicts with other shared libs ;(
+- modified %post, %preun & %postun scripts,
+- added config for logrotate,
+- fixed all config files,
+- added %ghost /etc/athena/krb5.keytab && fixed default $KEYTAB_FILE,
+- added stripping shared libs, 
+- compressed documentation,
+- fixed Group && Group(pl).
+
+
+* Sun Dec 13 1998 Willy The Hacker <willy@the.hacker.org>
+  [1.0.5-4d]
 - splited workstation package into two (clients and daemons),
+  
   by Jolly Roger <roger@hell.gov> 
-- fixed stupid pam_krb5.so source code error...
+
+- fixed stupid pam_krb5.so source code bug...
+
   by Road Runner <runner@wb.com>
+
 - moved all shared libraries & symlinks into krb5-lib,
 - cosmetic changes,
 - final build for 1.1 PLD Linux -> I hoppe ;)
   
 * Tue Oct 20 1998 Road Runner <runner@wb.com>
-[1.0.5-3d]
+  [1.0.5-3d]
 - fixed localstatedir,
 - fixed initscript,
 - other -- minor changes.
 
 * Wed Sep 23 1998 Road Runner <runner@wb.com>
-[1.0.5-2d]
+  [1.0.5-2d]
 - fixed pl translation,
 - removed ccopts & cppopts from configure,
 - restricted files permissions,
@@ -405,7 +456,7 @@ rm -rf $RPM_BUILD_ROOT
 - added Provides: ftp, telnet, rsh in workstation subpackages.
 
 * Mon Sep 21 1998 Bugs Bunny <bugs@wb.com>
-[1.0.5-2]
+  [1.0.5-2]
 - changed Buildroot to /tmp/%%{name}-%%{version}-root,
 - added removing 0 bytes length files,
 - added using %%{name} and %%{version} in Source,
@@ -424,12 +475,12 @@ rm -rf $RPM_BUILD_ROOT
 - many simplifications in %files, %install and %build.
 
 * Mon Aug 9 1998 Road Runner <runner@wb.com>
-[1.0.5-1d]
+  [1.0.5-1d]
 - translation modified for pl,
 - changed permissions of shared libraries to 755,
 - removed simple-client and server,
 - build without kerberos IV support (we don't need it),
 
 * Fri Jun 26 1998 Road Runner <runner@wb.com>
-[1.0.5-1]
-- firs try RPM.
+  [1.0.5-1]
+- first try RPM.
