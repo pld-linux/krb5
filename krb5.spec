@@ -23,7 +23,6 @@ Patch2:		%{name}-kadmin.patch
 Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
-Patch6:		pam_krb5-Makefile.patch
 Copyright:	MIT
 Group:		Networking
 Group(pl):	Sieciowe
@@ -210,7 +209,7 @@ Kerberosa V5.
 %patch4 -p1
 
 #kerberos pam
-( cd ../pam_krb5-1.0-1; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-pld.patch; patch -p1 < $RPM_SOURCE_DIR/pam_krb5-Makefile.patch )
+( cd ../pam_krb5-1.0-1; patch -p1 < %{PATCH5} )
 
 %build
 cd src
@@ -267,7 +266,9 @@ gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
 
 cd ../pam_krb5-1.0-1
 make clean
-make COPTFLAGS="$RPM_OPT_FLAGS" WANT_PWDB=no
+make KRBINCLUDE=-I$RPM_BUILD_ROOT/usr/athena/include \
+	KRBLIB=-L$RPM_BUILD_ROOT/usr/athena/lib \
+	EXTRAS="$RPM_OPT_FLAGS" WANT_PWDB=no
 
 install -d $RPM_BUILD_ROOT/lib/security
 install -s pam_krb5.so $RPM_BUILD_ROOT/lib/security
@@ -401,6 +402,10 @@ fi
 %attr(755,root,root) /lib/security/pam_krb5.so
 
 %changelog
+* Sat Jun 12 1999 Jan Rêkorajski <baggins@pld.org.pl>
+  [1.0.6-2]
+- fixed pam_krb5 build
+
 * Tue May 18 1999 Road Runner <runner@wb.com>
   [1.0.6-1]
 - update to 1.0.6
