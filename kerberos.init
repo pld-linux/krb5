@@ -18,7 +18,10 @@
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
-[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down" && exit 0
+if [ "${NETWORKING}" = "no" ]; then
+	echo "WARNING: Networking is down. KerberosV service can't be runed."
+	exit 1
+fi
 
 
 # See how we were called.
