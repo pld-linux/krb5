@@ -56,6 +56,7 @@ Patch17:	%{name}-paths.patch
 BuildRequires:	automake
 BuildRequires:  autoconf
 BuildRequires:	bison
+BuildRequires:	chrpath
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
