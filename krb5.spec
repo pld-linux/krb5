@@ -273,7 +273,7 @@ protocol, which is a widely used Internet protocol for transferring
 files and for archiving files.
 
 %description ftp -l pl
-Ten pakiet dostarcza standardowego klienta ftp z wbudowan± obs³ug±
+Ten pakiet dostarcza standardowego klienta FTP z wbudowan± obs³ug±
 kerberosa. FTP jest protoko³em do przesy³ania plików szeroko
 rozpowszechnionym w Internecie.
 
