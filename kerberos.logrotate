@@ -1,10 +1,5 @@
 /var/log/kadmin {
-    weekly
-    rotate 1
 }
 
 /var/log/krb5kdc {
-    weekly
-    rotate 1
-
 }
