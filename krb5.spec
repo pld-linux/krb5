@@ -4,8 +4,8 @@
 #	- finish config files and init scripts
 #
 # Conditional build:
-# _with_krb4	- build with Kerberos V4 support
-# _without_tcl	- build without tcl (needed for tests) 
+%bcond_with krb4	# build with Kerberos V4 support
+%bcond_without tcl	# build without tcl (needed for tests) 
 #
 Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
@@ -59,7 +59,7 @@ BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
-%{!?_without_tcl:BuildRequires:	tcl-devel}
+%{?with_tcl:BuildRequires:	tcl-devel}
 PreReq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -357,13 +357,13 @@ CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
 	--libexecdir=%{_libdir} \
         --enable-shared \
         --enable-static \
-	%{?_with_krb4:--with-krb4}%{?!_with_krb4:--without-krb4} \
+	%{?with_krb4: --with-krb4}%{?!with_krb4: --without-krb4} \
         --with-vague-errors \
         --enable-dns \
         --enable-dns-for-kdc \
         --enable-dns-for-realm \
         --with-netlib=-lresolv \
-        %{!?_without_tcl:--with-tcl=%{_prefix}} \
+        %{!?with_tcl: --with-tcl=%{_prefix}} \
 	--with-system-et \
 	--with-system-ss \
         %{_target_platform}
@@ -396,7 +396,7 @@ install %{SOURCE13}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/k
 install %{SOURCE1}                      $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE15}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE16}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
-%if %{?_with_krb4:1}%{!?_with_krb4:0}
+%if %{with krb4}
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
 
@@ -437,7 +437,7 @@ else
         echo "Run \"/etc/rc.d/init.d/kpropd start\" to start kpropd daemon."
 fi
 
-%if %{?_with_krb4:1}%{!?_with_krb4:0}
+%if %{with krb4}
 /sbin/chkconfig --add krb524d
 if [ -f /var/lock/subsys/krb524d ]; then
         /etc/rc.d/init.d/krb524d restart 1>&2
@@ -534,7 +534,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/krb5kdc
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
-%{?_with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
+%{?with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
 
 %attr(640,root,root) /etc/logrotate.d/*
 %attr(640,root,root) /etc/sysconfig/kerberos
@@ -557,8 +557,8 @@ fi
 %attr(755,root,root) %{_sbindir}/v5passwdd
 %attr(755,root,root) %{_sbindir}/gss-server
 %attr(755,root,root) %{_sbindir}/sserver
-%{?_with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
-%{?_with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
+%{?with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
+%{?with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
 
 %{_mandir}/man8/kadmin.8*
 %{_mandir}/man8/kadmin.local.8*
@@ -582,7 +582,7 @@ fi
 %attr(755,root,root) %{_bindir}/klist
 %attr(755,root,root) %{_bindir}/gss-client
 %attr(4755,root,root) %{_bindir}/ksu
-%{?_with_krb4:%attr(755,root,root) %{_bindir}/krb524init}
+%{?with_krb4:%attr(755,root,root) %{_bindir}/krb524init}
 
 %attr(755,root,root) %{_bindir}/kpasswd
 %attr(755,root,root) %{_bindir}/sclient
@@ -613,10 +613,10 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rcp
 %attr(755,root,root) %{_bindir}/rsh
-%{?_with_krb4:%attr(755,root,root) %{_bindir}/v4rcp}
+%{?with_krb4:%attr(755,root,root) %{_bindir}/v4rcp}
 %{_mandir}/man1/rsh.1*
 %{_mandir}/man1/rcp.1*
-%{?_with_krb4:%{_mandir}/man1/v4rcp.1*}
+%{?with_krb4:%{_mandir}/man1/v4rcp.1*}
 
 %files telnet
 %defattr(644,root,root,755)
