@@ -54,7 +54,7 @@ klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
-%package clients 
+%package clients
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
@@ -117,7 +117,7 @@ pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package server
-Summary:	Kerberos Server 
+Summary:	Kerberos Server
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
 Requires:	%{name}-lib = %{version}
@@ -196,7 +196,7 @@ authentication, session, and password modules.
 
 %description pam -l pl
 W pakiecie znajduje siê modu³ PAM wspomagaj±cy autoryzacjê przez
-Kerberosa V5. 
+Kerberosa V5.
 
 %prep
 %setup  -q -b1 -b2 -b6
@@ -317,7 +317,7 @@ fi
 %files clients
 %defattr(644,root,root,755)
 %doc doc/krb5-user.inf*
-%attr(755,root,root) /etc/profile.d/kerberos.* 
+%attr(755,root,root) /etc/profile.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/ftp
 %attr(755,root,root) %{_bindir}/telnet
