@@ -88,7 +88,7 @@ END_OF_MSG
         $0 start
         exit $?
         ;;
-  reload)
+  reload|force-reload)
         if [ -f /var/lock/subsys/kadmind ]; then
                 msg_reloading "Kerberos V5 Administrative Server"
                 killproc kadmind -HUP
@@ -103,7 +103,7 @@ END_OF_MSG
         RETVAL=$?
         ;;
   *)
-        msg_usage "$0 {start|stop|restart|reload|status}"
+        msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
         exit 3
 esac
 
