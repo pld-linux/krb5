@@ -294,7 +294,7 @@ fi
 %defattr(644,root,root,755)
 %doc doc/kadmin/* doc/krb5-install.inf* doc/krb5-admin.inf*
 
-%attr(755,root,root) /etc/rc.d/init.d/kerberos
+%attr(754,root,root) /etc/rc.d/init.d/kerberos
 %attr(640,root,root) /etc/logrotate.d/*
 %attr(640,root,root) /etc/sysconfig/*
 
