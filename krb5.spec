@@ -254,7 +254,7 @@ rm -rf $RPM_BUILD_ROOT/usr/include/asn.1.bz2
 
 find doc -size 0 -print | xargs rm -f
 
-chmod 755 $RPM_BUILD_ROOT/usr/lib/*.so.*
+chmod 755 $RPM_BUILD_ROOT%{_libdir}/*.so.*
 
 bzip2 -9 $RPM_BUILD_ROOT%{_mandir}/{man1/*,man8/*}
 bzip2 -9 $RPM_BUILD_ROOT%{_mandir}/{man5/*,man5/.*}
@@ -350,8 +350,8 @@ rm -rf $RPM_BUILD_ROOT
 %dir /etc/kerberos
 %config(noreplace) %verify(not size mtime md5) /etc/kerberos/krb5.conf
 
-%attr(755,root,root) /usr/lib/*.so.*
-%attr(755,root,root) /usr/lib/*.so
+%attr(755,root,root) %{_libdir}/*.so.*
+%attr(755,root,root) %{_libdir}/*.so
 %attr(711,root,root) /usr/sbin/login.krb5
 
 %{_mandir}/man8/login.krb5.8.bz2
@@ -363,7 +363,7 @@ rm -rf $RPM_BUILD_ROOT
 /usr/include/*
 
 %files static
-%attr(644,root,root) /usr/lib/*.a
+%attr(644,root,root) %{_libdir}/*.a
 
 %files pam
 %defattr(644,root,root,755)
