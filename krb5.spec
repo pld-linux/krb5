@@ -16,6 +16,7 @@ Source3:	kerberos.init
 Source4:	propagation
 Source5:	inetd.conf.secure
 Source6:	http://www.citi.umich.edu/u/itoi/pam_krb5/pam_krb5-1.0-1.tar.gz
+# Source6-md5:	37744e3d64e70c999fe759513f42bb0b
 Source7:	kerberos.logrotate
 Source8:	%{name}.conf
 Source9:	kdc.conf
