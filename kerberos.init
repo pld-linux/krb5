@@ -39,7 +39,8 @@ case "$1" in
 
 		show Starting Administration Server
 		daemon kadmind
-		[ $RETVAL -eq 0 ] && RETVAL=$?
+		RET=$?
+		[ $RETVAL -eq 0 ] && RETVAL=$RET
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb5server
 	else
 		msg_already_running "KerberosV service"
@@ -65,7 +66,8 @@ case "$1" in
 	status	kadmind 
 	RETVAL=$?
 	status	krb5kdc
-	[ $RETVAL -eq 0 ] && RETVAL=$?
+	RET=$?
+	[ $RETVAL -eq 0 ] && RETVAL=$RET
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|force-reload|status}"
