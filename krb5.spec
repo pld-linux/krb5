@@ -5,10 +5,6 @@ Version:	1.0.6
 Release:	3
 License:	MIT
 Group:		Networking
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
 # warning: according to README, Source0 and Source1 may require license to export outside USA
 Source0:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.src.tar.gz
 Source1:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.crypto.tar.gz
@@ -62,10 +58,6 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 
 %description clients
@@ -97,10 +89,6 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
 Group:		Networking
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 
 %description daemons
@@ -132,10 +120,6 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos Server 
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
-Group(de):	Netzwerkwesen
-Group(es):	Red
-Group(pl):	Sieciowe
-Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 Requires:	words
 
@@ -168,13 +152,6 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
-Group(de):	Libraries
-Group(es):	Bibliotecas
-Group(fr):	Librairies
-Group(pl):	Biblioteki
-Group(pt_BR):	Bibliotecas
-Group(ru):	âÉÂÌÉÏÔÅËÉ
-Group(uk):	â¦ÂÌ¦ÏÔÅËÉ
 
 %description lib
 Libraries for Kerberos V5 Server and Client
@@ -186,13 +163,6 @@ Biblioteki dynamiczne dla systemu kerberos.
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-lib = %{version}
 
 %description devel
@@ -205,13 +175,6 @@ Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa.
 Summary:	Static Kerberos libraries
 Summary(pl):	Biblioteki statyczne Kerberosa
 Group:		Development/Libraries
-Group(de):	Entwicklung/Libraries
-Group(es):	Desarrollo/Bibliotecas
-Group(fr):	Development/Librairies
-Group(pl):	Programowanie/Biblioteki
-Group(pt_BR):	Desenvolvimento/Bibliotecas
-Group(ru):	òÁÚÒÁÂÏÔËÁ/âÉÂÌÉÏÔÅËÉ
-Group(uk):	òÏÚÒÏÂËÁ/â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-devel = %{version}
 
 %description static
@@ -225,13 +188,6 @@ Summary:	PAM - Kerberos 5 module
 Summary(pl):	PAM - modu³ Kerberos 5
 Requires:	pam >= 0.66
 Group:		Libraries
-Group(de):	Libraries
-Group(es):	Bibliotecas
-Group(fr):	Librairies
-Group(pl):	Biblioteki
-Group(pt_BR):	Bibliotecas
-Group(ru):	âÉÂÌÉÏÔÅËÉ
-Group(uk):	â¦ÂÌ¦ÏÔÅËÉ
 Requires:	%{name}-lib = %{version}
 
 %description pam
