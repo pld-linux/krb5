@@ -1,0 +1,9 @@
+SERVICE=ktelnetd
+SOCK_TYPE=stream
+PROTOCOL=tcp
+PORT=23
+FLAGS=nowait
+USER=root
+SERVER=tcpd
+DAEMON=/usr/sbin/ktelnetd
+DAEMONARGS="-h -a valid"

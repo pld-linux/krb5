@@ -1,8 +1,0 @@
-ftp	stream	tcp nowait root	/usr/athena/sbin/ftpd ftpd -a -l
-telnet	stream  tcp nowait root	/usr/athena/sbin/telnetd telnetd -h -a valid 
-kshell	stream	tcp nowait root	/usr/athena/sbin/kshd kshd -c -5 -e
-klogin	stream	tcp nowait root	/usr/athena/sbin/klogind klogind -c -5
-eklogin	stream	tcp nowait root	/usr/athena/sbin/klogind klogind -c -5 -e
-time	stream	tcp nowait root	internal
-time	dgram	udp wait   root	internal
-

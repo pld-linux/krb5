@@ -4,12 +4,12 @@
 # (dumpfile.dump_ok) or if database has been dumped since last successful
 # propagation (dumpfile.<slave machine>.last_prop)
 
-KDB_DIR=/var/krb5kdc
+KDB_DIR=/etc/kerberos/krb5kdc
 
 KDB_FILE=$KDB_DIR/principal.db
 DUMPFILE=$KDB_DIR/slave_datatrans
-KDB5_UTIL=/usr/athena/sbin/kdb5_util
-KPROP=/usr/athena/sbin/kprop
+KDB5_UTIL=/usr/sbin/kdb5_util
+KPROP=/usr/sbin/kprop
 
 SLAVE=$1
 if [ -z "${SLAVE}" ]

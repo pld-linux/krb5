@@ -1,0 +1,8 @@
+SERVICE_NAME=klogind
+SOCK_TYPE=stream
+PROTOCOL=tcp
+FLAGS=nowait
+USER=root
+SERVER=tcpd
+DAEMON=/usr/sbin/klogind
+DAEMONARGS="-c -5"

@@ -1,0 +1,192 @@
+--- krb5-1.3/src/appl/bsd/klogind.M
++++ krb5-1.3/src/appl/bsd/klogind.M
+@@ -27,7 +27,7 @@
+ the port indicated in /etc/inetd.conf.  A typical /etc/inetd.conf
+ configuration line for \fIklogind\fP might be:
+ 
+-klogin stream tcp nowait root /usr/cygnus/sbin/klogind klogind -e5c
++klogin stream tcp nowait root /usr/sbin/klogind 	klogind -e5c
+ 
+ When a service request is received, the following protocol is initiated:
+ 
+--- krb5-1.3/src/appl/bsd/kshd.M
++++ krb5-1.3/src/appl/bsd/kshd.M
+@@ -8,7 +8,7 @@
+ .SH NAME
+ kshd \- kerberized remote shell server
+ .SH SYNOPSIS
+-.B /usr/local/sbin/kshd 
++.B /usr/sbin/kshd 
+ [
+ .B \-kr45ec
+ ]
+@@ -30,7 +30,7 @@
+ on the port indicated in /etc/inetd.conf.  A typical /etc/inetd.conf
+ configuration line for \fIkrshd\fP might be:
+ 
+-kshell	stream	tcp	nowait	root	/usr/local/sbin/kshd	kshd -5c
++kshell	stream	tcp	nowait	root	/usr/sbin/kshd		kshd -5c
+ 
+ When a service request is received, the following protocol is initiated:
+ 
+--- krb5-1.3/src/appl/sample/sserver/sserver.M
++++ krb5-1.3/src/appl/sample/sserver/sserver.M
+@@ -59,7 +59,7 @@
+ using a line in
+ /etc/inetd.conf that looks like this:
+ .PP
+-sample  stream  tcp     nowait  root /usr/local/sbin/sserver	sserver
++sample  stream  tcp     nowait  root /usr/sbin/sserver		sserver
+ .PP
+ Since \fBsample\fP is normally not a port defined in /etc/services, you will
+ usually have to add a line to /etc/services which looks like this:
+--- krb5-1.3/src/appl/telnet/telnet/telnet.1
++++ krb5-1.3/src/appl/telnet/telnet/telnet.1
+@@ -8,35 +8,35 @@
+ .\"    notice, this list of conditions and the following disclaimer.
+ .\" 2. Redistributions in binary form must reproduce the above copyright
+ .\"    notice, this list of conditions and the following disclaimer in the
+-.\"    documentation and/or other materials provided with the distribution.
+-.\" 3. All advertising materials mentioning features or use of this software
+-.\"    must display the following acknowledgement:
+-.\"	This product includes software developed by the University of
+-.\"	California, Berkeley and its contributors.
+-.\" 4. Neither the name of the University nor the names of its contributors
+-.\"    may be used to endorse or promote products derived from this software
+-.\"    without specific prior written permission.
+-.\"
+-.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+-.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+-.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+-.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+-.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
+-.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+-.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+-.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+-.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+-.\" SUCH DAMAGE.
+-.\"
+-.\"	@(#)telnet.1	8.4 (Berkeley) 2/3/94
+-.\" "
+-.TH TELNET 1
+-.SH NAME
+-telnet \- user interface to the TELNET protocol
+-.SH SYNOPSIS
+-.B telnet
+-[\fB\-8\fP] [\fB\-E\fP] [\fB\-F\fP] [\fB\-K\fP] [\fB\-L\fP] [\fB\-S\fP
++	.\"    documentation and/or other materials provided with the distribution.
++	.\" 3. All advertising materials mentioning features or use of this software
++	.\"    must display the following acknowledgement:
++	.\"	This product includes software developed by the University of
++	.\"	California, Berkeley and its contributors.
++	.\" 4. Neither the name of the University nor the names of its contributors
++	.\"    may be used to endorse or promote products derived from this software
++	.\"    without specific prior written permission.
++	.\"
++	.\" THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
++	.\" ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++	.\" IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++	.\" ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
++	.\" FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++	.\" DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++	.\" OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++	.\" HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++	.\" LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++	.\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++	.\" SUCH DAMAGE.
++	.\"
++	.\"	@(#)telnet.1	8.4 (Berkeley) 2/3/94
++	.\" "
++	.TH TELNET 1
++	.SH NAME
++	telnet \- user interface to the TELNET protocol
++	.SH SYNOPSIS
++	.B telnet
++	[\fB\-8\fP] [\fB\-E\fP] [\fB\-F\fP] [\fB\-K\fP] [\fB\-L\fP] [\fB\-S\fP
+ \fItos\fP] [\fB\-X\fP \fIauthtype\fP] [\fB\-a\fP] [\fB\-c\fP]
+ [\fB\-d\fP] [\fB\-e\fP \fIescapechar\fP] [\fB\-f\fP] [\fB\-k\fP
+ \fIrealm\fP] [\fB\-l\fP \fIuser\fP] [\fB\-n\fP \fItracefile\fP]
+--- krb5-1.3/src/appl/telnet/telnetd/telnetd.8
++++ krb5-1.3/src/appl/telnet/telnetd/telnetd.8
+@@ -37,7 +37,7 @@
+ .SM DARPA TELNET
+ protocol server
+ .SH SYNOPSIS
+-.B /usr/libexec/telnetd
++.B /usr/sbin/telnetd
+ [\fB\-a\fP \fIauthmode\fP] [\fB\-B\fP] [\fB\-D\fP] [\fIdebugmode\fP]
+ [\fB\-edebug\fP] [\fB\-h\fP] [\fB\-I\fP\fIinitid\fP] [\fB\-l\fP]
+ [\fB\-k\fP] [\fB\-n\fP] [\fB\-r\fP\fIlowpty-highpty\fP] [\fB\-s\fP]
+--- krb5-1.3/src/config-files/kdc.conf.M
++++ krb5-1.3/src/config-files/kdc.conf.M
+@@ -235,7 +235,7 @@
+ realm names and the [capaths] section of its krb5.conf file
+ 
+ .SH FILES 
+-/usr/local/var/krb5kdc/kdc.conf
++/etc/kerberos/kdc.conf
+ 
+ .SH SEE ALSO
+ krb5.conf(5), krb5kdc(8)
+--- krb5-1.3/src/kadmin/cli/kadmin.M
++++ krb5-1.3/src/kadmin/cli/kadmin.M
+@@ -733,9 +733,9 @@
+ .RS
+ .TP
+ EXAMPLE:
+-kadmin: ktremove -k /usr/local/var/krb5kdc/kadmind.keytab kadmin/admin
++kadmin: ktremove -k /var/lib/kerberos/kadm5.keytab kadmin/admin
+ Entry for principal kadmin/admin with kvno 3 removed
+-	from keytab WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
++	from keytab WRFILE:/var/lib/kerberos/kadm5.keytab.
+ kadmin:
+ .RE
+ .fi
+--- krb5-1.3/src/slave/kprop.M
++++ krb5-1.3/src/slave/kprop.M
+@@ -39,7 +39,7 @@
+ This is done by transmitting the dumped database file to the slave
+ server over an encrypted, secure channel.  The dump file must be created
+ by kdb5_util, and is normally KPROP_DEFAULT_FILE
+-(/usr/local/var/krb5kdc/slave_datatrans).
++(/var/lib/kerberos/slave_datatrans).
+ .SH OPTIONS
+ .TP
+ \fB\-r\fP \fIrealm\fP
+@@ -51,7 +51,7 @@
+ \fB\-f\fP \fIfile\fP
+ specifies the filename where the dumped principal database file is to be
+ found; by default the dumped database file is KPROP_DEFAULT_FILE
+-(normally /usr/local/var/krb5kdc/slave_datatrans).
++(normally /var/lib/kerberos/slave_datatrans).
+ .TP
+ \fB\-P\fP \fIport\fP
+ specifies the port to use to contact the
+--- krb5-1.3/src/slave/kpropd.M
++++ krb5-1.3/src/slave/kpropd.M
+@@ -69,7 +69,7 @@
+ This is done by adding a line to the inetd.conf file which looks like
+ this:
+ 
+-kprop	stream	tcp	nowait	root	/usr/local/sbin/kpropd	kpropd
++kprop	stream	tcp	nowait	root	/usr/sbin/kpropd	kpropd
+ 
+ However, kpropd can also run as a standalone deamon, if the
+ .B \-S
+@@ -87,13 +87,13 @@
+ \fB\-f\fP \fIfile\fP
+ specifies the filename where the dumped principal database file is to be
+ stored; by default the dumped database file is KPROPD_DEFAULT_FILE
+-(normally /usr/local/var/krb5kdc/from_master).
++(normally /var/lib/kerberos/from_master).
+ .TP
+ .B \-p
+ allows the user to specify the pathname to the
+ .IR kdb5_util (8)
+ program; by default the pathname used is KPROPD_DEFAULT_KDB5_UTIL
+-(normally /usr/local/sbin/kdb5_util).
++(normally /usr/sbin/kdb5_util).
+ .TP
+ .B \-S
+ turn on standalone mode.  Normally, kpropd is invoked out of

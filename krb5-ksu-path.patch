@@ -1,0 +1,11 @@
+--- krb5-1.3/src/clients/ksu/Makefile.in
++++ krb5-1.3/src/clients/ksu/Makefile.in
+@@ -2,7 +2,7 @@
+ myfulldir=clients/ksu
+ mydir=ksu
+ BUILDTOP=$(REL)..$(S)..
+-DEFINES = -DGET_TGT_VIA_PASSWD -DPRINC_LOOK_AHEAD -DCMD_PATH='"/bin /local/bin"'
++DEFINES = -DGET_TGT_VIA_PASSWD -DPRINC_LOOK_AHEAD -DCMD_PATH='"/sbin /usr/sbin /bin /usr/bin /usr/X11R6/bin"'
+ 
+ PROG_LIBPATH=-L$(TOPLIBD)
+ PROG_RPATH=$(KRB5_LIBDIR)

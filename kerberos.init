@@ -1,11 +1,15 @@
 #!/bin/sh
 #
+# kerberos.init	Start and stop the Kerberos 5 servers.
+#
 # chkconfig:	2345 41 41
 #
-# description:	Kerberos V server daemons
+# description:	Kerberos 5 is a trusted third-party authentication system.  \
+# 		This script starts and stops the servers that Kerberos 5 \
+# 		clients need to connect to.
 #
-# processname:	kadmind krb5kdc
-# config:	/etc/kerberos/krb5.conf
+# processname:	kadmind krb5kdc kpropd
+# config:	/etc/krb5.conf
 
 
 # Source function library
@@ -18,60 +22,70 @@
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
-if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
-		msg_network_down "KerberosV service"
-		exit 1
-	fi
-else
-	exit 0
+if [ "${NETWORKING}" = "no" ]; then
+	echo "WARNING: Network is down. Kerberos 5 service can't be runed."
+	exit 1
 fi
 
-RETVAL=0
 # See how we were called.
 case "$1" in
   start)
-	# Check if the service is already running?
-	if [ ! -f /var/lock/subsys/krb5server ]; then
-		show "Starting Kerberos KDC"
-		daemon krb5kdc
-		RETVAL=$?
-
-		show Starting Administration Server
-		daemon kadmind
-		RET=$?
-		[ $RETVAL -eq 0 ] && RETVAL=$RET
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb5server
-	else
-		msg_already_running "KerberosV service"
+	# ???
+	if [ ! -f /var/lib/kerberos/principal ] ; then
+		exit 0
 	fi
+	if [ -f /etc/kerberos/kpropd.acl ] ; then
+            exit 0
+	else 
+	    if [ ! -f /var/lib/kerberos/kadm5.keytab ] ; then
+			show Extracting kadm5 Service Keys
+			/usr/sbin/kadmin.local -q "ktadd -k /var/lib/kerberos/kadm5.keytab kadmin/admin kadmin/changepw"
+		fi
+	fi
+
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/kerberos ]; then
+		show Starting Kerberos 5 KDC
+		daemon krb5kdc
+		show Starting Kerberos 5 Administration Server
+		daemon kadmind
+		show Starting Kerberos 5 Propagation Server
+		daemon kpropd -S
+	else
+		echo "KerberosV Server is already running"
+	fi
+	touch /var/lock/subsys/kerberos
 	;;
   stop)
-	# Check if the service is already running?
-	if [ -f /var/lock/subsys/krb5server ]; then
-		show "Stopping Kerberos KDC"
-		killproc kadmind
-		show "Stopping Administration Server"
-		killproc krb5kdc
-		rm -f /var/lock/subsys/krb5server
-	else
-		msg_already_running "KerberosV service"
-	fi
+	show Stopping Kerberos 5 Administration Server
+	killproc kadmind 
+	show Stopping Kerberos 5 KDC
+	killproc krb5kdc
+	show Stoping Kerberos 5 Propagation Server
+	killproc kpropd
+	rm -f /var/lock/subsys/kerberos
 	;;
-  restart|force-reload)
+reload)
+        show Reloading Kerberos 5 KDC
+        killproc kadmind -HUP
+	show Reloading Kerberos 5 Administration Server
+	killproc krb5kdc -HUP
+	show Reloading Kerberos 5 Propagation Server
+	killproc kpropd -HUP
+	;;
+
+restart)
 	$0 stop
 	$0 start
 	;;
-  status)
+status)
 	status	kadmind 
-	RETVAL=$?
 	status	krb5kdc
-	RET=$?
-	[ $RETVAL -eq 0 ] && RETVAL=$RET
+	status  kpropd
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status}"
-	exit 3
+	echo "Usage: $0 {start|stop|status|restart|reload}"
+	exit 1
 esac
 
-exit $RETVAL
+exit 0

@@ -1,0 +1,15 @@
+--- src/appl/bsd/krlogin.c	Tue Dec 21 11:45:43 1999
++++ src/appl/bsd/krlogin.c	Tue Dec 21 11:44:32 1999
+@@ -144,6 +144,12 @@
+ #undef TIOCGLTC
+ #endif
+ 
++#if defined(linux)
++/* Surprise! TIOCGLTC doesn't work on Linux, either, even though it's defined
++ * on the alpha. */
++#undef TIOCGLTC
++#endif
++
+ #ifndef TIOCPKT_NOSTOP
+ /* These values are over-the-wire protocol, *not* local values */
+ #define TIOCPKT_NOSTOP          0x10

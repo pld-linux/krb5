@@ -1,0 +1,9 @@
+SERVICE_NAME=kshell
+SOCK_TYPE=stream
+PROTOCOL=tcp
+PORT=22
+FLAGS=nowait
+USER=root
+SERVER=tcpd
+DAEMON=/usr/sbin/kshd
+DAEMONARGS="-c -5 -e"

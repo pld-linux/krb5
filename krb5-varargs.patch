@@ -1,0 +1,86 @@
+The krb5_build_principal() and krb5_build_principal_ext() functions take
+variadic arguments.  The krb5_build_principal() function takes a NULL-terminated
+list, while krb5_build_principal_ext() takes a zero-terminated list.  This
+distinction is important on systems where sizeof(int) != sizeof(pointer).  (The
+last two hunks are purely stylistic.)
+--- krb5-1.3.1/src/appl/gssftp/ftpd/ftpd.c	2003-05-28 00:06:27.000000000 -0400
++++ krb5-1.3.1/src/appl/gssftp/ftpd/ftpd.c	2003-08-26 15:29:53.000000000 -0400
+@@ -2919,7 +2919,7 @@
+ 				     6, "krbtgt",
+ 				     krb5_princ_realm(kcontext, me)->length,
+ 				     krb5_princ_realm(kcontext, me)->data,
+-				     NULL))
++				     0))
+ 		goto cleanup;
+ 
+ 	memset((char *) &increds, 0, sizeof(increds));
+--- krb5-1.3.1/src/kadmin/dbutil/loadv4.c	2002-11-05 19:42:55.000000000 -0500
++++ krb5-1.3.1/src/kadmin/dbutil/loadv4.c	2003-08-26 15:31:05.000000000 -0400
+@@ -540,8 +540,8 @@
+     retval = krb5_build_principal(context, &mod_princ,
+ 				  strlen(realm), realm, princ->mod_name,
+ 				  princ->mod_instance[0] ? 
+-				    princ->mod_instance : 0,
+-				  0);
++				  princ->mod_instance : NULL,
++				  NULL);
+     if (retval) {
+ 	krb5_free_principal(context, entry.princ);
+ 	return retval;
+@@ -607,7 +607,7 @@
+ 	    retval = krb5_build_principal(context, &entry.princ,
+ 					  strlen(princ->instance),
+ 					  princ->instance,
+-					  "krbtgt", realm, 0);
++					  "krbtgt", realm, NULL);
+ 	    if (retval)
+ 		    return retval;
+ 	    retval = krb5_db_put_principal(context, &entry, &nentries);
+--- krb5-1.3.1/src/lib/krb5/krb/conv_princ.c	2002-12-19 00:23:44.000000000 -0500
++++ krb5-1.3.1/src/lib/krb5/krb/conv_princ.c	2003-08-26 15:35:11.000000000 -0400
+@@ -342,7 +342,7 @@
+      
+ not_service:	
+      retval = krb5_build_principal(context, princ, strlen(realm), realm, name,
+-				   instance, 0);
++				   instance, NULL);
+      if (iterator) profile_iterator_free (&iterator);
+      if (full_name) profile_free_list(full_name);
+      if (v4realms) profile_free_list(v4realms);
+--- krb5-1.3.1/src/lib/krb5/ccache/t_cc.c	2003-08-26 15:35:37.000000000 -0400
++++ krb5-1.3.1/src/lib/krb5/ccache/t_cc.c	2003-08-26 15:35:40.000000000 -0400
+@@ -84,10 +84,10 @@
+ {
+ #define REALM "REALM"
+   krb5_build_principal(context, &test_creds.client, sizeof(REALM), REALM,
+-		       "client-comp1", "client-comp2", 0);
++		       "client-comp1", "client-comp2", NULL);
+ 
+   krb5_build_principal(context, &test_creds.server, sizeof(REALM), REALM,
+-		       "server-comp1", "server-comp2", 0);
++		       "server-comp1", "server-comp2", NULL);
+ }
+ 
+ #define CHECK(kret,msg) \
+--- krb5-1.3.1/src/kdc/main.c	2003-08-26 15:34:17.000000000 -0400
++++ krb5-1.3.1/src/kdc/main.c	2003-08-26 15:34:10.000000000 -0400
+@@ -308,7 +308,7 @@
+     /* Preformat the TGS name */
+     if ((kret = krb5_build_principal(rdp->realm_context, &rdp->realm_tgsprinc,
+ 				     strlen(realm), realm, KRB5_TGS_NAME,
+-				     realm, (char *) NULL))) {
++				     realm, NULL))) {
+ 	com_err(progname, kret,
+ 		"while building TGS name for realm %s", realm);
+ 	goto whoops;
+--- krb5-1.3.1/src/lib/krb5/os/sn2princ.c	2003-08-26 15:42:57.000000000 -0400
++++ krb5-1.3.1/src/lib/krb5/os/sn2princ.c	2003-08-26 15:43:07.000000000 -0400
+@@ -149,7 +149,7 @@
+ 
+ 	retval = krb5_build_principal(context, ret_princ, strlen(realm),
+ 				      realm, sname, remote_host,
+-				      (char *)0);
++				      NULL);
+ 
+ 	krb5_princ_type(context, *ret_princ) = type;
+ 

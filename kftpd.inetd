@@ -1,0 +1,9 @@
+SERVICE_NAME=kftpd
+SOCK_TYPE=stream
+PROTOCOL=tcp
+PORT=21
+FLAGS=nowait
+USER=root
+SERVER=tcpd
+DAEMON=/usr/sbin/kftpd
+DAEMONARGS="-a -l"

@@ -1,22 +1,7 @@
-diff -Nur krb5-1.0.5/src/appl/telnet/telnetd/telnetd.h krb5-1.0.5.pld/src/appl/telnet/telnetd/telnetd.h
---- krb5-1.0.5/src/appl/telnet/telnetd/telnetd.h	Sat Feb  7 04:41:48 1998
-+++ krb5-1.0.5.pld/src/appl/telnet/telnetd/telnetd.h	Fri Feb 19 13:53:56 1999
-@@ -44,6 +44,10 @@
- #endif
- 
- /* other external variables */
-+#ifdef __linux__
-+#include <unistd.h>
-+#include <errno.h>
-+#else
- extern	char **environ;
- extern	int errno;
--
-+#endif
 diff -Nur krb5-1.0.5/src/appl/telnet/telnetd/utility.c krb5-1.0.5.pld/src/appl/telnet/telnetd/utility.c
 --- krb5-1.0.5/src/appl/telnet/telnetd/utility.c	Sat Feb  7 04:41:48 1998
 +++ krb5-1.0.5.pld/src/appl/telnet/telnetd/utility.c	Fri Feb 19 13:54:43 1999
-@@ -87,7 +87,7 @@
+@@ -90,7 +90,7 @@
  stilloob(s)
      int	s;		/* socket number */
  {
