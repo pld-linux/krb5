@@ -1,0 +1,42 @@
+diff -Nur krb5-1.0.6/src/appl/gssftp/ftpd/pathnames.h krb5-1.0.6.pld/src/appl/gssftp/ftpd/pathnames.h
+--- krb5-1.0.6/src/appl/gssftp/ftpd/pathnames.h	Tue May 11 05:33:10 1999
++++ krb5-1.0.6.pld/src/appl/gssftp/ftpd/pathnames.h	Sat Jun 12 10:21:15 1999
+@@ -33,4 +33,4 @@
+  *	@(#)pathnames.h	5.2 (Berkeley) 6/1/90
+  */
+ 
+-#define	_PATH_FTPUSERS	"/etc/ftpusers"
++#define	_PATH_FTPUSERS	"/etc/ftpd/ftpusers"
+diff -Nur krb5-1.0.6/src/appl/gssftp/ftpd/vers.c krb5-1.0.6.pld/src/appl/gssftp/ftpd/vers.c
+--- krb5-1.0.6/src/appl/gssftp/ftpd/vers.c	Tue May 11 05:33:10 1999
++++ krb5-1.0.6.pld/src/appl/gssftp/ftpd/vers.c	Sat Jun 12 10:20:55 1999
+@@ -35,4 +35,4 @@
+ static char sccsid[] = "@(#)vers.c	5.1 (Berkeley) 6/24/90";
+ #endif /* not lint */
+ 
+-char version[] = "Version 5.60";
++char version[] = "PLD Linux";
+diff -Nur krb5-1.0.6/src/appl/telnet/telnetd/ext.h krb5-1.0.6.pld/src/appl/telnet/telnetd/ext.h
+--- krb5-1.0.6/src/appl/telnet/telnetd/ext.h	Tue May 11 05:33:34 1999
++++ krb5-1.0.6.pld/src/appl/telnet/telnetd/ext.h	Sat Jun 12 10:18:38 1999
+@@ -234,7 +234,7 @@
+ #   ifdef ultrix
+ #    define DEFAULT_IM	"\r\n\r\nULTRIX (%h) (%t)\r\n\r\r\n\r"
+ #   else
+-#    define DEFAULT_IM	"\r\n\r\n4.4 BSD UNIX (%h) (%t)\r\n\r\r\n\r"
++#    define DEFAULT_IM	"\r\n\r\nPLD Linux (%h) (%t)\r\n\r\r\n\r"
+ #   endif
+ #  endif
+ # endif
+diff -Nur krb5-1.0.6/src/include/krb5/stock/osconf.h krb5-1.0.6.pld/src/include/krb5/stock/osconf.h
+--- krb5-1.0.6/src/include/krb5/stock/osconf.h	Tue May 11 05:34:02 1999
++++ krb5-1.0.6.pld/src/include/krb5/stock/osconf.h	Sat Jun 12 10:31:03 1999
+@@ -41,7 +41,7 @@
+ #define	DEFAULT_KEYTAB_NAME	"FILE:%s\\krb5kt"
+ #else /* !_WINDOWS */
+ #define DEFAULT_PROFILE_PATH	"/etc/krb5.conf:@SYSCONFDIR/krb5.conf"
+-#define	DEFAULT_KEYTAB_NAME	"FILE:/etc/krb5.keytab"
++#define	DEFAULT_KEYTAB_NAME	"FILE:@SYSCONFDIR/krb5.keytab"
+ #define	DEFAULT_LNAME_FILENAME	"@PREFIX/lib/krb5.aname"
+ #endif /* _WINDOWS  */
+ 
