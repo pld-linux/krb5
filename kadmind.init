@@ -32,10 +32,10 @@ fi
 # See how we were called.
 case "$1" in
   start)
-        if [ ! -f /etc/kerberos/principal ] ; then
+        if [ ! -f /var/lib/kerberos/principal ] ; then
         	exit 0
         fi
-        if [ -f /etc/kerberos/kpropd.acl ] ; then
+        if [ ! -f /var/lib/kerberos/kadm5.acl ] ; then
         	exit 0
         fi
         if [ ! -f /var/lib/kerberos/kadm5.keytab ] ; then
