@@ -1,28 +1,39 @@
 #!/bin/sh
 #
-# chkconfig: 2345 41 41
-# description: Kerberos V server daemons
+# chkconfig:	2345 41 41
 #
-# processname: kadmind krb5kdc
-# config: /etc/kerberos/krb5.conf
+# description:	Kerberos V server daemons
+#
+# processname:	kadmind krb5kdc
+# config:	/etc/kerberos/krb5.conf
 
-# Source function library.
+
+# Source function library
 . /etc/rc.d/init.d/functions
 
-# Kerberos config
-if [ -f /etc/sysconfig/kerberos ]; then
-    . /etc/sysconfig/kerberos
-fi
-# Check that networking is up...
-[ "${NETWORKING}" = "no" ] && exit 0
+# Get network config
+. /etc/sysconfig/network
+
+# Get service config
+[ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
+
+# Check that networking is up.
+[ "${NETWORKING}" = "no" ] && echo "Error: Networking is down"; exit 0
+
 
 # See how we were called.
 case "$1" in
   start)
-	show Starting Kerberos KDC
-	daemon krb5kdc
-	show Starting Administration Server
-	daemon kadmind
+	# Check if the service is already running?
+	if [ ! -f /var/lock/subsys/krb5server ]; then
+		show Starting Kerberos KDC
+		daemon krb5kdc
+
+		show Starting Administration Server
+		daemon kadmind
+	else
+		echo "krb5server already is running"
+	fi
 	touch /var/lock/subsys/krb5server
 	;;
   stop)
@@ -32,7 +43,7 @@ case "$1" in
 	killproc krb5kdc
 	rm -f /var/lock/subsys/krb5server
 	;;
-restart)
+restart|reload)
 	$0 stop
 	$0 start
 	;;
@@ -41,7 +52,7 @@ status)
 	status	krb5kdc
 	;;
   *)
-	echo "Usage: $0 {start|stop|status|restart}"
+	echo "Usage: $0 {start|stop|status|restart|reload}"
 	exit 1
 esac
 
