@@ -27,6 +27,7 @@ Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
 Patch6:		%{name}-security.patch
+Patch7:		%{name}-MITKRB5-SA-2003-005.patch
 BuildRequires:	automake
 PreReq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -212,6 +213,7 @@ Kerberosa V5.
 %patch3 -p1
 %patch4 -p1
 %patch6 -p1
+%patch7 -p1
 
 #kerberos pam
 cd ../pam_krb5-1.0-1
