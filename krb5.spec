@@ -1,4 +1,9 @@
 #
+# TODO:
+#	- split kdc/kadmind/krb524d/kpropd to separate subpackages
+#	- fix documentation stuff
+#	- finish config files and init scripts
+#
 # Conditional build:
 # _with_krb4	- build with Kerberos V4 support
 # _without_tcl	- build without tcl (needed for tests) 
@@ -83,13 +88,13 @@ pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package clients
-Summary:	Kerberos programs for use on workstations
+Summary:	Kerberos V5 programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
 %description clients
-Kerberos Clients.
+Kerberos V5 Clients.
 
 Kerberos V5 is based on the Kerberos authentication system developed
 at MIT. Under Kerberos, a client (generally either a user or a
@@ -103,7 +108,7 @@ keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
 %description clients -l pl
-Oprogramowanie klienckie do korzystania z us³ug systemu Kerberos.
+Oprogramowanie klienckie do korzystania z us³ug systemu Kerberos V5.
 
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
 systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
@@ -114,13 +119,13 @@ pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package daemons
-Summary:	Kerberos daemons programs for use on servers
-Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa
+Summary:	Kerberos V5 daemons programs for use on servers
+Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy Kerberosa V5
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
 %description daemons
-Kerberos Daemons.
+Kerberos V5 Daemons.
 
 Kerberos V5 is based on the Kerberos authentication system developed
 at MIT. Under Kerberos, a client (generally either a user or a
@@ -134,7 +139,7 @@ keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
 %description daemons -l pl
-Daemony korzystaj±ce z systemu Kerberos do autoryzacji dostêpu.
+Daemony korzystaj±ce z systemu Kerberos V5 do autoryzacji dostêpu.
 
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
 systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
@@ -145,8 +150,8 @@ pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
 %package server
-Summary:	Kerberos Server
-Summary(pl):	Serwer Kerberosa
+Summary:	Kerberos V5 Server
+Summary(pl):	Serwer Kerberos V5
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Requires:	words
@@ -248,8 +253,8 @@ Telnet jest popularnym protoko³em zdalnego logowania. Ten pakiet
 zawiera klienta tej us³ugi.
 
 %package libs
-Summary:	Kerberos shared libraries
-Summary(pl):	Biblioteki dzielone dla kerberosa
+Summary:	Kerberos V5 shared libraries
+Summary(pl):	Biblioteki dzielone dla Kerberosa V5
 Group:		Libraries
 Requires(post,preun):	grep
 Requires(post):		/sbin/ldconfig
@@ -260,31 +265,31 @@ Obsoletes: 	krb5-configs, krb5-lib
 Libraries for Kerberos V5 Server and Client
 
 %description libs -l pl
-Biblioteki dynamiczne dla systemu kerberos.
+Biblioteki dynamiczne dla systemu Kerberos V5.
 
 %package devel
-Summary:	Header files for Kerberos libraries and documentation
-Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
+Summary:	Header files for Kerberos V5 libraries and documentation
+Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}
 
 %description devel
-Header files for Kerberos libraries and development documentation.
+Header files for Kerberos V5 libraries and development documentation.
 
 %description devel -l pl
-Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa.
+Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa V5.
 
 %package static
-Summary:	Static Kerberos libraries
-Summary(pl):	Biblioteki statyczne Kerberosa
+Summary:	Static Kerberos V5 libraries
+Summary(pl):	Biblioteki statyczne Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}
 
 %description static
-Static Kerberos libraries.
+Static Kerberos V5 libraries.
 
 %description static -l pl
-Biblioteki statyczne Kerberosa.
+Biblioteki statyczne Kerberosa V5.
 
 %prep
 %setup -q
@@ -375,10 +380,36 @@ rm -rf $RPM_BUILD_ROOT
 
 %post server
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+
 /sbin/chkconfig --add krb5kdc
+if [ -f /var/lock/subsys/krb5kdc ]; then
+        /etc/rc.d/init.d/krb5kdc restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/krb5kdc start\" to start krb5kdc daemon."
+fi
+
 /sbin/chkconfig --add kadmind
+if [ -f /var/lock/subsys/kadmind ]; then
+        /etc/rc.d/init.d/kadmind restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/kadmind start\" to start kadmind daemon."
+fi
+
 /sbin/chkconfig --add kpropd
-%{?_with_krb4:/sbin/chkconfig --add krb524d}
+if [ -f /var/lock/subsys/kpropd ]; then
+        /etc/rc.d/init.d/kpropd restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/kpropd start\" to start kpropd daemon."
+fi
+
+%if %{?_with_krb4:1}%{!?_with_krb4:0}
+/sbin/chkconfig --add krb524d
+if [ -f /var/lock/subsys/krb524d ]; then
+        /etc/rc.d/init.d/krb524d restart 1>&2
+else
+        echo "Run \"/etc/rc.d/init.d/krb524d start\" to start krb524d daemon."
+fi
+%endif
 
 %post libs -p /sbin/ldconfig
 
