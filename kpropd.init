@@ -15,13 +15,15 @@
 # Get network config
 . /etc/sysconfig/network
 
+KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/kpropd.acl
+
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
         if [ ! -f /var/lock/subsys/network ]; then
-                msg_network_down "Kerberos V Propagation Server"
+                msg_network_down "Kerberos V5 Propagation Server"
                 exit 1
         fi
 else
@@ -31,27 +33,28 @@ fi
 # See how we were called.
 case "$1" in
   start)
-        if [ ! -f /var/lib/kerberos/kpropd.acl ] ; then
-            	exit 0
+        if [ ! -f ${KERBEROS_KPROPD_ACL_FILE} ] ; then
+		show "Kerberos V5 Propagation ACL file not found!"
+                exit 1
         fi
 
         # Check if the service is already running?
         if [ ! -f /var/lock/subsys/kpropd ]; then
-                msg_starting "Kerberos V Propagation Server"
+                msg_starting "Kerberos V5 Propagation Server"
                 daemon kpropd -S
                 RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/kpropd
         else
-                msg_already_running "Kerberos V Propagation Server"
+                msg_already_running "Kerberos V5 Propagation Server"
         fi
         ;;
   stop)
         if [ -f /var/lock/subsys/kpropd ]; then
-                msg_stopping "Kerberos V Propagation Server"
+                msg_stopping "Kerberos V5 Propagation Server"
                 killproc kpropd
                 rm -f /var/lock/subsys/kpropd
         else
-                msg_not_running "Kerberos V Propagation Server"
+                msg_not_running "Kerberos V5 Propagation Server"
         fi
         ;;
   restart)
@@ -61,11 +64,11 @@ case "$1" in
         ;;
   reload)
         if [ -f /var/lock/subsys/kpropd ]; then
-                msg_reloading "Kerberos V Propagation Server"
+                msg_reloading "Kerberos V5 Propagation Server"
                 killproc kpropd -HUP
                 RETVAL=$?
         else
-                msg_not_running "Kerberos V Propagation Server" >&2
+                msg_not_running "Kerberos V5 Propagation Server" >&2
                 RETVAL=7
         fi
         ;;

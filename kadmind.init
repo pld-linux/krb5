@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# kadmind	kerberos V administrative service
+# kadmind	Kerberos V5 administrative service
 #
 # chkconfig:	35 41 41
 #
-# description:	kadmind is a kerberos V administrative server
+# description:	kadmind is a Kerberos V5 administrative server
 #		which should only be run on the master server for a realm
 #
 # processname: kadmind
@@ -15,13 +15,17 @@
 # Get network config
 . /etc/sysconfig/network
 
+KERBEROS_DATABASE=/var/lib/kerberos/principal
+KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/kpropd.acl
+KERBEROS_KADM_KEYTAB_FILE=/var/lib/kerberos/kadm5.keytab
+
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
         if [ ! -f /var/lock/subsys/network ]; then
-                msg_network_down "Kerberos V Administrative Server"
+                msg_network_down "Kerberos V5 Administrative Server"
                 exit 1
         fi
 else
@@ -32,16 +36,25 @@ fi
 # See how we were called.
 case "$1" in
   start)
-        if [ ! -f /var/lib/kerberos/principal ] ; then
+        if [ ! -f "$KERBEROS_DATABASE" ] ; then
+                cat << END_OF_MSG
+Kerberos database could not be found in $KERBEROS_DATABASE!
+You have to create Kerberos database prior to running administrative server.
+This can be done with:
+kdb5_util create -r <kerberos_realm> -s -d $KERBEROS_DATABASE
+
+See kdb5_util(8) for more information.
+END_OF_MSG
+
         	exit 1
         fi
-        if [ -f /var/lib/kerberos/kpropd.acl ] ; then
+        if [ -f "$KERBEROS_KPROPD_ACL_FILE" ] ; then
 		show "This service should only be run on the master server for a realm!"
         	exit 1
         fi
-        if [ ! -f /var/lib/kerberos/kadm5.keytab ] ; then
-        	show "Extracting kadm5 Service Keys"
-        	kadmin.local -q "ktadd -k /var/lib/kerberos/kadm5.keytab kadmin/admin kadmin/changepw" 
+        if [ ! -f "$KERBEROS_KADM_KEYTAB_FILE" ] ; then
+        	show "Extracting Service Keys"
+        	kadmin.local -q "ktadd -k $KERBEROS_KADM_KEYTAB_FILE kadmin/admin kadmin/changepw" 
 		$RETVAL=$?
 		if  [ $RETVAL -eq 0 ]; then
 			ok
@@ -53,21 +66,21 @@ case "$1" in
 
         # Check if the service is already running?
         if [ ! -f /var/lock/subsys/kadmind ]; then
-                msg_starting "Kerberos V Administrative Server"
+                msg_starting "Kerberos V5 Administrative Server"
                 daemon kadmind
                 RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/kadmind
         else
-                msg_already_running "Kerberos V Administrative Server"
+                msg_already_running "Kerberos V5 Administrative Server"
         fi
         ;;
   stop)
         if [ -f /var/lock/subsys/kadmind ]; then
-                msg_stopping "Kerberos V Administrative Server"
+                msg_stopping "Kerberos V5 Administrative Server"
                 killproc kadmind
                 rm -f /var/lock/subsys/kadmind
         else
-                msg_not_running "Kerberos V Administrative Server"
+                msg_not_running "Kerberos V5 Administrative Server"
         fi
         ;;
   restart)
@@ -77,11 +90,11 @@ case "$1" in
         ;;
   reload)
         if [ -f /var/lock/subsys/kadmind ]; then
-                msg_reloading "Kerberos V Administrative Server"
+                msg_reloading "Kerberos V5 Administrative Server"
                 killproc kadmind -HUP
                 RETVAL=$?
         else
-                msg_not_running "Kerberos V Administrative Server" >&2
+                msg_not_running "Kerberos V5 Administrative Server" >&2
                 RETVAL=7
         fi
         ;;

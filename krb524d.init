@@ -4,7 +4,7 @@
 #
 # chkconfig:	345 41 41
 #
-# description:	krb524d converts Kerberos V credentials to Kerberos IV
+# description:	krb524d converts Kerberos V5 credentials to Kerberos IV
 #		credentials
 #
 # processname:	krb524d
@@ -16,13 +16,15 @@
 # Get network config
 . /etc/sysconfig/network
 
+KERBEROS_DATABASE=/var/lib/kerberos/principal
+
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
         if [ ! -f /var/lock/subsys/network ]; then
-                msg_network_down "Kerberos V-to-IV Server"
+                msg_network_down "Kerberos V5-to-V4 Server"
                 exit 1
         fi
 else
@@ -32,27 +34,36 @@ fi
 # See how we were called.
 case "$1" in
   start)
-	if [ ! -f /var/lib/kerberos/principal ] ; then
-		exit 0
+	if [ ! -f "${KERBEROS_DATABASE}" ] ; then
+                cat << END_OF_MSG
+Kerberos database could not be found in ${KERBEROS_DATABASE}!
+You have to create Kerberos database prior to running this service.
+This can be done with:
+kdb5_util create -r <kerberos_realm> -s -d ${KERBEROS_DATABASE}
+
+See kdb5_util(8) for more information.
+END_OF_MSG
+                exit 1
+
 	fi
 
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/krb524d ]; then
-		msg_starting "Kerberos V-to-IV Server"
-		daemon krb524d
+		msg_starting "Kerberos V5-to-V4 Server"
+		daemon krb524d -d ${KERBEROS_DATABASE}
 		RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb524d
 	else
-		msg_already_running "Kerberos V-to-IV Server"
+		msg_already_running "Kerberos V5-to-V4 Server"
 	fi
 	;;
   stop)
 	if [ -f /var/lock/subsys/krb524d ]; then
-                msg_stopping "Kerberos V-to-IV Server"
+                msg_stopping "Kerberos V5-to-V4 Server"
                 killproc krb524d
                 rm -f /var/lock/subsys/krb524d
         else
-                msg_not_running "Kerberos V-to-IV Server"
+                msg_not_running "Kerberos V5-to-V4 Server"
         fi
 	;;
   restart)
@@ -62,11 +73,11 @@ case "$1" in
 	;;
   reload)
 	if [ -f /var/lock/subsys/krb524d ]; then
-                msg_reloading "Kerberos V-to-IV Server"
+                msg_reloading "Kerberos V5-to-V4 Server"
                 killproc krb524d -HUP
                 RETVAL=$?
         else
-                msg_not_running "Kerberos V-to-IV Server" >&2
+                msg_not_running "Kerberos V5-to-V4 Server" >&2
                 RETVAL=7
         fi
         ;;

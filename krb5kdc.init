@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# krb5kdc	krb5kdc server
+# krb5kdc	Kerberos V5 KDC server
 #
 # chkconfig:	35 41 41
 #
-# description:	krb5kdc is a server that Kerberos IV and V clients
+# description:	krb5kdc is a server that Kerberos IV and V5 clients
 #		need to connect to in order to obtain credentials
 #
 # processname: krb5kdc
@@ -15,13 +15,16 @@
 # Get network config
 . /etc/sysconfig/network
 
+KERBEROS_V4_MODE="none"
+KERBEROS_DATABASE=/var/lib/kerberos/principal
+
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
         if [ ! -f /var/lock/subsys/network ]; then
-                msg_network_down "Kerberos V KDC"
+                msg_network_down "Kerberos V5 KDC"
                 exit 1
         fi
 else
@@ -32,27 +35,35 @@ fi
 # See how we were called.
 case "$1" in
   start)
-        if [ ! -f /var/lib/kerberos/principal ] ; then
-            	exit 0
+        if [ ! -f "${KERBEROS_DATABASE}" ] ; then
+	    	cat << END_OF_MSG
+Kerberos database could not be found in ${KERBEROS_DATABASE}!
+You have to create Kerberos database prior to running KDC server.
+This can be done with:
+kdb5_util create -r <kerberos_realm> -s -d ${KERBEROS_DATABASE}
+
+See kdb5_util(8) for more information.
+END_OF_MSG
+		exit 1
         fi
 
         # Check if the service is already running?
         if [ ! -f /var/lock/subsys/krb5kdc ]; then
-                msg_starting "Kerberos V KDC"
-                daemon krb5kdc
+                msg_starting "Kerberos V5 KDC"
+                daemon krb5kdc -4 ${KERBEROS_V4_MODE} -d ${KERBEROS_DATABASE}
                 RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb5kdc
         else
-                msg_already_running "Kerberos V KDC"
+                msg_already_running "Kerberos V5 KDC"
         fi
         ;;
   stop)
         if [ -f /var/lock/subsys/krb5kdc ]; then
-                msg_stopping "Kerberos V KDC"
+                msg_stopping "Kerberos V5 KDC"
                 killproc krb5kdc
                 rm -f /var/lock/subsys/krb5kdc
         else
-                msg_not_running "Kerberos V KDC"
+                msg_not_running "Kerberos V5 KDC"
         fi
         ;;
   restart)
@@ -62,11 +73,11 @@ case "$1" in
         ;;
   reload)
         if [ -f /var/lock/subsys/krb5kdc ]; then
-                msg_reloading "Kerberos V KDC"
+                msg_reloading "Kerberos V5 KDC"
                 killproc krb5kdc -HUP
                 RETVAL=$?
         else
-                msg_not_running "Kerberos V KDC" >&2
+                msg_not_running "Kerberos V5 KDC" >&2
                 RETVAL=7
         fi
         ;;
