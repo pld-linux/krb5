@@ -19,7 +19,7 @@
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
-	if [ ! -f /var/lock/subsys/network -a != stop -a != status ]; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
 		msg_network_down "KerberosV service"
 		exit 1
 	fi
