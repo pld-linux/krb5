@@ -7,8 +7,11 @@ License:	MIT
 Group:		Networking
 # warning: according to README, Source0 and Source1 may require license to export outside USA
 Source0:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.src.tar.gz
+# Source0-md5:	fb7de72ffba768ffe977a4b2022f7900
 Source1:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.crypto.tar.gz
+# Source1-md5:	a77c493a986ecddbd76d5bd1559bf468
 Source2:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.doc.tar.gz
+# Source2-md5:	ff7777d2319e68f0d86975dcac66ac43
 Source3:	kerberos.init
 Source4:	propagation
 Source5:	inetd.conf.secure
