@@ -1,7 +1,6 @@
 #
 # TODO:
 #	- split kdc/kadmind/krb524d/kpropd to separate subpackages
-#	- fix documentation stuff
 #	- finish config files and init scripts
 #
 # Conditional build:
@@ -417,8 +416,6 @@ sed "s/^CC_LINK=.*/CC_LINK='\$(CC) \$(PROG_LIBPATH)'/g" src/krb5-config > $RPM_B
 rm -rf $RPM_BUILD_ROOT
 
 %post server
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
-
 /sbin/chkconfig --add krb5kdc
 if [ -f /var/lock/subsys/krb5kdc ]; then
         /etc/rc.d/init.d/krb5kdc restart 1>&2
@@ -450,7 +447,6 @@ fi
 %endif
 
 %postun server
-[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 if [ "$1" = 0 ]; then
 	if [ -f /var/lock/subsys/krb5kdc ]; then
                 /etc/rc.d/init.d/krb5kdc stop 1>&2
@@ -533,8 +529,8 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc doc/kadmin/* doc/krb5-install.inf* doc/krb5-admin.inf*
-
+%doc doc/krb5-{admin,install}.html
+%doc %{?_with_krb4:doc/krb425.html}
 %attr(754,root,root) /etc/rc.d/init.d/krb5kdc
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
@@ -577,7 +573,7 @@ fi
 
 %files clients
 %defattr(644,root,root,755)
-%doc doc/krb5-user.inf*
+%doc doc/krb5-user.html
 %attr(755,root,root) /etc/profile.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
@@ -665,7 +661,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/krb5-protocol/*
+%doc doc/{kadmin,krb5-protocol}
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/*.so
 %{_includedir}/*
