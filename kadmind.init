@@ -54,8 +54,8 @@ END_OF_MSG
         fi
         if [ ! -f "$KERBEROS_KADM_KEYTAB_FILE" ] ; then
         	show "Extracting Service Keys"
-        	kadmin.local -q "ktadd -k $KERBEROS_KADM_KEYTAB_FILE kadmin/admin kadmin/changepw" 
-		$RETVAL=$?
+        	kadmin.local -q "ktadd -k $KERBEROS_KADM_KEYTAB_FILE kadmin/admin kadmin/changepw" > /dev/null
+		RETVAL=$?
 		if  [ $RETVAL -eq 0 ]; then
 			ok
 		else
