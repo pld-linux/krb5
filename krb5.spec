@@ -293,14 +293,14 @@ rm -rf $RPM_BUILD_ROOT
 %attr(711,root,root) /usr/sbin/kadmind
 %attr(711,root,root) /usr/sbin/ktutil
 
-%attr(644,root, man) %{_mandir}/man8/kadmin.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kadmin.local.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kdb5_util.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kprop.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kpropd.8.bz2
-%attr(644,root, man) %{_mandir}/man8/krb5kdc.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kadmind.8.bz2
-%attr(644,root, man) %{_mandir}/man8/ktutil.8.bz2
+%{_mandir}/man8/kadmin.8.bz2
+%{_mandir}/man8/kadmin.local.8.bz2
+%{_mandir}/man8/kdb5_util.8.bz2
+%{_mandir}/man8/kprop.8.bz2
+%{_mandir}/man8/kpropd.8.bz2
+%{_mandir}/man8/krb5kdc.8.bz2
+%{_mandir}/man8/kadmind.8.bz2
+%{_mandir}/man8/ktutil.8.bz2
 
 %files clients
 %defattr(644,root,root,755)
@@ -319,17 +319,17 @@ rm -rf $RPM_BUILD_ROOT
 %attr(711,root,root) /usr/bin/rcp
 %attr(711,root,root) /usr/bin/rlogin
 
-%attr(644,root, man) %{_mandir}/man1/ftp.1.bz2
-%attr(644,root, man) %{_mandir}/man1/telnet.1.bz2
-%attr(644,root, man) %{_mandir}/man1/rsh.1.bz2
-%attr(644,root, man) %{_mandir}/man1/kdestroy.1.bz2
-%attr(644,root, man) %{_mandir}/man1/kinit.1.bz2
-%attr(644,root, man) %{_mandir}/man1/klist.1.bz2
-%attr(644,root, man) %{_mandir}/man1/ksu.1.bz2
-%attr(644,root, man) %{_mandir}/man1/kpasswd.1.bz2
-%attr(644,root, man) %{_mandir}/man1/rcp.1.bz2
-%attr(644,root, man) %{_mandir}/man1/rlogin.1.bz2
-%attr(644,root, man) %{_mandir}/man5/.k5login.5.bz2
+%{_mandir}/man1/ftp.1.bz2
+%{_mandir}/man1/telnet.1.bz2
+%{_mandir}/man1/rsh.1.bz2
+%{_mandir}/man1/kdestroy.1.bz2
+%{_mandir}/man1/kinit.1.bz2
+%{_mandir}/man1/klist.1.bz2
+%{_mandir}/man1/ksu.1.bz2
+%{_mandir}/man1/kpasswd.1.bz2
+%{_mandir}/man1/rcp.1.bz2
+%{_mandir}/man1/rlogin.1.bz2
+%{_mandir}/man5/.k5login.5.bz2
 
 %files daemons
 %defattr(644,root,root,755)
@@ -340,10 +340,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(711,root,root) /usr/sbin/kshd
 %attr(711,root,root) /usr/sbin/telnetd
 
-%attr(644,root, man) %{_mandir}/man8/ftpd.8.bz2
-%attr(644,root, man) %{_mandir}/man8/klogind.8.bz2
-%attr(644,root, man) %{_mandir}/man8/kshd.8.bz2
-%attr(644,root, man) %{_mandir}/man8/telnetd.8.bz2
+%{_mandir}/man8/ftpd.8.bz2
+%{_mandir}/man8/klogind.8.bz2
+%{_mandir}/man8/kshd.8.bz2
+%{_mandir}/man8/telnetd.8.bz2
 
 %files lib
 %defattr(644,root,root,755)
@@ -354,8 +354,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /usr/lib/*.so
 %attr(711,root,root) /usr/sbin/login.krb5
 
-%attr(644,root, man) %{_mandir}/man8/login.krb5.8.bz2
-%attr(644,root, man) %{_mandir}/man5/krb5.conf.5.bz2
+%{_mandir}/man8/login.krb5.8.bz2
+%{_mandir}/man5/krb5.conf.5.bz2
 
 %files devel
 %defattr(644,root,root,755)
