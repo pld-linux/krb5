@@ -56,7 +56,6 @@ Patch17:	%{name}-paths.patch
 BuildRequires:	automake
 BuildRequires:  autoconf
 BuildRequires:	bison
-BuildRequires:	chrpath
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
@@ -376,10 +375,8 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos,%{_infodir},%{_mandir}}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,profile.d,logrotate.d}
 
-cd src
-%{__make} install \
+%{__make} -C src install \
 	DESTDIR=$RPM_BUILD_ROOT
-cd ..
 
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/
 install %{SOURCE6} $RPM_BUILD_ROOT%{_localstatedir}/
