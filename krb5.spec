@@ -45,7 +45,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package	clients 
+%package clients 
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
@@ -76,7 +76,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package	daemons
+%package daemons
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
 Group:		Networking
@@ -108,7 +108,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package	server
+%package server
 Summary:	Kerberos Server 
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
@@ -141,7 +141,7 @@ przystêpuje do rozkodowywania kredytu przy pomocy swojego has³a. Je¿eli
 zrobi to prawid³owo (tzn. poda poprawne has³o), jego bilet uaktywnia siê i
 bêdzie wa¿ny na dan± us³ugê.
 
-%package	lib
+%package lib
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
@@ -154,7 +154,7 @@ Libraries for Kerberos V5 Server and Client
 %description -l pl lib
 Biblioteki dynamiczne dla systemu kerberos.
 
-%package	devel
+%package devel
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 Group:		Libraries
@@ -167,7 +167,7 @@ Header files for Kerberos libraries and development documentation
 %description -l pl devel
 Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 
-%package	static
+%package static
 Summary:	Static Kerberos libraries
 Summary(pl):	Biblioteki statyczne Kerberosa
 Group:		Libraries
@@ -180,7 +180,7 @@ Sattic Kerberos libraries.
 %description -l pl static
 Biblioteki statyczne Kerberosa.
 
-%package	pam
+%package pam
 Summary:	PAM - Kerberos 5 module
 Summary(pl):	PAM - Kerberos 5 modu³
 Requires:	pam >= 0.66
@@ -208,6 +208,7 @@ Kerberosa V5.
 
 %build
 cd src
+autoconf
 ./configure \
 	--prefix=/usr/athena \
 	--enable-shared \
@@ -235,11 +236,11 @@ install %{SOURCE7} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
 
 install %{SOURCE3}  $RPM_BUILD_ROOT/etc/rc.d/init.d/kerberos
 install %{SOURCE10} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
-install %{SOURCE4}  $RPM_BUILD_ROOT/usr/athena/sbin/propagation
+install %{SOURCE4}  $RPM_BUILD_ROOT%{_sbindir}/propagation
 
-strip $RPM_BUILD_ROOT/usr/athena/{bin/*,sbin/*} || :
+strip $RPM_BUILD_ROOT{%{_bindir}/*,%{_sbindir}/*} || :
 
-echo .so kadmin.8 > $RPM_BUILD_ROOT/usr/athena/man/man8/kadmin.local.8
+echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
 touch $RPM_BUILD_ROOT/etc/athena/krb5.keytab
 
@@ -251,14 +252,11 @@ rm -rf $RPM_BUILD_ROOT/usr/include/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
-strip $RPM_BUILD_ROOT/usr/athena/lib/*.so.*.*
-chmod 755 $RPM_BUILD_ROOT/usr/athena/lib/*.so.*
+strip $RPM_BUILD_ROOT%{_libdir}/*.so.*.*
 
-gzip -9fn $RPM_BUILD_ROOT/usr/athena/man/man[158]/*
-gzip -9fn $RPM_BUILD_ROOT/usr/athena/man/man5/.k5login.5
-gzip -9fn doc/kadmin/* doc/krb5-protocol/* doc/*.info* 
-
-gzip -9fn ../pam_krb5-1.0-1/README 
+gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
+	doc/kadmin/* doc/krb5-protocol/* doc/*.info* \
+	../pam_krb5-1.0-1/README 
 
 # Kerberos5 PAM
 
@@ -296,74 +294,74 @@ fi
 %attr(700,root,root) %dir /var/krb5kdc
 %attr(600,root,root) %config(noreplace) %verify(not size mtime md5) /var/krb5kdc/*
 
-%attr(755,root,root) /usr/athena/sbin/kadmin
-%attr(755,root,root) /usr/athena/sbin/kadmin.local
-%attr(755,root,root) /usr/athena/sbin/propagation
-%attr(755,root,root) /usr/athena/sbin/kdb5_util
-%attr(755,root,root) /usr/athena/sbin/kprop
-%attr(755,root,root) /usr/athena/sbin/kpropd
-%attr(755,root,root) /usr/athena/sbin/krb5-send-pr
-%attr(755,root,root) /usr/athena/sbin/krb5kdc
-%attr(755,root,root) /usr/athena/sbin/kadmind
-%attr(755,root,root) /usr/athena/sbin/ktutil
-%attr(755,root,root) /usr/athena/sbin/kadmind4
-%attr(755,root,root) /usr/athena/sbin/krb524d
-%attr(755,root,root) /usr/athena/sbin/v5passwdd
+%attr(755,root,root) %{_sbindir}/kadmin
+%attr(755,root,root) %{_sbindir}/kadmin.local
+%attr(755,root,root) %{_sbindir}/propagation
+%attr(755,root,root) %{_sbindir}/kdb5_util
+%attr(755,root,root) %{_sbindir}/kprop
+%attr(755,root,root) %{_sbindir}/kpropd
+%attr(755,root,root) %{_sbindir}/krb5-send-pr
+%attr(755,root,root) %{_sbindir}/krb5kdc
+%attr(755,root,root) %{_sbindir}/kadmind
+%attr(755,root,root) %{_sbindir}/ktutil
+%attr(755,root,root) %{_sbindir}/kadmind4
+%attr(755,root,root) %{_sbindir}/krb524d
+%attr(755,root,root) %{_sbindir}/v5passwdd
 
-/usr/athena/man/man8/kadmin.8.gz
-/usr/athena/man/man8/kadmin.local.8.gz
-/usr/athena/man/man8/kdb5_util.8.gz
-/usr/athena/man/man8/kprop.8.gz
-/usr/athena/man/man8/kpropd.8.gz
-/usr/athena/man/man8/krb5kdc.8.gz
-/usr/athena/man/man8/kadmind.8.gz
-/usr/athena/man/man8/ktutil.8.gz
+%{_mandir}/man8/kadmin.8.gz
+%{_mandir}/man8/kadmin.local.8.gz
+%{_mandir}/man8/kdb5_util.8.gz
+%{_mandir}/man8/kprop.8.gz
+%{_mandir}/man8/kpropd.8.gz
+%{_mandir}/man8/krb5kdc.8.gz
+%{_mandir}/man8/kadmind.8.gz
+%{_mandir}/man8/ktutil.8.gz
 
 %files clients
 %defattr(644,root,root,755)
 %doc doc/krb5-user.inf*
 
-%attr(755,root,root) /usr/athena/bin/ftp
-%attr(755,root,root) /usr/athena/bin/telnet
-%attr(755,root,root) /usr/athena/bin/rsh
-%attr(755,root,root) /usr/athena/bin/kdestroy
-%attr(755,root,root) /usr/athena/bin/kinit
-%attr(755,root,root) /usr/athena/bin/krb524init
-%attr(755,root,root) /usr/athena/bin/v4rcp
-%attr(755,root,root) /usr/athena/bin/v5passwd
-%attr(755,root,root) /usr/athena/bin/klist
+%attr(755,root,root) %{_bindir}/ftp
+%attr(755,root,root) %{_bindir}/telnet
+%attr(755,root,root) %{_bindir}/rsh
+%attr(755,root,root) %{_bindir}/kdestroy
+%attr(755,root,root) %{_bindir}/kinit
+%attr(755,root,root) %{_bindir}/krb524init
+%attr(755,root,root) %{_bindir}/v4rcp
+%attr(755,root,root) %{_bindir}/v5passwd
+%attr(755,root,root) %{_bindir}/klist
 
-%attr(4711,root,root) /usr/athena/bin/ksu
+%attr(4755,root,root) %{_bindir}/ksu
 
-%attr(755,root,root) /usr/athena/bin/kpasswd
-%attr(755,root,root) /usr/athena/bin/rcp
-%attr(755,root,root) /usr/athena/bin/rlogin
+%attr(755,root,root) %{_bindir}/kpasswd
+%attr(755,root,root) %{_bindir}/rcp
+%attr(755,root,root) %{_bindir}/rlogin
 
-/usr/athena/man/man1/ftp.1.gz
-/usr/athena/man/man1/telnet.1.gz
-/usr/athena/man/man1/rsh.1.gz
-/usr/athena/man/man1/kdestroy.1.gz
-/usr/athena/man/man1/kinit.1.gz
-/usr/athena/man/man1/klist.1.gz
-/usr/athena/man/man1/ksu.1.gz
-/usr/athena/man/man1/kpasswd.1.gz
-/usr/athena/man/man1/rcp.1.gz
-/usr/athena/man/man1/rlogin.1.gz
-/usr/athena/man/man5/.k5login.5.gz
+%{_mandir}/man1/ftp.1.gz
+%{_mandir}/man1/telnet.1.gz
+%{_mandir}/man1/rsh.1.gz
+%{_mandir}/man1/kdestroy.1.gz
+%{_mandir}/man1/kinit.1.gz
+%{_mandir}/man1/klist.1.gz
+%{_mandir}/man1/ksu.1.gz
+%{_mandir}/man1/kpasswd.1.gz
+%{_mandir}/man1/rcp.1.gz
+%{_mandir}/man1/rlogin.1.gz
+%{_mandir}/man5/.k5login.5.gz
 
 %files daemons
 %defattr(644,root,root,755)
 %doc doc/inetd.conf*
 
-%attr(755,root,root) /usr/athena/sbin/ftpd
-%attr(755,root,root) /usr/athena/sbin/klogind
-%attr(755,root,root) /usr/athena/sbin/kshd
-%attr(755,root,root) /usr/athena/sbin/telnetd
+%attr(755,root,root) %{_sbindir}/ftpd
+%attr(755,root,root) %{_sbindir}/klogind
+%attr(755,root,root) %{_sbindir}/kshd
+%attr(755,root,root) %{_sbindir}/telnetd
 
-/usr/athena/man/man8/ftpd.8.gz
-/usr/athena/man/man8/klogind.8.gz
-/usr/athena/man/man8/kshd.8.gz
-/usr/athena/man/man8/telnetd.8.gz
+%{_mandir}/man8/ftpd.8.gz
+%{_mandir}/man8/klogind.8.gz
+%{_mandir}/man8/kshd.8.gz
+%{_mandir}/man8/telnetd.8.gz
 
 %files lib
 %defattr(644,root,root,755)
@@ -372,23 +370,23 @@ fi
 %config(noreplace) %verify(not size mtime md5) /etc/athena/krb5.conf
 %attr(400,root,root) %ghost /etc/athena/krb5.keytab
 
-%attr(755,root,root) /usr/athena/lib/*.so.*
-%attr(755,root,root) /usr/athena/lib/*.so
-%attr(755,root,root) /usr/athena/sbin/login.krb5
+%attr(755,root,root) %{_libdir}/*.so.*
+%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_sbindir}/login.krb5
 
-/usr/athena/man/man8/login.krb5.8.gz
-/usr/athena/man/man5/krb5.conf.5.gz
+%{_mandir}/man8/login.krb5.8.gz
+%{_mandir}/man5/krb5.conf.5.gz
 
 %files devel
 %defattr(644,root,root,755)
 %doc doc/krb5-protocol/*
 
-/usr/athena/include
+%{_includedir}/*
 
 %files static
 %defattr(644,root,root,755)
 
-/usr/athena/lib/*.a
+%{_libdir}/*.a
 
 %files pam
 %defattr(644,root,root,755)
