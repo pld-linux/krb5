@@ -118,37 +118,6 @@ klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 
-%package daemons
-Summary:	Kerberos V5 daemons programs for use on servers
-Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy Kerberosa V5
-Group:		Networking
-Requires:	%{name}-libs = %{version}
-
-%description daemons
-Kerberos V5 Daemons.
-
-Kerberos V5 is based on the Kerberos authentication system developed
-at MIT. Under Kerberos, a client (generally either a user or a
-service) sends a request for a ticket to the Key Distribution Center
-(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
-client, encrypts it using the client's password as the key, and sends
-the encrypted TGT back to the client. The client then attempts to
-decrypt the TGT, using its password. If the client successfully
-decrypts the TGT (i.e., if the client gave the correct password), it
-keeps the decrypted TGT, which indicates proof of the client's
-identity.
-
-%description daemons -l pl
-Daemony korzystaj±ce z systemu Kerberos V5 do autoryzacji dostêpu.
-
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
-Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go spowrotem do
-klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
-pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
-has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
-
 %package server
 Summary:	Kerberos V5 Server
 Summary(pl):	Serwer Kerberos V5
@@ -180,6 +149,71 @@ u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go spowrotem do
 klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
 pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
 has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
+
+%package ftpd
+Summary:        The standard UNIX FTP (file transfer protocol) server
+Summary(pl):    Serwer FTP
+Group:          Networking/Daemons
+Requires:       %{name}-libs = %{version}
+Obsoletes:      ftpd
+
+%description ftpd
+FTP is the file transfer protocol, which is a widely used Internet
+protocol for transferring files and for archiving files.
+
+%description ftpd -l pl
+FTP jest protoko³em trasmisji plików szeroko rozpowszechnionym w
+Internecie.
+
+%package kshd
+Summary:        Kerberized remote shell server
+Summary(pl):    Skerberyzowany serwer zdalnego dostêpu
+Group:          Networking/Daemons
+Requires:       %{name}-libs = %{version}
+Obsoletes:	rshd
+
+%description kshd
+The kshd package contains kerberized remote shell server which 
+provides remote execution facilities with authentication based
+on the Kerberos authentication system.
+
+%description kshd -l pl
+Ten pakiet zawiera skerberyzowan± wersjê serwer zdalnego dostêpu,
+który umo¿liwia zdalne wykonywanie poleceñ w oparciu o system
+autentykacji Kerberos.
+
+%package telnetd
+Summary:        Server for the telnet remote login
+Summary(pl):    Serwer protoko³u telnet
+Group:          Networking/Daemons
+Requires:       %{name}-libs = %{version}
+Obsoletes:      telnetd
+
+%description telnetd
+Telnet is a popular protocol for remote logins across the Internet.
+This package provides a telnet daemon which allows remote logins into
+the machine it is running on.
+
+%description telnetd -l pl
+Telnet jest popularnym protoko³em zdalnego logowania. Ten pakiet
+zawiera serwer pozwalaj±cy na zdalne logowanie siê klientów na maszynê
+na której dzia³a.
+
+%package klogind
+Summary:        Remote login server
+Summary(pl):    Serwer zdalnego logowania 
+Group:          Networking/Daemons
+Requires:       %{name}-libs = %{version}
+Obsoletes:	rlogind
+
+%description klogind
+Klogind is the server for the rlogin program. The server is based
+on rlogind but uses Kerberos authentication.
+
+%description klogind -l pl
+Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind
+ale wykorzystuje system autentykacji Kerberos.
+
 
 %package rlogin
 Summary:	rlogin is used when signing onto a system
@@ -354,7 +388,7 @@ install %{SOURCE8}      %{SOURCE9}      $RPM_BUILD_ROOT/etc/profile.d
 install %{SOURCE10}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
 install %{SOURCE11}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
 install %{SOURCE12}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
-install %{SOURCE13}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshell
+install %{SOURCE13}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
 
 install %{SOURCE1}                      $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE15}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
@@ -411,8 +445,6 @@ else
 fi
 %endif
 
-%post libs -p /sbin/ldconfig
-
 %postun server
 [ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 if [ "$1" = 0 ]; then
@@ -439,7 +471,61 @@ if [ "$1" = 0 ]; then
 	%endif
 fi
 
-%postun libs -p /sbin/ldconfig
+%post ftpd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload 1>&2
+else
+        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+fi
+
+%postun ftpd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload
+fi
+
+%post kshd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload 1>&2
+else
+        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+fi
+
+%postun kshd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload
+fi
+
+%post telnetd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload 1>&2
+else
+        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+fi
+
+%postun telnetd
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload
+fi
+
+%post klogind
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload 1>&2
+else
+        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+fi
+
+%postun klogind
+if [ -f /var/lock/subsys/rc-inetd ]; then
+        /etc/rc.d/init.d/rc-inetd reload 1>&2
+else
+        echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+fi
+
+%post libs
+/sbin/ldconfig
+
+%postun libs
+/sbin/ldconfig
 
 %files server
 %defattr(644,root,root,755)
@@ -528,7 +614,6 @@ fi
 %attr(755,root,root) %{_bindir}/rcp
 %attr(755,root,root) %{_bindir}/rsh
 %{?_with_krb4:%attr(755,root,root) %{_bindir}/v4rcp}
-
 %{_mandir}/man1/rsh.1*
 %{_mandir}/man1/rcp.1*
 %{?_with_krb4:%{_mandir}/man1/v4rcp.1*}
@@ -538,24 +623,28 @@ fi
 %attr(755,root,root) %{_bindir}/telnet
 %{_mandir}/man1/telnet.1*
 
-
-%files daemons
+%files telnetd
 %defattr(644,root,root,755)
-
-%attr(755,root,root) %{_sbindir}/ftpd
-%attr(755,root,root) %{_sbindir}/klogind
-%attr(755,root,root) %{_sbindir}/kshd
 %attr(755,root,root) %{_sbindir}/telnetd
-
-/etc/sysconfig/rc-inetd/telnetd
-/etc/sysconfig/rc-inetd/ftpd
-/etc/sysconfig/rc-inetd/kshell
-/etc/sysconfig/rc-inetd/klogind
-
-%{_mandir}/man8/ftpd.8*
-%{_mandir}/man8/klogind.8*
-%{_mandir}/man8/kshd.8*
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/telnetd
 %{_mandir}/man8/telnetd.8*
+
+%files ftpd
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/ftpd
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/ftpd
+%{_mandir}/man8/ftpd.8*
+
+%files kshd
+%defattr(644,root,root,755)
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/kshd
+%{_mandir}/man8/kshd.8*
+
+%files klogind
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/klogind
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/klogind
+%{_mandir}/man8/klogind.8*
 
 %files libs
 %defattr(644,root,root,755)
