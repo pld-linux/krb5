@@ -25,12 +25,13 @@ Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
 Copyright:	MIT
 Group:		Networking
+Group(de):	Netzwerkwesen
 Group(pl):	Sieciowe
 Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define		_prefix /usr/athena
-%define		_mandir /usr/athena/man
+%define		_prefix		/usr/athena
+%define		_mandir		/usr/athena/man
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
@@ -56,6 +57,7 @@ bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
+Group(de):	Netzwerkwesen
 Group(pl):	Sieciowe
 Requires:	%{name}-lib = %{version}
 
@@ -87,14 +89,14 @@ bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us³ug, autoryzuj±ce przy pomocy kerberosa.
 Group:		Networking
+Group(de):	Netzwerkwesen
 Group(pl):	Sieciowe
 Requires:	%{name}-lib = %{version}
 
 %description daemons
 Kerberos Daemons.
 
-Kerberos V5 is based on the Kerberos authentication system developed %attr(
-MIT.
+Kerberos V5 is based on the Kerberos authentication system developed at MIT.
 Under Kerberos, a client (generally either a user or a service) sends a
 request for a ticket to the Key Distribution Center (KDC). The KDC creates
 a "ticket-granting ticket" (TGT) for the client, encrypts it using the
@@ -119,6 +121,7 @@ bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos Server 
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
+Group(de):	Netzwerkwesen
 Group(pl):	Sieciowe
 Requires:	%{name}-lib = %{version}
 Requires:	words
@@ -151,6 +154,9 @@ bêdzie wa¿ny na dan± us³ugê.
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
+Group(de):	Libraries
+Group(es):	Bibliotecas
+Group(fr):	Librairies
 Group(pl):	Biblioteki
 
 %description lib
@@ -162,8 +168,10 @@ Biblioteki dynamiczne dla systemu kerberos.
 %package	devel
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
-Group:		Libraries
-Group(pl):	Biblioteki
+Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
 Requires:	%{name}-lib = %{version}
 
 %description devel
@@ -175,22 +183,27 @@ Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa
 %package	static
 Summary:	Static Kerberos libraries
 Summary(pl):	Biblioteki statyczne Kerberosa
-Group:		Libraries
-Group(pl):	Biblioteki
+Group:		Development/Libraries
+Group(de):	Entwicklung/Libraries
+Group(fr):	Development/Librairies
+Group(pl):	Programowanie/Biblioteki
 Requires:	%{name}-lib = %{version}
 
 %description static
-Sattic Kerberos libraries.
+Static Kerberos libraries.
 
 %description -l pl static
 Biblioteki statyczne Kerberosa.
 
 %package	pam
 Summary:	PAM - Kerberos 5 module
-Summary(pl):	PAM - Kerberos 5 modu³
+Summary(pl):	PAM - modu³ Kerberos 5
 Requires:	pam >= 0.66
 Group:		Libraries
-Group:		Libraries
+Group(de):	Libraries
+Group(es):	Bibliotecas
+Group(fr):	Librairies
+Group(pl):	Biblioteki
 Requires:	%{name}-lib = %{version}
 
 %description pam
@@ -224,7 +237,7 @@ cd src
 
 install %{SOURCE5} ../doc
 
-%{__make} CCOPTS="$RPM_OPT_FLAGS"
+%{__make} CCOPTS="%{rpmcflags}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -243,14 +256,11 @@ install %{SOURCE10}			$RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE4}			$RPM_BUILD_ROOT%{_sbindir}/propagation
 install %{SOURCE11}	%{SOURCE12}	$RPM_BUILD_ROOT/etc/profile.d
 
-strip $RPM_BUILD_ROOT{%{_bindir}/*,%{_sbindir}/*} || :
-strip --strip-debug $RPM_BUILD_ROOT%{_libdir}/*.so.*
-
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
 touch $RPM_BUILD_ROOT/etc/athena/krb5.keytab
 
-ln -s /usr/share/dict/words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
+ln -sf /usr/share/dict/words $RPM_BUILD_ROOT/var/krb5kdc/kadm5.dict
 
 touch $RPM_BUILD_ROOT/var/krb5kdc/kadm5.acl
 
@@ -258,9 +268,8 @@ rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 
 find doc -size 0 -print | xargs rm -f
 
-gzip -9fn $RPM_BUILD_ROOT%{_mandir}/man[158]/* \
-	doc/kadmin/* doc/krb5-protocol/* doc/*.info* \
-	../pam_krb5-1.0-1/README $RPM_BUILD_ROOT%{_mandir}/man5/.k5*
+gzip -9nf doc/kadmin/* doc/krb5-protocol/* doc/*.info* \
+	../pam_krb5-1.0-1/README
 
 # Kerberos5 PAM
 
@@ -268,10 +277,10 @@ cd ../pam_krb5-1.0-1
 %{__make} clean
 %{__make} KRBINCLUDE=-I$RPM_BUILD_ROOT%{_includedir} \
 	KRBLIB=-L$RPM_BUILD_ROOT%{_libdir} \
-	EXTRAS="$RPM_OPT_FLAGS" WANT_PWDB=no
+	EXTRAS="%{rpmcflags}" WANT_PWDB=no
 
 install -d $RPM_BUILD_ROOT/lib/security
-install -s pam_krb5.so $RPM_BUILD_ROOT/lib/security
+install pam_krb5.so $RPM_BUILD_ROOT/lib/security
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -314,14 +323,14 @@ fi
 %attr(755,root,root) %{_sbindir}/krb524d
 %attr(755,root,root) %{_sbindir}/v5passwdd
 
-%{_mandir}/man8/kadmin.8.gz
-%{_mandir}/man8/kadmin.local.8.gz
-%{_mandir}/man8/kdb5_util.8.gz
-%{_mandir}/man8/kprop.8.gz
-%{_mandir}/man8/kpropd.8.gz
-%{_mandir}/man8/krb5kdc.8.gz
-%{_mandir}/man8/kadmind.8.gz
-%{_mandir}/man8/ktutil.8.gz
+%{_mandir}/man8/kadmin.8*
+%{_mandir}/man8/kadmin.local.8*
+%{_mandir}/man8/kdb5_util.8*
+%{_mandir}/man8/kprop.8*
+%{_mandir}/man8/kpropd.8*
+%{_mandir}/man8/krb5kdc.8*
+%{_mandir}/man8/kadmind.8*
+%{_mandir}/man8/ktutil.8*
 
 %files clients
 %defattr(644,root,root,755)
@@ -344,17 +353,17 @@ fi
 %attr(755,root,root) %{_bindir}/rcp
 %attr(755,root,root) %{_bindir}/rlogin
 
-%{_mandir}/man1/ftp.1.gz
-%{_mandir}/man1/telnet.1.gz
-%{_mandir}/man1/rsh.1.gz
-%{_mandir}/man1/kdestroy.1.gz
-%{_mandir}/man1/kinit.1.gz
-%{_mandir}/man1/klist.1.gz
-%{_mandir}/man1/ksu.1.gz
-%{_mandir}/man1/kpasswd.1.gz
-%{_mandir}/man1/rcp.1.gz
-%{_mandir}/man1/rlogin.1.gz
-%{_mandir}/man5/.k5login.5.gz
+%{_mandir}/man1/ftp.1*
+%{_mandir}/man1/telnet.1*
+%{_mandir}/man1/rsh.1*
+%{_mandir}/man1/kdestroy.1*
+%{_mandir}/man1/kinit.1*
+%{_mandir}/man1/klist.1*
+%{_mandir}/man1/ksu.1*
+%{_mandir}/man1/kpasswd.1*
+%{_mandir}/man1/rcp.1*
+%{_mandir}/man1/rlogin.1*
+%{_mandir}/man5/.k5login.5*
 
 %files daemons
 %defattr(644,root,root,755)
@@ -365,10 +374,10 @@ fi
 %attr(755,root,root) %{_sbindir}/kshd
 %attr(755,root,root) %{_sbindir}/telnetd
 
-%{_mandir}/man8/ftpd.8.gz
-%{_mandir}/man8/klogind.8.gz
-%{_mandir}/man8/kshd.8.gz
-%{_mandir}/man8/telnetd.8.gz
+%{_mandir}/man8/ftpd.8*
+%{_mandir}/man8/klogind.8*
+%{_mandir}/man8/kshd.8*
+%{_mandir}/man8/telnetd.8*
 
 %files lib
 %defattr(644,root,root,755)
@@ -381,8 +390,8 @@ fi
 %attr(755,root,root) %{_libdir}/*.so
 %attr(755,root,root) %{_sbindir}/login.krb5
 
-%{_mandir}/man8/login.krb5.8.gz
-%{_mandir}/man5/krb5.conf.5.gz
+%{_mandir}/man8/login.krb5.8*
+%{_mandir}/man5/krb5.conf.5*
 
 %files devel
 %defattr(644,root,root,755)
