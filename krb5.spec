@@ -537,7 +537,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
 %{?with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
 
-%attr(640,root,root) /etc/logrotate.d/*
+%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/*
 %attr(640,root,root) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
