@@ -3,30 +3,33 @@ Summary(pl):	System Kerberos V5
 Name:		krb5
 Version:	1.0.6
 Release:	2
-Source0:	%{name}-%{version}.src.tar.gz
-Source1:	%{name}-%{version}.crypto.tar.gz
-Source2:	%{name}-%{version}.doc.tar.gz
+License:	MIT
+Group:		Networking
+Group(de):	Netzwerkwesen
+Group(es):	Red
+Group(pl):	Sieciowe
+Group(pt_BR):	Rede
+# warning: according to README, Source0 and Source1 may require license to export outside USA
+Source0:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.src.tar.gz
+Source1:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.crypto.tar.gz
+Source2:	ftp://athena-dist.mit.edu/pub/kerberos/dist/990511/%{name}-%{version}.doc.tar.gz
 Source3:	kerberos.init
 Source4:	propagation
 Source5:	inetd.conf.secure
-########	http://www-personal.engin.umich.edu/~itoi/index.html
-Source6:	pam_krb5-1.0-1.tar.gz
+Source6:	http://www.citi.umich.edu/u/itoi/pam_krb5/pam_krb5-1.0-1.tar.gz
 Source7:	kerberos.logrotate
 Source8:	%{name}.conf
 Source9:	kdc.conf
 Source10:	kerberos.sysconfig
 Source11:	kerberos.sh
 Source12:	kerberos.csh
+URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-ftp.patch
 Patch1:		%{name}-telnetd.patch
 Patch2:		%{name}-kadmin.patch
 Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
-Copyright:	MIT
-Group:		Networking
-Group(de):	Netzwerkwesen
-Group(pl):	Sieciowe
 Prereq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -34,123 +37,133 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_mandir		/usr/athena/man
 
 %description
-Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
-Under Kerberos, a client (generally either a user or a service) sends a
-request for a ticket to the Key Distribution Center (KDC). The KDC creates
-a "ticket-granting ticket" (TGT) for the client, encrypts it using the
-client's password as the key, and sends the encrypted TGT back to the
-client. The client then attempts to decrypt the TGT, using its password. 
-If the client successfully decrypts the TGT (i.e., if the client gave the
-correct password), it keeps the decrypted TGT, which indicates proof of the
-client's identity.
+Kerberos V5 is based on the Kerberos authentication system developed
+at MIT. Under Kerberos, a client (generally either a user or a
+service) sends a request for a ticket to the Key Distribution Center
+(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
+client, encrypts it using the client's password as the key, and sends
+the encrypted TGT back to the client. The client then attempts to
+decrypt the TGT, using its password. If the client successfully
+decrypts the TGT (i.e., if the client gave the correct password), it
+keeps the decrypted TGT, which indicates proof of the client's
+identity.
 
 %description -l pl
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym systemie
-klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do Centrum Dystrybucji
-Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT), uøywaj±c has≥a klienta do
-jego zaszyfrowania i wysy≥a go spowrotem do klienta. Klient nastÍpnie
-przystÍpuje do rozkodowywania kredytu przy pomocy swojego has≥a. Jeøeli
-zrobi to prawid≥owo (tzn. poda poprawne has≥o), jego bilet uaktywnia siÍ i
-bÍdzie waøny na dan± us≥ugÍ.
+Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
+systemie klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do
+Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
+uøywaj±c has≥a klienta do jego zaszyfrowania i wysy≥a go spowrotem do
+klienta. Klient nastÍpnie przystÍpuje do rozkodowywania kredytu przy
+pomocy swojego has≥a. Jeøeli zrobi to prawid≥owo (tzn. poda poprawne
+has≥o), jego bilet uaktywnia siÍ i bÍdzie waøny na dan± us≥ugÍ.
 
-%package	clients 
+%package clients 
 Summary:	Kerberos programs for use on workstations
 Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Group(de):	Netzwerkwesen
+Group(es):	Red
 Group(pl):	Sieciowe
+Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 
 %description clients
 Kerberos Clients.
 
-Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
-Under Kerberos, a client (generally either a user or a service) sends a
-request for a ticket to the Key Distribution Center (KDC). The KDC creates
-a "ticket-granting ticket" (TGT) for the client, encrypts it using the
-client's password as the key, and sends the encrypted TGT back to the
-client. The client then attempts to decrypt the TGT, using its password. 
-If the client successfully decrypts the TGT (i.e., if the client gave the
-correct password), it keeps the decrypted TGT, which indicates proof of the
-client's identity.
+Kerberos V5 is based on the Kerberos authentication system developed
+at MIT. Under Kerberos, a client (generally either a user or a
+service) sends a request for a ticket to the Key Distribution Center
+(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
+client, encrypts it using the client's password as the key, and sends
+the encrypted TGT back to the client. The client then attempts to
+decrypt the TGT, using its password. If the client successfully
+decrypts the TGT (i.e., if the client gave the correct password), it
+keeps the decrypted TGT, which indicates proof of the client's
+identity.
 
-%description -l pl clients
+%description clients -l pl
 Oprogramowanie klienckie do korzystania z us≥ug systemu Kerberos.
 
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym systemie
-klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do Centrum Dystrybucji
-Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT), uøywaj±c has≥a klienta do
-jego zaszyfrowania i wysy≥a go spowrotem do klienta. Klient nastÍpnie
-przystÍpuje do rozkodowywania kredytu przy pomocy swojego has≥a. Jeøeli
-zrobi to prawid≥owo (tzn. poda poprawne has≥o), jego bilet uaktywnia siÍ i
-bÍdzie waøny na dan± us≥ugÍ.
+Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
+systemie klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do
+Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
+uøywaj±c has≥a klienta do jego zaszyfrowania i wysy≥a go spowrotem do
+klienta. Klient nastÍpnie przystÍpuje do rozkodowywania kredytu przy
+pomocy swojego has≥a. Jeøeli zrobi to prawid≥owo (tzn. poda poprawne
+has≥o), jego bilet uaktywnia siÍ i bÍdzie waøny na dan± us≥ugÍ.
 
-%package	daemons
+%package daemons
 Summary:	Kerberos daemons programs for use on servers
 Summary(pl):	Serwery popularnych us≥ug, autoryzuj±ce przy pomocy kerberosa.
 Group:		Networking
 Group(de):	Netzwerkwesen
+Group(es):	Red
 Group(pl):	Sieciowe
+Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 
 %description daemons
 Kerberos Daemons.
 
-Kerberos V5 is based on the Kerberos authentication system developed at MIT.
-Under Kerberos, a client (generally either a user or a service) sends a
-request for a ticket to the Key Distribution Center (KDC). The KDC creates
-a "ticket-granting ticket" (TGT) for the client, encrypts it using the
-client's password as the key, and sends the encrypted TGT back to the
-client. The client then attempts to decrypt the TGT, using its password.
-If the client successfully decrypts the TGT (i.e., if the client gave the
-correct password), it keeps the decrypted TGT, which indicates proof of the
-client's identity.
+Kerberos V5 is based on the Kerberos authentication system developed
+at MIT. Under Kerberos, a client (generally either a user or a
+service) sends a request for a ticket to the Key Distribution Center
+(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
+client, encrypts it using the client's password as the key, and sends
+the encrypted TGT back to the client. The client then attempts to
+decrypt the TGT, using its password. If the client successfully
+decrypts the TGT (i.e., if the client gave the correct password), it
+keeps the decrypted TGT, which indicates proof of the client's
+identity.
 
-%description -l pl daemons
+%description daemons -l pl
 Daemony korzystaj±ce z systemu Kerberos do autoryzacji dostÍpu.
 
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym systemie
-klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do Centrum Dystrybucji
-Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT), uøywaj±c has≥a klienta do
-jego zaszyfrowania i wysy≥a go spowrotem do klienta. Klient nastÍpnie
-przystÍpuje do rozkodowywania kredytu przy pomocy swojego has≥a. Jeøeli
-zrobi to prawid≥owo (tzn. poda poprawne has≥o), jego bilet uaktywnia siÍ i
-bÍdzie waøny na dan± us≥ugÍ.
+Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
+systemie klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do
+Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
+uøywaj±c has≥a klienta do jego zaszyfrowania i wysy≥a go spowrotem do
+klienta. Klient nastÍpnie przystÍpuje do rozkodowywania kredytu przy
+pomocy swojego has≥a. Jeøeli zrobi to prawid≥owo (tzn. poda poprawne
+has≥o), jego bilet uaktywnia siÍ i bÍdzie waøny na dan± us≥ugÍ.
 
-%package	server
+%package server
 Summary:	Kerberos Server 
 Summary(pl):	Serwer Kerberosa
 Group:		Networking
 Group(de):	Netzwerkwesen
+Group(es):	Red
 Group(pl):	Sieciowe
+Group(pt_BR):	Rede
 Requires:	%{name}-lib = %{version}
 Requires:	words
 
 %description server
 Master KDC.
 
-Kerberos V5 is based on the Kerberos authentication system developed at MIT. 
-Under Kerberos, a client (generally either a user or a service) sends a
-request for a ticket to the Key Distribution Center (KDC). The KDC creates
-a "ticket-granting ticket" (TGT) for the client, encrypts it using the
-client's password as the key, and sends the encrypted TGT back to the
-client. The client then attempts to decrypt the TGT, using its password. 
-If the client successfully decrypts the TGT (i.e., if the client gave the
-correct password), it keeps the decrypted TGT, which indicates proof of the
-client's identity.
+Kerberos V5 is based on the Kerberos authentication system developed
+at MIT. Under Kerberos, a client (generally either a user or a
+service) sends a request for a ticket to the Key Distribution Center
+(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
+client, encrypts it using the client's password as the key, and sends
+the encrypted TGT back to the client. The client then attempts to
+decrypt the TGT, using its password. If the client successfully
+decrypts the TGT (i.e., if the client gave the correct password), it
+keeps the decrypted TGT, which indicates proof of the client's
+identity.
 
-%description -l pl server
+%description server -l pl
 G≥Ûwne centrum dystrybucji kluczy (KDC).
 
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym systemie
-klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do Centrum Dystrybucji
-Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT), uøywaj±c has≥a klienta do
-jego zaszyfrowania i wysy≥a go spowrotem do klienta. Klient nastÍpnie
-przystÍpuje do rozkodowywania kredytu przy pomocy swojego has≥a. Jeøeli
-zrobi to prawid≥owo (tzn. poda poprawne has≥o), jego bilet uaktywnia siÍ i
-bÍdzie waøny na dan± us≥ugÍ.
+Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
+systemie klient (uøytkownik lub serwis) wysy≥a ø±danie biletu do
+Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
+uøywaj±c has≥a klienta do jego zaszyfrowania i wysy≥a go spowrotem do
+klienta. Klient nastÍpnie przystÍpuje do rozkodowywania kredytu przy
+pomocy swojego has≥a. Jeøeli zrobi to prawid≥owo (tzn. poda poprawne
+has≥o), jego bilet uaktywnia siÍ i bÍdzie waøny na dan± us≥ugÍ.
 
-%package	lib
+%package lib
 Summary:	Kerberos shared libraries
 Summary(pl):	Biblioteki dzielone dla kerberosa
 Group:		Libraries
@@ -158,44 +171,55 @@ Group(de):	Libraries
 Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
+Group(pt_BR):	Bibliotecas
+Group(ru):	‚…¬Ã…œ‘≈À…
+Group(uk):	‚¶¬Ã¶œ‘≈À…
 
 %description lib
 Libraries for Kerberos V5 Server and Client
 
-%description -l pl lib
+%description lib -l pl
 Biblioteki dynamiczne dla systemu kerberos.
 
-%package	devel
+%package devel
 Summary:	Header files for Kerberos libraries and documentation
 Summary(pl):	Pliki nag≥Ûwkowe i dokumentacja do bibliotek Kerberosa
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Ú¡⁄“¡¬œ‘À¡/‚…¬Ã…œ‘≈À…
+Group(uk):	Úœ⁄“œ¬À¡/‚¶¬Ã¶œ‘≈À…
 Requires:	%{name}-lib = %{version}
 
 %description devel
-Header files for Kerberos libraries and development documentation
+Header files for Kerberos libraries and development documentation.
 
-%description -l pl devel
-Pliki nag≥Ûwkowe i dokumentacja do bibliotek Kerberosa
+%description devel -l pl
+Pliki nag≥Ûwkowe i dokumentacja do bibliotek Kerberosa.
 
-%package	static
+%package static
 Summary:	Static Kerberos libraries
 Summary(pl):	Biblioteki statyczne Kerberosa
 Group:		Development/Libraries
 Group(de):	Entwicklung/Libraries
+Group(es):	Desarrollo/Bibliotecas
 Group(fr):	Development/Librairies
 Group(pl):	Programowanie/Biblioteki
+Group(pt_BR):	Desenvolvimento/Bibliotecas
+Group(ru):	Ú¡⁄“¡¬œ‘À¡/‚…¬Ã…œ‘≈À…
+Group(uk):	Úœ⁄“œ¬À¡/‚¶¬Ã¶œ‘≈À…
 Requires:	%{name}-lib = %{version}
 
 %description static
 Static Kerberos libraries.
 
-%description -l pl static
+%description static -l pl
 Biblioteki statyczne Kerberosa.
 
-%package	pam
+%package pam
 Summary:	PAM - Kerberos 5 module
 Summary(pl):	PAM - modu≥ Kerberos 5
 Requires:	pam >= 0.66
@@ -204,13 +228,16 @@ Group(de):	Libraries
 Group(es):	Bibliotecas
 Group(fr):	Librairies
 Group(pl):	Biblioteki
+Group(pt_BR):	Bibliotecas
+Group(ru):	‚…¬Ã…œ‘≈À…
+Group(uk):	‚¶¬Ã¶œ‘≈À…
 Requires:	%{name}-lib = %{version}
 
 %description pam
-This is a PAM - Kerberos 5 module for PLD Linux.
-It supports authentication, session, and password modules. 
+This is a PAM - Kerberos 5 module for PLD Linux. It supports
+authentication, session, and password modules.
 
-%description -l pl pam
+%description pam -l pl
 W pakiecie znajduje siÍ modu≥ PAM wspomagaj±cy autoryzacjÍ przez
 Kerberosa V5. 
 
