@@ -2,7 +2,7 @@ Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
 Name:		krb5
 Version:	1.0.6
-Release:	3
+Release:	4
 License:	MIT
 Group:		Networking
 # warning: according to README, Source0 and Source1 may require license to export outside USA
@@ -26,6 +26,7 @@ Patch2:		%{name}-kadmin.patch
 Patch3:		%{name}-rpc.patch
 Patch4:		%{name}-paths.patch
 Patch5:		pam_krb5-pld.patch
+Patch6:		%{name}-security.patch
 BuildRequires:	automake
 PreReq:		rc-scripts
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -210,6 +211,7 @@ Kerberosa V5.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch6 -p1
 
 #kerberos pam
 cd ../pam_krb5-1.0-1
@@ -218,8 +220,9 @@ cd ../pam_krb5-1.0-1
 %build
 cd src
 ln -sf /usr/share/automake/config.sub config.sub
-./configure \
+%configure2_13 \
 	--prefix=%{_prefix} \
+	--host=i386-linux \
 	--enable-shared \
 	--with-vague-errors \
 	--sysconfdir=%{_sysconfdir} \
@@ -232,7 +235,7 @@ install %{SOURCE5} ../doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{vardir}}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_vardir}}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig,profile.d}
 
 cd src
