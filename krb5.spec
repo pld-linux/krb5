@@ -11,7 +11,7 @@ Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
 Name:		krb5
 Version:	1.3.1
-Release:	0.1
+Release:	0.2
 License:	MIT
 Group:		Networking
 # warning: according to README, Source0 may require license to export outside USA
@@ -61,6 +61,7 @@ BuildRequires:	flex
 BuildRequires:	mawk
 %{?with_tcl:BuildRequires:	tcl-devel}
 PreReq:		rc-scripts
+Requires:	setup >= 2.4.6-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define         _localstatedir  /var/lib/kerberos
@@ -373,7 +374,7 @@ CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos,%{_infodir},%{_mandir}}
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,profile.d,logrotate.d}
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
 %{__make} -C src install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -384,7 +385,7 @@ install %{SOURCE3} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE4}                      $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
 install %{SOURCE7}                      $RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE14}                     $RPM_BUILD_ROOT%{_sbindir}/propagation
-install %{SOURCE8}      %{SOURCE9}      $RPM_BUILD_ROOT/etc/profile.d
+install %{SOURCE8}      %{SOURCE9}      $RPM_BUILD_ROOT/etc/shrc.d
 
 install %{SOURCE10}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
 install %{SOURCE11}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
@@ -572,7 +573,7 @@ fi
 %files clients
 %defattr(644,root,root,755)
 %doc doc/krb5-user.html
-%attr(755,root,root) /etc/profile.d/kerberos.*
+%attr(755,root,root) /etc/shrc.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
 %attr(755,root,root) %{_bindir}/kinit
