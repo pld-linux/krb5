@@ -6,8 +6,8 @@
 # - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011106.html
 #
 # Conditional build:
-%bcond_with krb4	# build with Kerberos V4 support
-%bcond_without tcl	# build without tcl (needed for tests) 
+%bcond_with	krb4	# build with Kerberos V4 support
+%bcond_without	tcl	# build without tcl (needed for tests) 
 #
 Summary:	Kerberos V5 System
 Summary(pl):	System Kerberos V5
