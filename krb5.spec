@@ -19,8 +19,8 @@ Group:		Networking
 # warning: according to README, Source0 may require license to export outside USA
 Source0:	http://www.crypto-publish.org/dist/mit-kerberos5/%{name}-%{version}.tar.gz
 # Source0-md5:	73f868cf65bec56d7c718834ca5665fd
-Source1:	krb5kdc.init
-Source2:	krb524d.init
+Source1:	%{name}kdc.init
+Source2:	%{name}24d.init
 Source3:	kadm5.acl
 Source4:	kerberos.logrotate
 Source5:	%{name}.conf
@@ -55,15 +55,15 @@ Patch14:	%{name}-double-free.patch
 Patch15:	%{name}-varargs.patch
 Patch16:	%{name}-norpath.patch
 Patch17:	%{name}-paths.patch
-BuildRequires:	automake
 BuildRequires:	autoconf
+BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
 BuildRequires:	ncurses-devel
 %{?with_tcl:BuildRequires:	tcl-devel}
-PreReq:		rc-scripts
+Requires:	rc-scripts
 Requires:	setup >= 2.4.6-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -157,8 +157,8 @@ has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
 Summary:	The standard UNIX FTP (file transfer protocol) server
 Summary(pl):	Serwer FTP
 Group:		Networking/Daemons
-PreReq:		rc-inetd >= 0.8.1
 Requires:	%{name}-libs = %{version}
+Requires:	rc-inetd >= 0.8.1
 Obsoletes:	ftpd
 
 %description ftpd
@@ -173,14 +173,14 @@ Internecie.
 Summary:	Kerberized remote shell server
 Summary(pl):	Skerberyzowany serwer zdalnego dostêpu
 Group:		Networking/Daemons
-PreReq:		rc-inetd >= 0.8.1
 Requires:	%{name}-libs = %{version}
+Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rshd
 
 %description kshd
-The kshd package contains kerberized remote shell server which 
-provides remote execution facilities with authentication based
-on the Kerberos authentication system.
+The kshd package contains kerberized remote shell server which
+provides remote execution facilities with authentication based on the
+Kerberos authentication system.
 
 %description kshd -l pl
 Ten pakiet zawiera skerberyzowan± wersjê serwer zdalnego dostêpu,
@@ -191,8 +191,8 @@ autentykacji Kerberos.
 Summary:	Server for the telnet remote login
 Summary(pl):	Serwer protoko³u telnet
 Group:		Networking/Daemons
-PreReq:		rc-inetd >= 0.8.1
 Requires:	%{name}-libs = %{version}
+Requires:	rc-inetd >= 0.8.1
 Obsoletes:	telnetd
 
 %description telnetd
@@ -207,19 +207,19 @@ na której dzia³a.
 
 %package klogind
 Summary:	Remote login server
-Summary(pl):	Serwer zdalnego logowania 
+Summary(pl):	Serwer zdalnego logowania
 Group:		Networking/Daemons
-PreReq:		rc-inetd >= 0.8.1
 Requires:	%{name}-libs = %{version}
+Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rlogind
 
 %description klogind
-Klogind is the server for the rlogin program. The server is based
-on rlogind but uses Kerberos authentication.
+Klogind is the server for the rlogin program. The server is based on
+rlogind but uses Kerberos authentication.
 
 %description klogind -l pl
-Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind
-ale wykorzystuje system autentykacji Kerberos.
+Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind ale
+wykorzystuje system autentykacji Kerberos.
 
 
 %package rlogin
@@ -297,10 +297,11 @@ zawiera klienta tej us³ugi.
 Summary:	Kerberos V5 shared libraries
 Summary(pl):	Biblioteki dzielone dla Kerberosa V5
 Group:		Libraries
-Requires(post,preun):	grep
 Requires(post):		/sbin/ldconfig
+Requires(post,preun):	grep
 Requires(preun):	coreutils
-Obsoletes: 	krb5-configs, krb5-lib
+Obsoletes:	krb5-configs
+Obsoletes:	krb5-lib
 
 %description libs
 Libraries for Kerberos V5 Server and Client
@@ -402,7 +403,7 @@ install %{SOURCE16}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
 
-ln -sf /usr/share/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
+ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
 touch $RPM_BUILD_ROOT%{_localstatedir}/krb5.keytab
 
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
@@ -538,12 +539,12 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
 %{?with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
 
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/*
-%attr(640,root,root) /etc/sysconfig/kerberos
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
 %attr(700,root,root) %dir %{_localstatedir}
-%attr(600,root,root) %config(noreplace) %verify(not size mtime md5) %{_localstatedir}/*
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/*
 
 %attr(755,root,root) %{_sbindir}/kadmin
 %attr(755,root,root) %{_sbindir}/kadmin.local
@@ -628,30 +629,30 @@ fi
 %files telnetd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/telnetd
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/telnetd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/telnetd
 %{_mandir}/man8/telnetd.8*
 
 %files ftpd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/ftpd
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/ftpd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/ftpd
 %{_mandir}/man8/ftpd.8*
 
 %files kshd
 %defattr(644,root,root,755)
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/kshd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/kshd
 %{_mandir}/man8/kshd.8*
 
 %files klogind
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/klogind
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/sysconfig/rc-inetd/klogind
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/klogind
 %{_mandir}/man8/klogind.8*
 
 %files libs
 %defattr(644,root,root,755)
 %dir %{_sysconfdir}
-%config(noreplace) %verify(not size mtime md5) %{_sysconfdir}/krb5.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
 %attr(400,root,root) %ghost %{_localstatedir}/krb5.keytab
 
 %attr(755,root,root) %{_libdir}/*.so.*
