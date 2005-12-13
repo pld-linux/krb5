@@ -297,7 +297,7 @@ zawiera klienta tej us³ugi.
 Summary:	Kerberos V5 shared libraries
 Summary(pl):	Biblioteki dzielone dla Kerberosa V5
 Group:		Libraries
-Requires(post):		/sbin/ldconfig
+Requires(post):	/sbin/ldconfig
 Requires(post,preun):	grep
 Requires(preun):	coreutils
 Obsoletes:	krb5-configs
