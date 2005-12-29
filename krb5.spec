@@ -356,6 +356,7 @@ Biblioteki statyczne Kerberosa V5.
 
 %build
 cd src
+cp -f /usr/share/automake/config.sub config/
 CC=%{__cc}
 CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
 %configure \
