@@ -62,6 +62,7 @@ BuildRequires:	e2fsprogs-devel >= 1.34
 BuildRequires:	flex
 BuildRequires:	mawk
 BuildRequires:	ncurses-devel
+BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 Requires:	rc-scripts
 Requires:	setup >= 2.4.6-2
@@ -246,8 +247,8 @@ Summary:	Clients for remote access commands (rsh, rlogin, rcp)
 Summary(pl):	Klient zdalnego dostêpu (rsh, rlogin, rcp)
 Group:		Applications/Networking
 Requires:	%{name}-libs = %{version}
-Obsoletes:	rsh
 Obsoletes:	rcp
+Obsoletes:	rsh
 
 %description rsh
 The rsh package contains a set of programs which allow users to run
@@ -421,108 +422,66 @@ rm -rf $RPM_BUILD_ROOT
 
 %post server
 /sbin/chkconfig --add krb5kdc
-if [ -f /var/lock/subsys/krb5kdc ]; then
-	/etc/rc.d/init.d/krb5kdc restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/krb5kdc start\" to start krb5kdc daemon."
-fi
+%service krb5kdc restart "krb5kdc daemon"
 
 /sbin/chkconfig --add kadmind
-if [ -f /var/lock/subsys/kadmind ]; then
-	/etc/rc.d/init.d/kadmind restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/kadmind start\" to start kadmind daemon."
-fi
+%service kadmind restart "kadmind daemon"
 
 /sbin/chkconfig --add kpropd
-if [ -f /var/lock/subsys/kpropd ]; then
-	/etc/rc.d/init.d/kpropd restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/kpropd start\" to start kpropd daemon."
-fi
+%service kpropd restart "kpropd daemon"
 
 %if %{with krb4}
 /sbin/chkconfig --add krb524d
-if [ -f /var/lock/subsys/krb524d ]; then
-	/etc/rc.d/init.d/krb524d restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/krb524d start\" to start krb524d daemon."
-fi
+%service krb524d restart "krb524d daemon"
 %endif
 
 %postun server
 if [ "$1" = 0 ]; then
-	if [ -f /var/lock/subsys/krb5kdc ]; then
-		/etc/rc.d/init.d/krb5kdc stop 1>&2
-	fi
+	%service krb5kdc stop
 	/sbin/chkconfig --del krb5kdc
 
-	if [ -f /var/lock/subsys/kadmind ]; then
-		/etc/rc.d/init.d/kadmind stop 1>&2
-	fi
+	%service kadmind stop
 	/sbin/chkconfig --del kadmind
 
-	if [ -f /var/lock/subsys/kpropd ]; then
-		/etc/rc.d/init.d/kpropd stop 1>&2
-	fi
+	%service kpropd stop
 	/sbin/chkconfig --del kpropd
 
-	%if %{?_with_krb4:1}%{!?_with_krb4:0}
-	if [ -f /var/lock/subsys/krb524d ]; then
-		/etc/rc.d/init.d/krb524d stop 1>&2
-	fi
+	%if %{with krb4}
+	%service krb524d stop
 	/sbin/chkconfig --del krb524d
 	%endif
 fi
 
 %post ftpd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun ftpd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %post kshd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun kshd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %post telnetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun telnetd
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %post klogind
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
-fi
+%service -q rc-inetd reload
 
 %postun klogind
-if [ -f /var/lock/subsys/rc-inetd ]; then
-	/etc/rc.d/init.d/rc-inetd reload 1>&2
-else
-	echo "Type \"/etc/rc.d/init.d/rc-inetd start\" to start inet server" 1>&2
+if [ "$1" = 0 ]; then
+	%service -q rc-inetd reload
 fi
 
 %post libs
@@ -534,7 +493,7 @@ fi
 %files server
 %defattr(644,root,root,755)
 %doc doc/krb5-{admin,install}.html
-%doc %{?_with_krb4:doc/krb425.html}
+%doc %{?with_krb4:doc/krb425.html}
 %attr(754,root,root) /etc/rc.d/init.d/krb5kdc
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
