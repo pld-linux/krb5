@@ -336,16 +336,16 @@ Biblioteki statyczne Kerberosa V5.
 
 %prep
 %setup -q
-%patch0  -p1
-%patch1  -p1
-%patch2  -p1
-%patch3  -p1
-%patch4  -p1
-%patch5  -p1
-%patch6  -p1
-%patch7  -p0
-%patch8  -p1
-%patch9  -p1
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
+%patch7 -p0
+%patch8 -p1
+%patch9 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
@@ -388,19 +388,19 @@ install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/
 install %{SOURCE6} $RPM_BUILD_ROOT%{_localstatedir}/
 install %{SOURCE3} $RPM_BUILD_ROOT%{_localstatedir}/
-install %{SOURCE4}                      $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
-install %{SOURCE7}                      $RPM_BUILD_ROOT/etc/sysconfig/kerberos
-install %{SOURCE14}                     $RPM_BUILD_ROOT%{_sbindir}/propagation
-install %{SOURCE8}      %{SOURCE9}      $RPM_BUILD_ROOT/etc/shrc.d
+install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
+install %{SOURCE14} $RPM_BUILD_ROOT%{_sbindir}/propagation
+install %{SOURCE8} %{SOURCE9} $RPM_BUILD_ROOT/etc/shrc.d
 
-install %{SOURCE10}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
-install %{SOURCE11}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
-install %{SOURCE12}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
-install %{SOURCE13}                     $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
+install %{SOURCE10} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
+install %{SOURCE11} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
+install %{SOURCE12} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
+install %{SOURCE13} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
 
-install %{SOURCE1}                      $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
-install %{SOURCE15}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
-install %{SOURCE16}                     $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
+install %{SOURCE15} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
+install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{with krb4}
 install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
