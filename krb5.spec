@@ -55,6 +55,7 @@ Patch14:	%{name}-double-free.patch
 Patch15:	%{name}-varargs.patch
 Patch16:	%{name}-norpath.patch
 Patch17:	%{name}-paths.patch
+Patch18:	%{name}-autoconf.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -354,9 +355,12 @@ Biblioteki statyczne Kerberosa V5.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 %build
 cd src
+%{__aclocal}
+%{__autoconf}
 cp -f /usr/share/automake/config.sub config/
 CC="%{__cc}"
 CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
