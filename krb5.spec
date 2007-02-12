@@ -10,7 +10,7 @@
 %bcond_without	tcl	# build without tcl (needed for tests) 
 #
 Summary:	Kerberos V5 System
-Summary(pl):	System Kerberos V5
+Summary(pl.UTF-8):   System Kerberos V5
 Name:		krb5
 Version:	1.3.1
 Release:	0.2
@@ -83,18 +83,18 @@ decrypts the TGT (i.e., if the client gave the correct password), it
 keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
-%description -l pl
+%description -l pl.UTF-8
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
+systemie klient (uÅ¼ytkownik lub serwis) wysyÅ‚a Å¼Ä…danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
-klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
-pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
-has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
+uÅ¼ywajÄ…c hasÅ‚a klienta do jego zaszyfrowania i wysyÅ‚a go z powrotem do
+klienta. Klient nastÄ™pnie przystÄ™puje do rozkodowywania kredytu przy
+pomocy swojego hasÅ‚a. JeÅ¼eli zrobi to prawidÅ‚owo (tzn. poda poprawne
+hasÅ‚o), jego bilet uaktywnia siÄ™ i bÄ™dzie waÅ¼ny na danÄ… usÅ‚ugÄ™.
 
 %package clients
 Summary:	Kerberos V5 programs for use on workstations
-Summary(pl):	Oprogramowanie klienckie dla stacji roboczej kerberosa
+Summary(pl.UTF-8):   Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
@@ -112,20 +112,20 @@ decrypts the TGT (i.e., if the client gave the correct password), it
 keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
-%description clients -l pl
-Oprogramowanie klienckie do korzystania z us³ug systemu Kerberos V5.
+%description clients -l pl.UTF-8
+Oprogramowanie klienckie do korzystania z usÅ‚ug systemu Kerberos V5.
 
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
+systemie klient (uÅ¼ytkownik lub serwis) wysyÅ‚a Å¼Ä…danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
-klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
-pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
-has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
+uÅ¼ywajÄ…c hasÅ‚a klienta do jego zaszyfrowania i wysyÅ‚a go z powrotem do
+klienta. Klient nastÄ™pnie przystÄ™puje do rozkodowywania kredytu przy
+pomocy swojego hasÅ‚a. JeÅ¼eli zrobi to prawidÅ‚owo (tzn. poda poprawne
+hasÅ‚o), jego bilet uaktywnia siÄ™ i bÄ™dzie waÅ¼ny na danÄ… usÅ‚ugÄ™.
 
 %package server
 Summary:	Kerberos V5 Server
-Summary(pl):	Serwer Kerberos V5
+Summary(pl.UTF-8):   Serwer Kerberos V5
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Requires:	words
@@ -144,20 +144,20 @@ decrypts the TGT (i.e., if the client gave the correct password), it
 keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
-%description server -l pl
-G³ówne centrum dystrybucji kluczy (KDC).
+%description server -l pl.UTF-8
+GÅ‚Ã³wne centrum dystrybucji kluczy (KDC).
 
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (u¿ytkownik lub serwis) wysy³a ¿±danie biletu do
+systemie klient (uÅ¼ytkownik lub serwis) wysyÅ‚a Å¼Ä…danie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
-u¿ywaj±c has³a klienta do jego zaszyfrowania i wysy³a go z powrotem do
-klienta. Klient nastêpnie przystêpuje do rozkodowywania kredytu przy
-pomocy swojego has³a. Je¿eli zrobi to prawid³owo (tzn. poda poprawne
-has³o), jego bilet uaktywnia siê i bêdzie wa¿ny na dan± us³ugê.
+uÅ¼ywajÄ…c hasÅ‚a klienta do jego zaszyfrowania i wysyÅ‚a go z powrotem do
+klienta. Klient nastÄ™pnie przystÄ™puje do rozkodowywania kredytu przy
+pomocy swojego hasÅ‚a. JeÅ¼eli zrobi to prawidÅ‚owo (tzn. poda poprawne
+hasÅ‚o), jego bilet uaktywnia siÄ™ i bÄ™dzie waÅ¼ny na danÄ… usÅ‚ugÄ™.
 
 %package ftpd
 Summary:	The standard UNIX FTP (file transfer protocol) server
-Summary(pl):	Serwer FTP
+Summary(pl.UTF-8):   Serwer FTP
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -167,13 +167,13 @@ Obsoletes:	ftpd
 FTP is the file transfer protocol, which is a widely used Internet
 protocol for transferring files and for archiving files.
 
-%description ftpd -l pl
-FTP jest protoko³em transmisji plików szeroko rozpowszechnionym w
+%description ftpd -l pl.UTF-8
+FTP jest protokoÅ‚em transmisji plikÃ³w szeroko rozpowszechnionym w
 Internecie.
 
 %package kshd
 Summary:	Kerberized remote shell server
-Summary(pl):	Skerberyzowany serwer zdalnego dostêpu
+Summary(pl.UTF-8):   Skerberyzowany serwer zdalnego dostÄ™pu
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -184,14 +184,14 @@ The kshd package contains kerberized remote shell server which
 provides remote execution facilities with authentication based on the
 Kerberos authentication system.
 
-%description kshd -l pl
-Ten pakiet zawiera skerberyzowan± wersjê serwer zdalnego dostêpu,
-który umo¿liwia zdalne wykonywanie poleceñ w oparciu o system
+%description kshd -l pl.UTF-8
+Ten pakiet zawiera skerberyzowanÄ… wersjÄ™ serwer zdalnego dostÄ™pu,
+ktÃ³ry umoÅ¼liwia zdalne wykonywanie poleceÅ„ w oparciu o system
 autentykacji Kerberos.
 
 %package telnetd
 Summary:	Server for the telnet remote login
-Summary(pl):	Serwer protoko³u telnet
+Summary(pl.UTF-8):   Serwer protokoÅ‚u telnet
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -202,14 +202,14 @@ Telnet is a popular protocol for remote logins across the Internet.
 This package provides a telnet daemon which allows remote logins into
 the machine it is running on.
 
-%description telnetd -l pl
-Telnet jest popularnym protoko³em zdalnego logowania. Ten pakiet
-zawiera serwer pozwalaj±cy na zdalne logowanie siê klientów na maszynê
-na której dzia³a.
+%description telnetd -l pl.UTF-8
+Telnet jest popularnym protokoÅ‚em zdalnego logowania. Ten pakiet
+zawiera serwer pozwalajÄ…cy na zdalne logowanie siÄ™ klientÃ³w na maszynÄ™
+na ktÃ³rej dziaÅ‚a.
 
 %package klogind
 Summary:	Remote login server
-Summary(pl):	Serwer zdalnego logowania
+Summary(pl.UTF-8):   Serwer zdalnego logowania
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -219,14 +219,14 @@ Obsoletes:	rlogind
 Klogind is the server for the rlogin program. The server is based on
 rlogind but uses Kerberos authentication.
 
-%description klogind -l pl
+%description klogind -l pl.UTF-8
 Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind ale
 wykorzystuje system autentykacji Kerberos.
 
 
 %package rlogin
 Summary:	rlogin is used when signing onto a system
-Summary(pl):	Narzêdzie do logowania w systemie
+Summary(pl.UTF-8):   NarzÄ™dzie do logowania w systemie
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Provides:	rlogin
@@ -237,15 +237,15 @@ switch from one user to another at any time (most modern shells have
 support for this feature built into them, however). This package
 contain kerberized version login program.
 
-%description rlogin -l pl
-login jest u¿ywany przy logowaniu do systemu. Mo¿e byæ tak¿e u¿yty do
-prze³±czenia z jednego u¿ytkownika na innego w dowolnej chwili
-(wiêkszo¶æ wspó³czesnych shelli ma wbudowan± obs³ugê tego). Ten pakiet
-zawiera skerberyzowan± wersjê programu rlogin.
+%description rlogin -l pl.UTF-8
+login jest uÅ¼ywany przy logowaniu do systemu. MoÅ¼e byÄ‡ takÅ¼e uÅ¼yty do
+przeÅ‚Ä…czenia z jednego uÅ¼ytkownika na innego w dowolnej chwili
+(wiÄ™kszoÅ›Ä‡ wspÃ³Å‚czesnych shelli ma wbudowanÄ… obsÅ‚ugÄ™ tego). Ten pakiet
+zawiera skerberyzowanÄ… wersjÄ™ programu rlogin.
 
 %package rsh
 Summary:	Clients for remote access commands (rsh, rlogin, rcp)
-Summary(pl):	Klient zdalnego dostêpu (rsh, rlogin, rcp)
+Summary(pl.UTF-8):   Klient zdalnego dostÄ™pu (rsh, rlogin, rcp)
 Group:		Applications/Networking
 Requires:	%{name}-libs = %{version}
 Obsoletes:	rcp
@@ -258,14 +258,14 @@ between machines (rsh, rlogin and rcp). All three of these commands
 use rhosts style authentication. This package contains the clients
 needed for all of these services.
 
-%description rsh -l pl
-Ten pakiet zawiera zestaw narzêdzi pozwalaj±cych na wykonywanie
-poleceñ na zdalnych maszynach, logowanie na inne maszyny oraz
-kopiowanie plików pomiêdzy maszynami (rsh, rlogin, rcp).
+%description rsh -l pl.UTF-8
+Ten pakiet zawiera zestaw narzÄ™dzi pozwalajÄ…cych na wykonywanie
+poleceÅ„ na zdalnych maszynach, logowanie na inne maszyny oraz
+kopiowanie plikÃ³w pomiÄ™dzy maszynami (rsh, rlogin, rcp).
 
 %package ftp
 Summary:	The standard UNIX FTP (file transfer protocol) client
-Summary(pl):	Klient protoko³u FTP
+Summary(pl.UTF-8):   Klient protokoÅ‚u FTP
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
@@ -275,14 +275,14 @@ with kerberos authentication support. FTP is the file transfer
 protocol, which is a widely used Internet protocol for transferring
 files and for archiving files.
 
-%description ftp -l pl
-Ten pakiet dostarcza standardowego klienta FTP z wbudowan± obs³ug±
-kerberosa. FTP jest protoko³em do przesy³ania plików szeroko
+%description ftp -l pl.UTF-8
+Ten pakiet dostarcza standardowego klienta FTP z wbudowanÄ… obsÅ‚ugÄ…
+kerberosa. FTP jest protokoÅ‚em do przesyÅ‚ania plikÃ³w szeroko
 rozpowszechnionym w Internecie.
 
 %package telnet
 Summary:	Client for the telnet remote login
-Summary(pl):	Klient us³ugi telnet
+Summary(pl.UTF-8):   Klient usÅ‚ugi telnet
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Obsoletes:	telnet
@@ -291,13 +291,13 @@ Obsoletes:	telnet
 Telnet is a popular protocol for remote logins across the Internet.
 This package provides a command line telnet client.
 
-%description telnet -l pl
-Telnet jest popularnym protoko³em zdalnego logowania. Ten pakiet
-zawiera klienta tej us³ugi.
+%description telnet -l pl.UTF-8
+Telnet jest popularnym protokoÅ‚em zdalnego logowania. Ten pakiet
+zawiera klienta tej usÅ‚ugi.
 
 %package libs
 Summary:	Kerberos V5 shared libraries
-Summary(pl):	Biblioteki dzielone dla Kerberosa V5
+Summary(pl.UTF-8):   Biblioteki dzielone dla Kerberosa V5
 Group:		Libraries
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	grep
@@ -308,31 +308,31 @@ Obsoletes:	krb5-lib
 %description libs
 Libraries for Kerberos V5 Server and Client
 
-%description libs -l pl
+%description libs -l pl.UTF-8
 Biblioteki dynamiczne dla systemu Kerberos V5.
 
 %package devel
 Summary:	Header files for Kerberos V5 libraries and documentation
-Summary(pl):	Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa V5
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
 
-%description devel -l pl
-Pliki nag³ówkowe i dokumentacja do bibliotek Kerberosa V5.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe i dokumentacja do bibliotek Kerberosa V5.
 
 %package static
 Summary:	Static Kerberos V5 libraries
-Summary(pl):	Biblioteki statyczne Kerberosa V5
+Summary(pl.UTF-8):   Biblioteki statyczne Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}
 
 %description static
 Static Kerberos V5 libraries.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Biblioteki statyczne Kerberosa V5.
 
 %prep
