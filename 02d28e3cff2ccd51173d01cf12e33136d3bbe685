@@ -1,0 +1,92 @@
+- added using CVS keywords in %changelog (for automating them).
+
+* Sat Jun 12 1999 Jan Rękorajski <baggins@pld.org.pl>
+  [1.0.6-2]
+- fixed pam_krb5 build
+
+* Tue May 18 1999 Road Runner <runner@wb.com>
+  [1.0.6-1]
+- update to 1.0.6
+- fixed slave_propagation script,
+- added some patches,
+- 1st prepare to use on 1.0 PLD Linux System
+  -- /dev/pts for telnetd most wanted
+  -- PAM support for klogind && krb5.login needed
+
+* Thu Feb 18 1999 Road Runner <runner@wb.com>
+  [1.0.5-5d]
+- changed prefix to /usr/athena -- conflicts with other shared libs ;(
+- modified %post, %preun & %postun scripts,
+- added config for logrotate,
+- fixed all config files,
+- added %ghost /etc/athena/krb5.keytab && fixed default $KEYTAB_FILE,
+- added stripping shared libs,
+- compressed documentation,
+- fixed Group && Group(pl).
+
+* Sun Dec 13 1998 Willy The Hacker <willy@the.hacker.org>
+  [1.0.5-4d]
+- splited workstation package into two (clients and daemons),
+
+  by Jolly Roger <roger@hell.gov>
+
+- fixed stupid pam_krb5.so source code bug...
+
+  by Road Runner <runner@wb.com>
+
+- moved all shared libraries & symlinks into krb5-lib,
+- cosmetic changes,
+- final build for 1.1 PLD Linux -> I hoppe ;)
+
+* Tue Oct 20 1998 Road Runner <runner@wb.com>
+  [1.0.5-3d]
+- fixed localstatedir,
+- fixed initscript,
+- other -- minor changes.
+
+* Wed Sep 23 1998 Road Runner <runner@wb.com>
+  [1.0.5-2d]
+- fixed pl translation,
+- removed ccopts & cppopts from configure,
+- restricted files permissions,
+- patching ftp & ftpd against empty macros,
+- fixed telnet client,
+- added $ARCH - to possibility build on i686,
+- again fixed shared libraries permissions to 755,
+- localstatedir moved to /var/krb5kdc,
+- fixed propagation script,
+- fixed & moved inetd.conf.secure to %doc,
+- removed stripping of shared libraries,
+- added more docs,
+- added Conflicts: e2fsprogs-devel with devel & static subpackages,
+- added Provides: ftp, telnet, rsh in workstation subpackages.
+
+* Mon Sep 21 1998 Bugs Bunny <bugs@wb.com>
+  [1.0.5-2]
+- changed Buildroot to /tmp/%%{name}-%%{version}-root,
+- added removing 0 bytes length files,
+- added using %%{name} and %%{version} in Source,
+- added devel and static subpackages,
+- added making some man page as nroff include instead
+  making sym links to other  (this allow compress man pages in future),
+- added full %attr description in %files,
+- added striping shared libraries,
+- fixed passing $RPM_OPT_FLAGS,
+- documentation ios now installade in usual place,
+- added "Obsoletes: telnet, rsh, ftp" for server (for security) and
+  worstation packages (for easy replace standard telnet, rsh, ftp client and
+  servers),
+- some %description propagatet from main to subpackages,
+- added "%dir /var/krb5kdc" for worstation subpackage,
+- many simplifications in %files, %install and %build.
+
+* Mon Aug 9 1998 Road Runner <runner@wb.com>
+  [1.0.5-1d]
+- translation modified for pl,
+- changed permissions of shared libraries to 755,
+- removed simple-client and server,
+- build without kerberos IV support (we don't need it),
+
+* Fri Jun 26 1998 Road Runner <runner@wb.com>
+  [1.0.5-1]
+- first try RPM.
