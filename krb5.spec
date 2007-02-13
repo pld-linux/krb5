@@ -10,7 +10,7 @@
 %bcond_without	tcl	# build without tcl (needed for tests) 
 #
 Summary:	Kerberos V5 System
-Summary(pl.UTF-8):   System Kerberos V5
+Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.3.1
 Release:	0.2
@@ -94,7 +94,7 @@ hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
 %package clients
 Summary:	Kerberos V5 programs for use on workstations
-Summary(pl.UTF-8):   Oprogramowanie klienckie dla stacji roboczej kerberosa
+Summary(pl.UTF-8):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
@@ -125,7 +125,7 @@ hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
 %package server
 Summary:	Kerberos V5 Server
-Summary(pl.UTF-8):   Serwer Kerberos V5
+Summary(pl.UTF-8):	Serwer Kerberos V5
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Requires:	words
@@ -157,7 +157,7 @@ hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
 %package ftpd
 Summary:	The standard UNIX FTP (file transfer protocol) server
-Summary(pl.UTF-8):   Serwer FTP
+Summary(pl.UTF-8):	Serwer FTP
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -173,7 +173,7 @@ Internecie.
 
 %package kshd
 Summary:	Kerberized remote shell server
-Summary(pl.UTF-8):   Skerberyzowany serwer zdalnego dostępu
+Summary(pl.UTF-8):	Skerberyzowany serwer zdalnego dostępu
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -191,7 +191,7 @@ autentykacji Kerberos.
 
 %package telnetd
 Summary:	Server for the telnet remote login
-Summary(pl.UTF-8):   Serwer protokołu telnet
+Summary(pl.UTF-8):	Serwer protokołu telnet
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -209,7 +209,7 @@ na której działa.
 
 %package klogind
 Summary:	Remote login server
-Summary(pl.UTF-8):   Serwer zdalnego logowania
+Summary(pl.UTF-8):	Serwer zdalnego logowania
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}
 Requires:	rc-inetd >= 0.8.1
@@ -226,7 +226,7 @@ wykorzystuje system autentykacji Kerberos.
 
 %package rlogin
 Summary:	rlogin is used when signing onto a system
-Summary(pl.UTF-8):   Narzędzie do logowania w systemie
+Summary(pl.UTF-8):	Narzędzie do logowania w systemie
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Provides:	rlogin
@@ -245,7 +245,7 @@ zawiera skerberyzowaną wersję programu rlogin.
 
 %package rsh
 Summary:	Clients for remote access commands (rsh, rlogin, rcp)
-Summary(pl.UTF-8):   Klient zdalnego dostępu (rsh, rlogin, rcp)
+Summary(pl.UTF-8):	Klient zdalnego dostępu (rsh, rlogin, rcp)
 Group:		Applications/Networking
 Requires:	%{name}-libs = %{version}
 Obsoletes:	rcp
@@ -265,7 +265,7 @@ kopiowanie plików pomiędzy maszynami (rsh, rlogin, rcp).
 
 %package ftp
 Summary:	The standard UNIX FTP (file transfer protocol) client
-Summary(pl.UTF-8):   Klient protokołu FTP
+Summary(pl.UTF-8):	Klient protokołu FTP
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 
@@ -282,7 +282,7 @@ rozpowszechnionym w Internecie.
 
 %package telnet
 Summary:	Client for the telnet remote login
-Summary(pl.UTF-8):   Klient usługi telnet
+Summary(pl.UTF-8):	Klient usługi telnet
 Group:		Networking
 Requires:	%{name}-libs = %{version}
 Obsoletes:	telnet
@@ -297,7 +297,7 @@ zawiera klienta tej usługi.
 
 %package libs
 Summary:	Kerberos V5 shared libraries
-Summary(pl.UTF-8):   Biblioteki dzielone dla Kerberosa V5
+Summary(pl.UTF-8):	Biblioteki dzielone dla Kerberosa V5
 Group:		Libraries
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	grep
@@ -313,7 +313,7 @@ Biblioteki dynamiczne dla systemu Kerberos V5.
 
 %package devel
 Summary:	Header files for Kerberos V5 libraries and documentation
-Summary(pl.UTF-8):   Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
+Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}
 
@@ -325,7 +325,7 @@ Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5.
 
 %package static
 Summary:	Static Kerberos V5 libraries
-Summary(pl.UTF-8):   Biblioteki statyczne Kerberosa V5
+Summary(pl.UTF-8):	Biblioteki statyczne Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}
 
