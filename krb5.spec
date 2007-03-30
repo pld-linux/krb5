@@ -1,7 +1,6 @@
 #
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
-# - package docs
 #
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
@@ -455,6 +454,9 @@ done
 
 cd ../doc
 %{__make}
+%{__make} -C api
+%{__make} -C implement
+%{__make} -C kadm5
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -566,7 +568,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc doc/krb5-{admin,install}.html
+%doc doc/krb5-{admin,install}.html doc/{admin,install,krb425}-guide.pdf
 %doc %{?with_krb4:doc/krb425.html}
 %attr(754,root,root) /etc/rc.d/init.d/krb5kdc
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
@@ -622,7 +624,7 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%doc doc/krb5-user.html
+%doc doc/krb5-user.html doc/user-guide.pdf
 %attr(755,root,root) /etc/shrc.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
@@ -719,7 +721,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/{kadmin,krb5-protocol}
+%doc doc/{kadmin,krb5-protocol} doc/{api,implement,kadm5}/*.pdf
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/libdes425.so
 %attr(755,root,root) %{_libdir}/libgss*.so
