@@ -701,7 +701,6 @@ fi
 %defattr(644,root,root,755)
 %dir %{_sysconfdir}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
-%attr(400,root,root) %ghost %{_localstatedir}/krb5.keytab
 
 %dir %{_libdir}/krb5
 %dir %{_libdir}/krb5/plugins
