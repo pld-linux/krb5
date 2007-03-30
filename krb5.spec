@@ -610,7 +610,7 @@ fi
 %{_mandir}/man8/k5srvutil.8*
 %{_mandir}/man8/sserver.8*
 
-%if %{WITH_LDAP}
+%if %{with openldap}
 %files server-ldap
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/kldap.so
