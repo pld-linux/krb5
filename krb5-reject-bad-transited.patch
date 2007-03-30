@@ -1,0 +1,18 @@
+--- krb5-1.2.7/src/config-files/kdc.conf.M	2003-02-04 13:04:21.000000000 -0500
++++ krb5-1.2.7/src/config-files/kdc.conf.M	2003-02-04 13:04:11.000000000 -0500
+@@ -138,6 +138,15 @@
+ strings specifies the default key/salt combinations of principals for this
+ realm.
+ 
++.IP reject_bad_transit
++This
++.B boolean string
++specifies whether or not the KDC should reject cross-realm TGS requests if the
++request's list of transited realms names realms which would not be included
++in the transit path if the path were to be computed using the KDC's krb5.conf
++file, or if the client requests that the KDC not perform such a check.  The
++default is for this option to be enabled.
++
+ .SH FILES 
+ /usr/local/lib/krb5kdc/kdc.conf
+ 

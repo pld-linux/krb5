@@ -1,0 +1,33 @@
+Screen out interfaces which have no address in foreach_localaddr().  (Per man
+pages for OpenBSD and OS/X, they are legal.)  If it doesn't have an address,
+the functions which call this function (src/kdc/network.c, which wants to
+listen on the interfaces, and src/lib/krb5/os/localaddr.c, which just wants a
+list of local addresses), have no use for it anyway.
+
+This is slightly different than the fix proposed by Paul Jakma at
+http://mailman.mit.edu/pipermail/krb5-bugs/2004-January/002152.html, but is
+more or less equivalent.
+
+Don't worry, printifaddr() already checks that ifp->ifa_addr != NULL before
+printing it.
+
+--- krb5-1.4/src/lib/krb5/os/localaddr.c	2005-02-18 11:20:52.000000000 -0500
++++ krb5-1.4/src/lib/krb5/os/localaddr.c	2005-02-18 11:23:52.000000000 -0500
+@@ -435,6 +435,8 @@
+ #ifdef DEBUG
+ 	printifaddr (ifp);
+ #endif
++	if (ifp->ifa_addr == NULL)
++	    continue;
+ 	if ((ifp->ifa_flags & IFF_UP) == 0)
+ 	    continue;
+ 	if (ifp->ifa_flags & IFF_LOOPBACK) {
+@@ -458,6 +460,8 @@
+ 	/* If this address is a duplicate, punt.  */
+ 	match = 0;
+ 	for (ifp2 = ifp_head; ifp2 && ifp2 != ifp; ifp2 = ifp2->ifa_next) {
++	    if (ifp2->ifa_addr == NULL)
++		continue;
+ 	    if ((ifp2->ifa_flags & IFF_UP) == 0)
+ 		continue;
+ 	    if (ifp2->ifa_flags & IFF_LOOPBACK)

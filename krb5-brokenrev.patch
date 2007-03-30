@@ -1,0 +1,19 @@
+The version of "rev" in util-linux doesn't work as this script expects it to.
+
+--- krb5-1.5/src/plugins/kdb/db2/libdb2/test/run.test	Wed Jun  7 22:46:39 2000
++++ krb5-1.5/src/plugins/kdb/db2/libdb2/test/run.test	Wed Jun  7 22:46:34 2000
+@@ -541,12 +541,8 @@
+ # the btree split code gets hammered.
+ test12()
+ {
+-	if ( rev < /dev/null ) > /dev/null 2>&1 ; then
+-		:
+-	else
+-		echo "Test 12: skipped, rev not found"
+-		return
+-	fi
++	echo "Test 12: skipped, rev not found"
++	return
+ 	if test $dictsize -lt 20001 ; then
+ 		echo "Test 12: skipped, dictionary too small"
+ 		return

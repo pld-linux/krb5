@@ -1,0 +1,41 @@
+Use an in-memory ccache to silence a compiler warning.
+--- krb5-1.3.5/src/slave/kprop.c	2004-11-17 12:18:48.000000000 -0500
++++ krb5-1.3.5/src/slave/kprop.c	2004-11-17 13:42:31.926487217 -0500
+@@ -211,9 +211,8 @@
+ void get_tickets(context)
+     krb5_context context;
+ {
+-	char   buf[BUFSIZ];
+ 	krb5_error_code retval;
+-	static char tkstring[] = "/tmp/kproptktXXXXXX";
++	char tkstring[] = "MEMORY:_kproptkt";
+ 	krb5_keytab keytab = NULL;
+ 
+ 	/*
+@@ -238,22 +237,19 @@
+ #endif
+ 
+ 	/*
+-	 * Initialize cache file which we're going to be using
++	 * Initialize an in-memory cache for temporary use
+ 	 */
+-	(void) mktemp(tkstring);
+-	sprintf(buf, "FILE:%s", tkstring);
+-
+-	retval = krb5_cc_resolve(context, buf, &ccache);
++	retval = krb5_cc_resolve(context, tkstring, &ccache);
+ 	if (retval) {
+ 		com_err(progname, retval, "while opening credential cache %s",
+-			buf);
++			tkstring);
+ 		exit(1);
+ 	}
+ 
+ 	retval = krb5_cc_initialize(context, ccache, my_principal);
+ 	if (retval) {
+ 		com_err (progname, retval, "when initializing cache %s",
+-			 buf);
++			 tkstring);
+ 		exit(1);
+ 	}
+ 
