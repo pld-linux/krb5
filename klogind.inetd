@@ -5,4 +5,4 @@ FLAGS=nowait
 USER=root
 SERVER=tcpd
 DAEMON=/usr/sbin/klogind
-DAEMONARGS="-e -c -5"
+DAEMONARGS="-5"
