@@ -2,7 +2,6 @@
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
 # - finish config files and init scripts
-# - check unpackaged files
 # - package docs
 # - package db2 and openldap plugins
 #
@@ -574,7 +573,9 @@ fi
 %attr(755,root,root) %{_sbindir}/ktutil
 %attr(755,root,root) %{_sbindir}/k5srvutil
 %attr(755,root,root) %{_sbindir}/gss-server
+%attr(755,root,root) %{_sbindir}/sim_server
 %attr(755,root,root) %{_sbindir}/sserver
+%attr(755,root,root) %{_sbindir}/uuserver
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
 
@@ -599,6 +600,8 @@ fi
 %attr(755,root,root) %{_bindir}/kinit
 %attr(755,root,root) %{_bindir}/klist
 %attr(755,root,root) %{_bindir}/gss-client
+%attr(755,root,root) %{_bindir}/sim_client
+%attr(755,root,root) %{_bindir}/uuclient
 %attr(4755,root,root) %{_bindir}/ksu
 %{?with_krb4:%attr(755,root,root) %{_bindir}/krb524init}
 
@@ -654,6 +657,7 @@ fi
 
 %files kshd
 %defattr(644,root,root,755)
+%attr(755,root,root) %{_sbindir}/kshd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/kshd
 %{_mandir}/man8/kshd.8*
 
