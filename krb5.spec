@@ -17,24 +17,26 @@ Release:	0.2
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
-Source0:	%{name}-%{version}-signed.tar.gz
-# Source0-md5:	a365e39ff7d39639556c2797a0e1c3f4
-Source1:	%{name}kdc.init
-Source2:	%{name}24d.init
-Source3:	kadm5.acl
-Source4:	kerberos.logrotate
-Source5:	%{name}.conf
-Source6:	kdc.conf
-Source7:	kerberos.sysconfig
-Source8:	kerberos.sh
-Source9:	kerberos.csh
-Source10:	klogind.inetd
-Source11:	kftpd.inetd
-Source12:	ktelnetd.inetd
-Source13:	kshell.inetd
-Source14:	propagation
-Source15:	kpropd.init
-Source16:	kadmind.init
+Source0:	%{name}-%{version}.tar.gz
+# Source0-md5:	b84d437c4a67240c70e370f557f561de
+Source1:	%{name}-%{version}.tar.gz.asc
+# Source1-md5:	4b79615e695c55216f25058a03f6dfde
+Source2:	%{name}kdc.init
+Source3:	%{name}24d.init
+Source4:	kadm5.acl
+Source5:	kerberos.logrotate
+Source6:	%{name}.conf
+Source7:	kdc.conf
+Source8:	kerberos.sysconfig
+Source9:	kerberos.sh
+Source10:	kerberos.csh
+Source11:	klogind.inetd
+Source12:	kftpd.inetd
+Source13:	ktelnetd.inetd
+Source14:	kshell.inetd
+Source15:	propagation
+Source16:	kpropd.init
+Source17:	kadmind.init
 URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-gcc33.patch
 Patch1:		%{name}-telnetd.patch
