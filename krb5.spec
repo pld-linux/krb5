@@ -602,6 +602,8 @@ fi
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
 
+%attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
+
 %{_mandir}/man1/krb5-send-pr.1*
 %{_mandir}/man8/kadmin.8*
 %{_mandir}/man8/kadmin.local.8*
