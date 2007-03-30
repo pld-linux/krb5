@@ -50,7 +50,7 @@ END_OF_MSG
 	# Check if the service is already running?
 	if [ ! -f /var/lock/subsys/krb524d ]; then
 		msg_starting "Kerberos V5-to-V4 Server"
-		daemon krb524d -d ${KERBEROS_DATABASE}
+		daemon krb524d -m
 		RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb524d
 	else
