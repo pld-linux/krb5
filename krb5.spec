@@ -1,6 +1,9 @@
 #
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
+# - package -common?:
+# 	- do something with /var/lib/kerberos
+# 	- -libs should not contain man pages and other stuff
 #
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
