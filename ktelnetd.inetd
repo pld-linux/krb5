@@ -6,4 +6,5 @@ FLAGS=nowait
 USER=root
 SERVER=tcpd
 DAEMON=/usr/sbin/ktelnetd
-#DAEMONARGS=
+# for encrypted sessions use the following
+#DAEMONARGS="-e"
