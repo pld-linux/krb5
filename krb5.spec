@@ -2,8 +2,9 @@
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
 # - finish config files and init scripts
-# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011107.html
-# - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011106.html
+# - check unpackaged files
+# - package docs
+# - package db2 and openldap plugins
 #
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
@@ -14,7 +15,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6
-Release:	0.2
+Release:	0.1
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
@@ -38,7 +39,6 @@ Source14:	kshell.inetd
 Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
-Source18:	krb5-tex-pdf.sh
 URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-telnetd.patch
 Patch1:		%{name}-manpages.patch
@@ -52,26 +52,27 @@ Patch7:		%{name}-passive.patch
 Patch8:		%{name}-ktany.patch
 Patch9:		%{name}-size.patch
 Patch10:	%{name}-ftp-glob.patch
-Patch11:	%{name}-check.patch
-Patch12:	%{name}-norpath.patch
-Patch13:	%{name}-paths.patch
-Patch14:	%{name}-autoconf.patch
-Patch15:	%{name}-api.patch
-Patch16:	%{name}-brokenrev.patch
-Patch17:	%{name}-dns.patch
-Patch18:	%{name}-enospc.patch
-Patch19:	%{name}-fclose.patch
-Patch20:	%{name}-fix-sendto_kdc-memset.patch
-Patch21:	%{name}-gssinit.patch
-Patch22:	%{name}-io.patch
-Patch23:	%{name}-kprop-mktemp.patch
-Patch24:	%{name}-login-lpass.patch
-Patch25:	%{name}-null.patch
-Patch26:	%{name}-rcp-markus.patch
-Patch27:	%{name}-rcp-sendlarge.patch
-Patch28:	%{name}-reject-bad-transited.patch
-Patch29:	%{name}-send-pr-tempfile.patch
-Patch30:	%{name}-telnet-environ.patch
+Patch11:	%{name}-norpath.patch
+Patch12:	%{name}-paths.patch
+Patch13:	%{name}-autoconf.patch
+Patch14:	%{name}-api.patch
+Patch15:	%{name}-brokenrev.patch
+Patch16:	%{name}-dns.patch
+Patch17:	%{name}-enospc.patch
+Patch18:	%{name}-fclose.patch
+Patch19:	%{name}-fix-sendto_kdc-memset.patch
+Patch20:	%{name}-gssinit.patch
+Patch21:	%{name}-io.patch
+Patch22:	%{name}-kprop-mktemp.patch
+Patch23:	%{name}-login-lpass.patch
+Patch24:	%{name}-null.patch
+Patch25:	%{name}-rcp-markus.patch
+Patch26:	%{name}-rcp-sendlarge.patch
+Patch27:	%{name}-reject-bad-transited.patch
+Patch28:	%{name}-send-pr-tempfile.patch
+Patch29:	%{name}-telnet-environ.patch
+Patch30:	%{name}-as-needed.patch
+Patch31:	%{name}-doc.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -369,7 +370,7 @@ Biblioteki statyczne Kerberosa V5.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
-#patch11 -p1
+%patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
@@ -377,8 +378,8 @@ Biblioteki statyczne Kerberosa V5.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
-%patch19 -p1
-%patch20 -p0
+%patch19 -p0
+%patch20 -p1
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
@@ -389,36 +390,33 @@ Biblioteki statyczne Kerberosa V5.
 %patch28 -p1
 %patch29 -p1
 %patch30 -p1
+%patch31 -p1
 
 cp src/krb524/README README.krb524
-sed -i -e '1s!\[twoside\]!!;s!%\(\\usepackage{hyperref}\)!\1!' doc/api/library.tex
-sed -i -e '1c\
-\\documentclass{article}\
-\\usepackage{fixunder}\
-\\usepackage{functions}\
-\\usepackage{fancyheadings}\
-\\usepackage{hyperref}' doc/implement/implement.tex
 
 %build
 cd src
 # Get LFS support on systems that need it which aren't already 64-bit.
 %ifarch %{ix86} s390 ppc sparc
 CFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
-CPPFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
-CXXFLAGS="%{rpmcxxflags} -D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
+CPPFLAGS="-D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
 %else
 CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
-CPPFLAGS="%{rpmcflags} -I%{_includedir}/et -I%{_includedir}/ncurses"
-CXXFLAGS="%{rpmcxxflags} -I%{_includedir}/et -I%{_includedir}/ncurses"
+CPPFLAGS="-I%{_includedir}/et -I%{_includedir}/ncurses"
 %endif
 
-export CFLAGS CPPFLAGS CXXFLAGS
+top=`pwd`
+for configurein in `find -name configure.in -type f` ; do
+	cd `dirname $configurein`
+	grep -q A._CONFIG_HEADER configure.in && %{__autoheader} -I "$top"
+	%{__autoconf} -I "$top"
+	cd $top
+done
 
-%{__autoconf}
-%{__autoheader}
 %configure \
-	ac_cv_lib_ncurses_setupterm="yes" \
-	ac_cv_func_tgetent="yes" \
+	CC=%{__cc} \
+	CFLAGS="$CFLAGS" \
+	CPPFLAGS="$CPPFLAGS" \
 	%{?with_openldap:OPENLDAP_PLUGIN=yes} \
 	%{!?with_openldap:OPENLDAP_PLUGIN=""} \
 	--libexecdir=%{_libdir} \
@@ -437,15 +435,8 @@ export CFLAGS CPPFLAGS CXXFLAGS
 %{__make}
 %{__make} check
 
-$RPM_SOURCE_DIR/krb5-tex-pdf.sh create << EOF
-doc/api       library krb5
-doc/api       libdes
-doc/implement implement
-doc/kadm5     adb-unit-test
-doc/kadm5     api-unit-test
-doc/kadm5     api-funcspec
-doc/kadm5     api-server-design
-EOF
+cd ../doc
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -455,24 +446,24 @@ install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.
 %{__make} -C src install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-install %{SOURCE5} $RPM_BUILD_ROOT%{_sysconfdir}/
-install %{SOURCE6} $RPM_BUILD_ROOT%{_localstatedir}/
-install %{SOURCE3} $RPM_BUILD_ROOT%{_localstatedir}/
-install %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
-install %{SOURCE14} $RPM_BUILD_ROOT%{_sbindir}/propagation
-install %{SOURCE8} %{SOURCE9} $RPM_BUILD_ROOT/etc/shrc.d
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
+install %{SOURCE7} $RPM_BUILD_ROOT%{_localstatedir}
+install %{SOURCE4} $RPM_BUILD_ROOT%{_localstatedir}
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
+install %{SOURCE8} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
+install %{SOURCE15} $RPM_BUILD_ROOT%{_sbindir}/propagation
+install %{SOURCE9} %{SOURCE10} $RPM_BUILD_ROOT/etc/shrc.d
 
-install %{SOURCE10} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
-install %{SOURCE11} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
-install %{SOURCE12} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
-install %{SOURCE13} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
+install %{SOURCE11} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
+install %{SOURCE12} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
+install %{SOURCE13} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
+install %{SOURCE14} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
-install %{SOURCE15} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
-install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
+install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
+install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{with krb4}
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
 
 ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
@@ -481,11 +472,6 @@ touch $RPM_BUILD_ROOT%{_localstatedir}/krb5.keytab
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
 rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
-
-find doc -size 0 -print | xargs rm -f
-
-# rpath fix
-sed "s/^CC_LINK=.*/CC_LINK='\$(CC) \$(PROG_LIBPATH)'/g" src/krb5-config > $RPM_BUILD_ROOT%{_bindir}/krb5-config
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -587,12 +573,12 @@ fi
 %attr(755,root,root) %{_sbindir}/kadmind
 %attr(755,root,root) %{_sbindir}/ktutil
 %attr(755,root,root) %{_sbindir}/k5srvutil
-%attr(755,root,root) %{_sbindir}/v5passwdd
 %attr(755,root,root) %{_sbindir}/gss-server
 %attr(755,root,root) %{_sbindir}/sserver
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
 %{?with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
 
+%{_mandir}/man1/krb5-send-pr.1*
 %{_mandir}/man8/kadmin.8*
 %{_mandir}/man8/kadmin.local.8*
 %{_mandir}/man8/kdb5_util.8*
@@ -611,7 +597,6 @@ fi
 
 %attr(755,root,root) %{_bindir}/kdestroy
 %attr(755,root,root) %{_bindir}/kinit
-%attr(755,root,root) %{_bindir}/v5passwd
 %attr(755,root,root) %{_bindir}/klist
 %attr(755,root,root) %{_bindir}/gss-client
 %attr(4755,root,root) %{_bindir}/ksu
@@ -621,7 +606,6 @@ fi
 %attr(755,root,root) %{_bindir}/sclient
 %attr(755,root,root) %{_bindir}/kvno
 
-%{_mandir}/man1/v5passwd.1*
 %{_mandir}/man1/kerberos.1*
 %{_mandir}/man1/kdestroy.1*
 %{_mandir}/man1/kinit.1*
@@ -698,8 +682,11 @@ fi
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/*.so
 %{_includedir}/gssapi
+%{_includedir}/gssrpc
+%{_includedir}/krb5
 %{?with_krb4:%{_includedir}/kerberosIV}
 %{_includedir}/*.h
+%{_mandir}/man1/krb5-config.1*
 
 %if 0
 configure: error: Sorry, static libraries do not work in this release.
