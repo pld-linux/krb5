@@ -6,4 +6,4 @@ FLAGS=nowait
 USER=root
 SERVER=tcpd
 DAEMON=/usr/sbin/ktelnetd
-DAEMONARGS="-h -a valid"
+#DAEMONARGS=
