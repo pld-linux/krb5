@@ -9,9 +9,8 @@ KADMIN_SERVICE_RUN_NICE_LEVEL="+0"
 # Nicelevel for Kerberos Propagation Client
 KPROPD_SERVICE_RUN_NICE_LEVEL="+0"
 
-
 # Kerberos realm
-KERBEROS_REALM = "PLD-LINUX.ORG"
+KERBEROS_REALM=
 
 # Kerberos database
 KERBEROS_DATABASE_FILE="/var/lib/kerberos/principal"
@@ -26,4 +25,3 @@ KERBEROS_KADM_KEYTAB_FILE="/var/lib/kerberos/kadm5.keytab"
 # This option specifies how the KDC responds to kerberos V4 requests
 # for tickets. Possible options are: none/disable/full/nopreauth
 KERBEROS_V4_MODE="none"
-
