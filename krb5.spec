@@ -6,8 +6,9 @@
 # - SECURITY: http://securitytracker.com/alerts/2004/Aug/1011106.html
 #
 # Conditional build:
-%bcond_with	krb4	# build with Kerberos V4 support
-%bcond_without	tcl	# build without tcl (needed for tests) 
+%bcond_with	krb4		# build with Kerberos V4 support
+%bcond_with	tcl		# build with tcl
+%bcond_without	openldap	# don't build openldap plugin
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -37,35 +38,53 @@ Source14:	kshell.inetd
 Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
+Source18:	krb5-tex-pdf.sh
 URL:		http://web.mit.edu/kerberos/www/
-Patch0:		%{name}-gcc33.patch
-Patch1:		%{name}-telnetd.patch
-Patch2:		%{name}-manpages.patch
-Patch3:		%{name}-netkit-rsh.patch
-Patch4:		%{name}-rlogind-environ.patch
-Patch5:		%{name}-ksu-access.patch
-Patch6:		%{name}-ksu-path.patch
-Patch7:		%{name}-tiocgltc.patch
-Patch8:		%{name}-term.patch
-Patch9:		%{name}-passive.patch
+Patch0:		%{name}-telnetd.patch
+Patch1:		%{name}-manpages.patch
+Patch2:		%{name}-netkit-rsh.patch
+Patch3:		%{name}-rlogind-environ.patch
+Patch4:		%{name}-ksu-access.patch
+Patch5:		%{name}-ksu-path.patch
+Patch6:		%{name}-tiocgltc.patch
+Patch7:		%{name}-passive.patch
 # http://lite.mit.edu/
-Patch10:	%{name}-ktany.patch
-Patch11:	%{name}-size.patch
-Patch12:	%{name}-ftp-glob.patch
-Patch13:	%{name}-check.patch
-Patch14:	%{name}-double-free.patch
-Patch15:	%{name}-varargs.patch
-Patch16:	%{name}-norpath.patch
-Patch17:	%{name}-paths.patch
-Patch18:	%{name}-autoconf.patch
+Patch8:		%{name}-ktany.patch
+Patch9:		%{name}-size.patch
+Patch10:	%{name}-ftp-glob.patch
+Patch11:	%{name}-check.patch
+Patch12:	%{name}-norpath.patch
+Patch13:	%{name}-paths.patch
+Patch14:	%{name}-autoconf.patch
+Patch15:	%{name}-api.patch
+Patch16:	%{name}-brokenrev.patch
+Patch17:	%{name}-dns.patch
+Patch18:	%{name}-enospc.patch
+Patch19:	%{name}-fclose.patch
+Patch20:	%{name}-fix-sendto_kdc-memset.patch
+Patch21:	%{name}-gssinit.patch
+Patch22:	%{name}-io.patch
+Patch23:	%{name}-kprop-mktemp.patch
+Patch24:	%{name}-login-lpass.patch
+Patch25:	%{name}-null.patch
+Patch26:	%{name}-rcp-markus.patch
+Patch27:	%{name}-rcp-sendlarge.patch
+Patch28:	%{name}-reject-bad-transited.patch
+Patch29:	%{name}-send-pr-tempfile.patch
+Patch30:	%{name}-telnet-environ.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
-BuildRequires:	e2fsprogs-devel >= 1.34
+BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
+BuildRequires:	gzip
 BuildRequires:	mawk
 BuildRequires:	ncurses-devel
+BuildRequires:	texinfo
+BuildRequires:	tetex-latex
+BuildRequires:	tetex-format-pdflatex
 BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_openldap:BuildRequires:	openldap-devel}
 %{?with_tcl:BuildRequires:	tcl-devel}
 Requires:	rc-scripts
 Requires:	setup >= 2.4.6-2
@@ -345,12 +364,12 @@ Biblioteki statyczne Kerberosa V5.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p0
+%patch6 -p0
+%patch7 -p1
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
-%patch11 -p1
+#patch11 -p1
 %patch12 -p1
 %patch13 -p1
 %patch14 -p1
@@ -358,30 +377,75 @@ Biblioteki statyczne Kerberosa V5.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
+%patch19 -p1
+%patch20 -p0
+%patch21 -p1
+%patch22 -p1
+%patch23 -p1
+%patch24 -p1
+%patch25 -p1
+%patch26 -p1
+%patch27 -p1
+%patch28 -p1
+%patch29 -p1
+%patch30 -p1
+
+cp src/krb524/README README.krb524
+sed -i -e '1s!\[twoside\]!!;s!%\(\\usepackage{hyperref}\)!\1!' doc/api/library.tex
+sed -i -e '1c\
+\\documentclass{article}\
+\\usepackage{fixunder}\
+\\usepackage{functions}\
+\\usepackage{fancyheadings}\
+\\usepackage{hyperref}' doc/implement/implement.tex
 
 %build
 cd src
-%{__aclocal}
+# Get LFS support on systems that need it which aren't already 64-bit.
+%ifarch %{ix86} s390 ppc sparc
+CFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
+CPPFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
+CXXFLAGS="%{rpmcxxflags} -D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
+%else
+CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
+CPPFLAGS="%{rpmcflags} -I%{_includedir}/et -I%{_includedir}/ncurses"
+CXXFLAGS="%{rpmcxxflags} -I%{_includedir}/et -I%{_includedir}/ncurses"
+%endif
+
+export CFLAGS CPPFLAGS CXXFLAGS
+
 %{__autoconf}
-cp -f /usr/share/automake/config.sub config/
-CC="%{__cc}"
-CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et"
+%{__autoheader}
 %configure \
+	ac_cv_lib_ncurses_setupterm="yes" \
+	ac_cv_func_tgetent="yes" \
+	%{?with_openldap:OPENLDAP_PLUGIN=yes} \
+	%{!?with_openldap:OPENLDAP_PLUGIN=""} \
 	--libexecdir=%{_libdir} \
 	--enable-shared \
-	--enable-static \
-	%{?with_krb4: --with-krb4}%{?!with_krb4: --without-krb4} \
-	--with-vague-errors \
+	%{?with_krb4:--with-krb4} \
+	%{!?with_krb4:--without-krb4} \
 	--enable-dns \
 	--enable-dns-for-kdc \
 	--enable-dns-for-realm \
 	--with-netlib=-lresolv \
-	%{!?with_tcl: --with-tcl=%{_prefix}} \
+	%{?with_tcl:--with-tcl=%{_prefix}} \
+	%{!?with_tcl:--without-tcl} \
 	--with-system-et \
-	--with-system-ss \
-	%{_target_platform}
+	--with-system-ss
 
 %{__make}
+%{__make} check
+
+$RPM_SOURCE_DIR/krb5-tex-pdf.sh create << EOF
+doc/api       library krb5
+doc/api       libdes
+doc/implement implement
+doc/kadm5     adb-unit-test
+doc/kadm5     api-unit-test
+doc/kadm5     api-funcspec
+doc/kadm5     api-server-design
+EOF
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -408,7 +472,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE15} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{with krb4}
-install %{SOURCE2}			$RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
 
 ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
@@ -637,6 +701,9 @@ fi
 %{?with_krb4:%{_includedir}/kerberosIV}
 %{_includedir}/*.h
 
+%if 0
+configure: error: Sorry, static libraries do not work in this release.
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/*.a
+%endif
