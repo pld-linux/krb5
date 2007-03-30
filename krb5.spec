@@ -5,6 +5,8 @@
 # 	- do something with /var/lib/kerberos
 # 	- -libs should not contain man pages and other stuff
 #
+# - making check in plugins/kdb/db2/libdb2/test... fails on x86_64
+#
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_with	tcl		# build with tcl
