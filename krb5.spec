@@ -1,9 +1,7 @@
 #
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
-# - finish config files and init scripts
 # - package docs
-# - package db2 and openldap plugins
 #
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
@@ -113,13 +111,14 @@ klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
 pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
 hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
-%package clients
+%package client
 Summary:	Kerberos V5 programs for use on workstations
 Summary(pl.UTF-8):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
+Obsoletes:	heimdal
 
-%description clients
+%description client
 Kerberos V5 Clients.
 
 Kerberos V5 is based on the Kerberos authentication system developed
@@ -133,7 +132,7 @@ decrypts the TGT (i.e., if the client gave the correct password), it
 keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
-%description clients -l pl.UTF-8
+%description client -l pl.UTF-8
 Oprogramowanie klienckie do korzystania z usług systemu Kerberos V5.
 
 Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
@@ -148,8 +147,9 @@ hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 Summary:	Kerberos V5 Server
 Summary(pl.UTF-8):	Serwer Kerberos V5
 Group:		Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	words
+Obsoletes:	heimdal-server
 
 %description server
 Master KDC.
@@ -176,13 +176,26 @@ klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
 pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
 hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
+%package server-ldap
+Summary:	The LDAP storage plugin for the Kerberos 5 KDC.
+Group:		Networking
+Requires:	%{name}-server = %{version}-%{release}
+
+%description server-ldap
+Kerberos is a network authentication system. The krb5-server package
+contains the programs that must be installed on a Kerberos 5 key
+distribution center (KDC).  If you are installing a Kerberos 5 KDC,
+and you wish to use a directory server to store the data for your
+realm, you need to install this package.
+
 %package ftpd
 Summary:	The standard UNIX FTP (file transfer protocol) server
 Summary(pl.UTF-8):	Serwer FTP
 Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	ftpd
+Obsoletes:	heimdal-ftpd
 
 %description ftpd
 FTP is the file transfer protocol, which is a widely used Internet
@@ -196,9 +209,10 @@ Internecie.
 Summary:	Kerberized remote shell server
 Summary(pl.UTF-8):	Skerberyzowany serwer zdalnego dostępu
 Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rshd
+Obsoletes:	heimdal-rshd
 
 %description kshd
 The kshd package contains kerberized remote shell server which
@@ -214,9 +228,10 @@ autentykacji Kerberos.
 Summary:	Server for the telnet remote login
 Summary(pl.UTF-8):	Serwer protokołu telnet
 Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	telnetd
+Obsoletes:	heimdal-telnetd
 
 %description telnetd
 Telnet is a popular protocol for remote logins across the Internet.
@@ -232,7 +247,7 @@ na której działa.
 Summary:	Remote login server
 Summary(pl.UTF-8):	Serwer zdalnego logowania
 Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rlogind
 
@@ -249,7 +264,7 @@ wykorzystuje system autentykacji Kerberos.
 Summary:	rlogin is used when signing onto a system
 Summary(pl.UTF-8):	Narzędzie do logowania w systemie
 Group:		Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Provides:	rlogin
 
 %description rlogin
@@ -268,9 +283,10 @@ zawiera skerberyzowaną wersję programu rlogin.
 Summary:	Clients for remote access commands (rsh, rlogin, rcp)
 Summary(pl.UTF-8):	Klient zdalnego dostępu (rsh, rlogin, rcp)
 Group:		Applications/Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Obsoletes:	rcp
 Obsoletes:	rsh
+Obsoletes:	heimdal-rsh
 
 %description rsh
 The rsh package contains a set of programs which allow users to run
@@ -288,7 +304,8 @@ kopiowanie plików pomiędzy maszynami (rsh, rlogin, rcp).
 Summary:	The standard UNIX FTP (file transfer protocol) client
 Summary(pl.UTF-8):	Klient protokołu FTP
 Group:		Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
+Obsoletes:	heimdal-ftp
 
 %description ftp
 The ftp package provides the standard UNIX command-line FTP client
@@ -305,8 +322,9 @@ rozpowszechnionym w Internecie.
 Summary:	Client for the telnet remote login
 Summary(pl.UTF-8):	Klient usługi telnet
 Group:		Networking
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 Obsoletes:	telnet
+Obsoletes:	heimdal-telnet
 
 %description telnet
 Telnet is a popular protocol for remote logins across the Internet.
@@ -325,6 +343,7 @@ Requires(post,preun):	grep
 Requires(preun):	coreutils
 Obsoletes:	krb5-configs
 Obsoletes:	krb5-lib
+Obsoletes:	heimdal-libs
 
 %description libs
 Libraries for Kerberos V5 Server and Client
@@ -336,7 +355,7 @@ Biblioteki dynamiczne dla systemu Kerberos V5.
 Summary:	Header files for Kerberos V5 libraries and documentation
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{version}
+Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
@@ -348,7 +367,7 @@ Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5.
 Summary:	Static Kerberos V5 libraries
 Summary(pl.UTF-8):	Biblioteki statyczne Kerberosa V5
 Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description static
 Static Kerberos V5 libraries.
@@ -591,7 +610,17 @@ fi
 %{_mandir}/man8/k5srvutil.8*
 %{_mandir}/man8/sserver.8*
 
-%files clients
+%if %{WITH_LDAP}
+%files server-ldap
+%defattr(644,root,root,755)
+%attr(755,root,root) %{_libdir}/krb5/plugins/kdb/kldap.so
+%attr(755,root,root) %{_libdir}/libkdb_ldap.so
+%attr(755,root,root) %{_libdir}/libkdb_ldap.so.*
+%attr(755,root,root) %{_sbindir}/kdb5_ldap_util
+%{_mandir}/man8/kdb5_ldap_util.8*
+%endif
+
+%files client
 %defattr(644,root,root,755)
 %doc doc/krb5-user.html
 %attr(755,root,root) /etc/shrc.d/kerberos.*
@@ -673,7 +702,15 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
 %attr(400,root,root) %ghost %{_localstatedir}/krb5.keytab
 
-%attr(755,root,root) %{_libdir}/*.so.*
+%dir %{_libdir}/krb5
+%dir %{_libdir}/krb5/plugins
+%dir %{_libdir}/krb5/plugins/kdb
+%attr(755,root,root) %{_libdir}/libdes425.so.*
+%attr(755,root,root) %{_libdir}/libgss*.so.*
+%attr(755,root,root) %{_libdir}/libk5crypto.so.*
+%attr(755,root,root) %{_libdir}/libkadm*.so.*
+%attr(755,root,root) %{_libdir}/libkdb5.so.*
+%attr(755,root,root) %{_libdir}/libkrb5*.so.*
 %attr(755,root,root) %{_sbindir}/login.krb5
 
 %{_mandir}/man8/login.krb5.8*
@@ -684,7 +721,12 @@ fi
 %defattr(644,root,root,755)
 %doc doc/{kadmin,krb5-protocol}
 %attr(755,root,root) %{_bindir}/krb5-config
-%attr(755,root,root) %{_libdir}/*.so
+%attr(755,root,root) %{_libdir}/libdes425.so
+%attr(755,root,root) %{_libdir}/libgss*.so
+%attr(755,root,root) %{_libdir}/libk5crypto.so
+%attr(755,root,root) %{_libdir}/libkadm*.so
+%attr(755,root,root) %{_libdir}/libkdb5.so
+%attr(755,root,root) %{_libdir}/libkrb5*.so
 %{_includedir}/gssapi
 %{_includedir}/gssrpc
 %{_includedir}/krb5
