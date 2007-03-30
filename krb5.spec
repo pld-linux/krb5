@@ -11,7 +11,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6
-Release:	0.1
+Release:	1
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
@@ -74,8 +74,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
-BuildRequires:	gzip
-BuildRequires:	mawk
+BuildRequires:	ghostscript
 BuildRequires:	ncurses-devel
 BuildRequires:	texinfo
 BuildRequires:	tetex-latex
