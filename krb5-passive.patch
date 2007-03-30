@@ -1,3 +1,6 @@
+We set all of the FTP clients to passive mode by default.  Or at least that's
+the intention.
+
 --- krb5-1.2.1/src/appl/gssftp/ftp/main.c.passive	Thu Jun 29 22:27:07 2000
 +++ krb5-1.2.1/src/appl/gssftp/ftp/main.c	Wed Aug 16 13:15:08 2000
 @@ -178,7 +178,7 @@

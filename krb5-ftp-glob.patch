@@ -1,31 +1,28 @@
 --- krb5-1.3/src/appl/gssftp/ftp/cmds.c
 +++ krb5-1.3/src/appl/gssftp/ftp/cmds.c
-@@ -99,6 +99,65 @@
+@@ -99,6 +99,62 @@
  static void quote1 (char *, int, char **);
  static char *dotrans (char *);
  static char *domap (char *);
-+static int checkglob(int fd, const char *pattern);
++static int checkglob(const char *filename, const char *pattern);
 +
 +/*
 + * pipeprotect: protect against "special" local filenames by prepending
-+ * "./". Special local filenames are "-" and "|..." AND "/...".
++ * "./". Special local filenames are "-" and any "filename" which begins
++ * with either "|" or "/".
 + */
 +static char *pipeprotect(char *name) 
 +{
-+	char *nu;
-+	if (strcmp(name, "-") && *name!='|' && *name!='/') {
++	static char nu[MAXPATHLEN];
++	if ((name == NULL) ||
++	    ((strcmp(name, "-") != 0) && (*name != '|') && (*name != '/'))) {
 +		return name;
-+	}
-+
-+	/* We're going to leak this memory. XXX. */
-+	nu = malloc(strlen(name)+3);
-+	if (nu==NULL) {
-+		perror("malloc");
-+		code = -1;
-+		return NULL;
 +	}
 +	strcpy(nu, ".");
 +	if (*name != '/') strcat(nu, "/");
++	if (strlen(nu) + strlen(name) >= sizeof(nu)) {
++		return NULL;
++	}
 +	strcat(nu, name);
 +	return nu;
 +}
@@ -60,13 +57,13 @@
 +		else if (name[i]=='/') gotdots = 0;
 +		else gotdots = -1;
 +	}
-+	name[len-1] = 0;
++	name[len-1] = '\0';
 +	return name;
 +}
  
  /*
   * `Another' gets another argument, and stores the new argc and argv.
-@@ -844,7 +903,15 @@
+@@ -844,7 +900,15 @@
  
  	if (argc == 2) {
  		argc++;
@@ -83,7 +80,7 @@
  		loc++;
  	}
  	if (argc < 2 && !another(&argc, &argv, "remote-file"))
-@@ -1016,8 +1083,19 @@
+@@ -1016,8 +1080,19 @@
  			if (mapflag) {
  				tp = domap(tp);
  			}
@@ -105,7 +102,7 @@
  			if (!mflag && fromatty) {
  				ointer = interactive;
  				interactive = 1;
-@@ -1045,8 +1123,8 @@
+@@ -1045,8 +1120,8 @@
  	static char buf[MAXPATHLEN];
  	static FILE *ftemp = NULL;
  	static char **args;
@@ -116,14 +113,15 @@
  
  	if (!mflag) {
  		if (!doglob) {
-@@ -1075,23 +1153,46 @@
+@@ -1075,23 +1150,46 @@
  			return (NULL);
  		}
  #else
 -		(void) strncpy(temp, _PATH_TMP, sizeof(temp) - 1);
 -		temp[sizeof(temp) - 1] = '\0';
 -		(void) mktemp(temp);
-+		int oldumask, fd;
++		int fd;
++		mode_t oldumask;
 +		(void) strcpy(temp, _PATH_TMP);
 +
 +		/* libc 5.2.18 creates with mode 0666, which is dumb */
@@ -135,6 +133,7 @@
 +			printf("Error creating temporary file, oops\n");
 +			return NULL;
 +		}
++		close(fd);
  #endif /* !_WIN32 */
  		oldverbose = verbose, verbose = 0;
  		oldhash = hash, hash = 0;
@@ -145,40 +144,28 @@
 -			recvrequest ("NLST", temp, *argv, rmode, 0, 0);
 +
 +		while (*++argv != NULL) {
-+			int     dupfd = dup(fd);
-+
 +			recvrequest ("NLST", temp, *argv, "a", 0, 0);
-+			if (!checkglob(dupfd, *argv)) {
++			if (!checkglob(temp, *argv)) {
 +				badglob = 1;
 +				break;
 +			}
 +		}
-+		unlink(temp);
 +
  		if (doswitch) {
  			pswitch(!proxy);
  		}
  		verbose = oldverbose; hash = oldhash;
--		ftemp = fopen(temp, "r");
--		(void) unlink(temp);
+ 		ftemp = fopen(temp, "r");
+ 		(void) unlink(temp);
 +		if (badglob) {
 +			printf("Refusing to handle insecure file list\n");
-+			close(fd);
++			fclose(ftemp);
 +			return NULL;
 +		}
-+		ftemp = fdopen(fd, "r");
  #ifdef _WIN32
  		free(temp);
  		temp = NULL;
-@@ -1100,6 +1201,7 @@
- 			printf("can't find list of remote files, oops\n");
- 			return (NULL);
- 		}
-+		rewind(ftemp);
- 	}
- 	if (fgets(buf, sizeof (buf), ftemp) == NULL) {
- 		(void) fclose(ftemp), ftemp = NULL;
-@@ -1110,6 +1212,100 @@
+@@ -1110,6 +1208,105 @@
  	return (buf);
  }
  
@@ -222,7 +209,7 @@
 + *                                            --okir
 + */
 +static int
-+checkglob(int fd, const char *pattern)
++checkglob(const char *filename, const char *pattern)
 +{
 +	const char      *sp;
 +	char            buffer[MAXPATHLEN], dotdot[MAXPATHLEN];
@@ -243,7 +230,12 @@
 +		dotdot[nrslash++] = isdotdotglob(sp);
 +	}
 +
-+	fp = fdopen(fd, "r");
++	fp = fopen(filename, "r");
++	if (fp == NULL) {
++		perror("fopen");
++		return 0;
++	}
++
 +	while (okay && fgets(buffer, sizeof(buffer), fp) != NULL) {
 +		char    *sp;
 +

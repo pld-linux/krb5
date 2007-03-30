@@ -1,19 +1,7 @@
-Remove the rpath from the listed flags.  Suppress include path if it's the
-system default include path.  Suppress lib directory if it's the system default
-lib directory.
+Remove the rpath from the listed flags.
+Suppress lib directory if it's the system default lib directory.
 --- krb5-1.3/src/krb5-config.in
 +++ krb5-1.3/src/krb5-config.in
-@@ -165,7 +165,9 @@
- fi
- 
- if test -n "$do_cflags"; then
--    echo "-I${includedir}"
-+    if test "${includedir}" != /usr/include ; then
-+        echo "-I${includedir}"
-+    fi
- fi
- 
- 
 @@ -179,6 +181,11 @@
  	    -e 's#\$(LDFLAGS)#'"$LDFLAGS"'#' \
  	    -e 's#\$(CFLAGS)#'"$CFLAGS"'#'`
