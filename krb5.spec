@@ -84,7 +84,7 @@ BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
 # GNU ghostscript has broken ps2pdf
-BuildRequires:	ghostscript-esp
+BuildRequires:	ghostscript
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
