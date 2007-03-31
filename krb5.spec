@@ -83,7 +83,6 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
-# GNU ghostscript has broken ps2pdf
 BuildRequires:	ghostscript
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel}
@@ -595,8 +594,9 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
-%attr(700,root,root) %dir %{_localstatedir}
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/*
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.acl
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kdc.conf
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.dict
 
 %attr(755,root,root) %{_sbindir}/kadmin
 %attr(755,root,root) %{_sbindir}/kadmin.local
@@ -720,6 +720,9 @@ fi
 %defattr(644,root,root,755)
 %dir %{_sysconfdir}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
+
+%attr(700,root,root) %dir %{_localstatedir}
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5.keytab
 
 %dir %{_libdir}/krb5
 %dir %{_libdir}/krb5/plugins
