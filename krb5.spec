@@ -88,6 +88,7 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	texinfo
 BuildRequires:	tetex-latex
+BuildRequires:	tetex-format-latex
 BuildRequires:	tetex-format-pdflatex
 BuildRequires:	words
 Requires:	rc-scripts
