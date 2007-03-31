@@ -87,9 +87,10 @@ BuildRequires:	ncurses-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	texinfo
-BuildRequires:	tetex-latex
 BuildRequires:	tetex-format-latex
 BuildRequires:	tetex-format-pdflatex
+BuildRequires:	tetex-latex
+BuildRequires:	tetex-makeindex
 BuildRequires:	words
 Requires:	rc-scripts
 Requires:	setup >= 2.4.6-2
