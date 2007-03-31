@@ -16,7 +16,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6
-Release:	2.1
+Release:	2.2
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
@@ -74,6 +74,7 @@ Patch28:	%{name}-send-pr-tempfile.patch
 Patch29:	%{name}-telnet-environ.patch
 Patch30:	%{name}-as-needed.patch
 Patch31:	%{name}-doc.patch
+Patch32:	%{name}-tests.patch
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -414,6 +415,7 @@ Biblioteki statyczne Kerberosa V5.
 %patch29 -p1
 %patch30 -p1
 %patch31 -p1
+%patch32 -p1
 
 cp src/krb524/README README.krb524
 
