@@ -74,6 +74,7 @@ Patch28:	%{name}-send-pr-tempfile.patch
 Patch29:	%{name}-telnet-environ.patch
 Patch30:	%{name}-as-needed.patch
 Patch31:	%{name}-doc.patch
+BuildRequires:	/bin/csh
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
@@ -81,12 +82,13 @@ BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
 BuildRequires:	ghostscript
 BuildRequires:	ncurses-devel
+%{?with_openldap:BuildRequires:	openldap-devel}
+BuildRequires:	rpmbuild(macros) >= 1.268
+%{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	texinfo
 BuildRequires:	tetex-latex
 BuildRequires:	tetex-format-pdflatex
-BuildRequires:	rpmbuild(macros) >= 1.268
-%{?with_openldap:BuildRequires:	openldap-devel}
-%{?with_tcl:BuildRequires:	tcl-devel}
+BuildRequires:	words
 Requires:	rc-scripts
 Requires:	setup >= 2.4.6-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
