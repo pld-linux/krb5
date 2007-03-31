@@ -1,0 +1,11 @@
+--- krb5-1.6/src/tests/resolve/Makefile.in~	2006-10-14 01:54:24.000000000 +0200
++++ krb5-1.6/src/tests/resolve/Makefile.in	2007-03-31 13:19:53.138858011 +0200
+@@ -22,7 +22,7 @@
+ 	$(CC_LINK) -o $@ fake-addrinfo-test.o $(SUPPORT_LIB) $(LIBS)
+ 
+ check:: resolve addrinfo-test
+-	$(RUN_SETUP) $(VALGRIND) ./resolve
++	$(RUN_SETUP) $(VALGRIND) ./resolve www.pld-linux.org
+ 	$(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
+ 	$(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
+ 
