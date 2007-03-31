@@ -421,7 +421,7 @@ Biblioteki statyczne Kerberosa V5.
 %patch30 -p1
 %patch31 -p1
 %patch32 -p1
-%ifarch x86_64
+%ifarch %{x8664}
 %patch33 -p1
 %endif
 
