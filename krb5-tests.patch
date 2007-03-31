@@ -36,6 +36,17 @@
  	echo "Test 1: btree, hash: small key, small data pairs"
  	getnwords 200 > $TMP1
  	for type in btree hash; do
+@@ -96,6 +96,10 @@
+ 		if (cmp -s $TMP1 $TMP3) ; then :
+ 		else
+ 			echo "test1: type $type: failed"
++			echo "$TMP1:"
++			cat $TMP1
++			echo "$TMP3:"
++			cat $TMP3
+ 			exit 1
+ 		fi
+ 	done
 @@ -115,6 +117,7 @@
  # each a medium size data entry.
  test2()
