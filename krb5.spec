@@ -9,7 +9,7 @@
 #
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
-%bcond_with	tcl		# build with tcl
+%bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
 #
 Summary:	Kerberos V5 System
@@ -81,7 +81,8 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
-BuildRequires:	ghostscript
+# GNU ghostscript has broken ps2pdf
+BuildRequires:	ghostscript-esp
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
