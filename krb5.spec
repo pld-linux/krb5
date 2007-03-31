@@ -17,7 +17,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6
-Release:	2.4
+Release:	2.5
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
