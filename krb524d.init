@@ -23,19 +23,17 @@ KERBEROS_DATABASE=/var/lib/kerberos/principal
 
 # Check that networking is up.
 if is_yes "${NETWORKING}"; then
-        if [ ! -f /var/lock/subsys/network ]; then
-                msg_network_down "Kerberos V5-to-V4 Server"
-                exit 1
-        fi
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down "Kerberos V5-to-V4 Server"
+		exit 1
+	fi
 else
-        exit 0
+	exit 0
 fi
 
-# See how we were called.
-case "$1" in
-  start)
+start() {
 	if [ ! -f "${KERBEROS_DATABASE}" ] ; then
-                cat << END_OF_MSG
+		cat << END_OF_MSG
 Kerberos database could not be found in ${KERBEROS_DATABASE}!
 You have to create Kerberos database prior to running this service.
 This can be done with:
@@ -43,7 +41,7 @@ kdb5_util create -r <kerberos_realm> -s -d ${KERBEROS_DATABASE}
 
 See kdb5_util(8) for more information.
 END_OF_MSG
-                exit 1
+		exit 1
 
 	fi
 
@@ -52,45 +50,51 @@ END_OF_MSG
 		msg_starting "Kerberos V5-to-V4 Server"
 		daemon krb524d -m
 		RETVAL=$?
-                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb524d
+		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb524d
 	else
 		msg_already_running "Kerberos V5-to-V4 Server"
 	fi
+}
+
+stop() {
+	if [ -f /var/lock/subsys/krb524d ]; then
+		msg_stopping "Kerberos V5-to-V4 Server"
+		killproc krb524d
+		rm -f /var/lock/subsys/krb524d
+	else
+		msg_not_running "Kerberos V5-to-V4 Server"
+	fi
+}
+
+# See how we were called.
+case "$1" in
+  start)
+  	start
 	;;
   stop)
-	if [ -f /var/lock/subsys/krb524d ]; then
-                msg_stopping "Kerberos V5-to-V4 Server"
-                killproc krb524d
-                rm -f /var/lock/subsys/krb524d
-        else
-                msg_not_running "Kerberos V5-to-V4 Server"
-        fi
+  	stop
 	;;
   restart)
-        $0 stop
-        $0 start
-        exit $?
+	stop
+	start
 	;;
   reload)
 	if [ -f /var/lock/subsys/krb524d ]; then
-                msg_reloading "Kerberos V5-to-V4 Server"
-                killproc krb524d -HUP
-                RETVAL=$?
-        else
-                msg_not_running "Kerberos V5-to-V4 Server" >&2
-                RETVAL=7
-        fi
-        ;;
+		msg_reloading "Kerberos V5-to-V4 Server"
+		killproc krb524d -HUP
+		RETVAL=$?
+	else
+		msg_not_running "Kerberos V5-to-V4 Server" >&2
+		RETVAL=7
+	fi
+	;;
   status)
 	status	krb524d
 	RETVAL=$?
 	;;
   *)
 	msg_usage "$0 {start|stop|restart|reload|status}"
-        exit 3
+	exit 3
 esac
 
 exit $RETVAL
-
-# This must be last line !
-# vi:syntax=sh:tw=78:ts=8:sw=4
