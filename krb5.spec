@@ -373,6 +373,7 @@ Summary:	Header files for Kerberos V5 libraries and documentation
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
+Obsoletes:	heimdal-devel
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
@@ -725,7 +726,6 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%dir %{_sysconfdir}
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
 
 %attr(700,root,root) %dir %{_localstatedir}
@@ -734,12 +734,18 @@ fi
 %dir %{_libdir}/krb5
 %dir %{_libdir}/krb5/plugins
 %dir %{_libdir}/krb5/plugins/kdb
-%attr(755,root,root) %{_libdir}/libdes425.so.*
-%attr(755,root,root) %{_libdir}/libgss*.so.*
-%attr(755,root,root) %{_libdir}/libk5crypto.so.*
-%attr(755,root,root) %{_libdir}/libkadm*.so.*
-%attr(755,root,root) %{_libdir}/libkdb5.so.*
-%attr(755,root,root) %{_libdir}/libkrb5*.so.*
+%attr(755,root,root) %{_libdir}/libdes425.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libdes425.so.?
+%attr(755,root,root) %{_libdir}/libgss*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libgss*.so.?
+%attr(755,root,root) %{_libdir}/libk5crypto.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libk5crypto.so.?
+%attr(755,root,root) %{_libdir}/libkadm*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libkadm*.so.?
+%attr(755,root,root) %{_libdir}/libkdb5.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.?
+%attr(755,root,root) %{_libdir}/libkrb5*.so.*.*
+%attr(755,root,root) %ghost %{_libdir}/libkrb5*.so.?
 %attr(755,root,root) %{_sbindir}/login.krb5
 
 %{_mandir}/man8/login.krb5.8*
