@@ -113,8 +113,8 @@ keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
 %description -l pl.UTF-8
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (użytkownik lub serwis) wysyła żądanie biletu do
+Kerberos V5 jest systemem uwierzytelniania rozwijanym w MIT. W tym
+systemie klient (użytkownik lub usługa) wysyła żądanie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
 używając hasła klienta do jego zaszyfrowania i wysyła go z powrotem do
 klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
@@ -145,8 +145,8 @@ identity.
 %description client -l pl.UTF-8
 Oprogramowanie klienckie do korzystania z usług systemu Kerberos V5.
 
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (użytkownik lub serwis) wysyła żądanie biletu do
+Kerberos V5 jest systemem uwierzytelniania rozwijanym w MIT. W tym
+systemie klient (użytkownik lub usługa) wysyła żądanie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
 używając hasła klienta do jego zaszyfrowania i wysyła go z powrotem do
 klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
@@ -178,8 +178,8 @@ identity.
 %description server -l pl.UTF-8
 Główne centrum dystrybucji kluczy (KDC).
 
-Kerberos V5 jest systemem autentykacji rozwijanym w MIT. W tym
-systemie klient (użytkownik lub serwis) wysyła żądanie biletu do
+Kerberos V5 jest systemem uwierzytelniania rozwijanym w MIT. W tym
+systemie klient (użytkownik lub usługa) wysyła żądanie biletu do
 Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
 używając hasła klienta do jego zaszyfrowania i wysyła go z powrotem do
 klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
@@ -187,16 +187,24 @@ pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
 hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
 %package server-ldap
-Summary:	The LDAP storage plugin for the Kerberos 5 KDC.
+Summary:	The LDAP storage plugin for the Kerberos 5 KDC
+Summary(pl.UTF8):	Wtyczka przechowywania danych w LDAP dla KDC Kerberosa 5
 Group:		Networking
 Requires:	%{name}-server = %{version}-%{release}
 
 %description server-ldap
 Kerberos is a network authentication system. The krb5-server package
 contains the programs that must be installed on a Kerberos 5 key
-distribution center (KDC).  If you are installing a Kerberos 5 KDC,
+distribution center (KDC). If you are installing a Kerberos 5 KDC,
 and you wish to use a directory server to store the data for your
 realm, you need to install this package.
+
+%description server-ldap -l pl.UTF-8
+Kerberos to system uwierzytelniania sieciowego. Pakiet krb5-server
+zawiera programy, które muszą być zainstalowane w centrum dystrybucji
+kluczy Kerberosa 5 (KDC). W przypadku instalacji KDC Kerberosa 5 z
+użyciem serwera usług katalogowych do przechowywania danych należy
+zainstalować ten pakiet.
 
 %package ftpd
 Summary:	The standard UNIX FTP (file transfer protocol) server
@@ -232,7 +240,7 @@ Kerberos authentication system.
 %description kshd -l pl.UTF-8
 Ten pakiet zawiera skerberyzowaną wersję serwer zdalnego dostępu,
 który umożliwia zdalne wykonywanie poleceń w oparciu o system
-autentykacji Kerberos.
+uwierzytelniania Kerberos.
 
 %package telnetd
 Summary:	Server for the telnet remote login
@@ -267,8 +275,7 @@ rlogind but uses Kerberos authentication.
 
 %description klogind -l pl.UTF-8
 Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind ale
-wykorzystuje system autentykacji Kerberos.
-
+wykorzystuje system uwierzytelniania Kerberos.
 
 %package rlogin
 Summary:	rlogin is used when signing onto a system
