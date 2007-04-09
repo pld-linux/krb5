@@ -1,9 +1,6 @@
 #
 # TODO:
 # - split kdc/kadmind/krb524d/kpropd to separate subpackages
-# - package -common?:
-# 	- do something with /var/lib/kerberos
-# 	- -libs should not contain man pages and other stuff
 #
 # - making check in plugins/kdb/db2/libdb2/test... fails on x86_64
 #	temporaryli disabled this test on x86_64 - it's problem with Th builder
@@ -17,7 +14,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6
-Release:	2.6
+Release:	2.7
 License:	MIT
 Group:		Networking
 # http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
@@ -94,8 +91,6 @@ BuildRequires:	tetex-format-pdflatex
 BuildRequires:	tetex-latex
 BuildRequires:	tetex-makeindex
 BuildRequires:	words
-Requires:	rc-scripts
-Requires:	setup >= 2.4.6-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_localstatedir	/var/lib/kerberos
@@ -121,11 +116,47 @@ klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
 pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
 hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 
+%package common
+Summary:	Common files required by Kerberos V5 servers and workstations
+Summary(pl.UTF-8):	Wspólne pliki dla serwerów i klientów kerberosa
+Group:		Networking
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	rc-scripts
+Requires:	setup >= 2.4.6-2
+
+%description common
+Common configuration files, directories and programs required
+for Kerberos V5 servers and clients.
+
+Kerberos V5 is based on the Kerberos authentication system developed
+at MIT. Under Kerberos, a client (generally either a user or a
+service) sends a request for a ticket to the Key Distribution Center
+(KDC). The KDC creates a "ticket-granting ticket" (TGT) for the
+client, encrypts it using the client's password as the key, and sends
+the encrypted TGT back to the client. The client then attempts to
+decrypt the TGT, using its password. If the client successfully
+decrypts the TGT (i.e., if the client gave the correct password), it
+keeps the decrypted TGT, which indicates proof of the client's
+identity.
+
+%description common -l pl.UTF-8
+Wspólne pliki konfiguracyjne, katalogi i programy niezbędne do
+działania serwerów i klientów systemu Kerberos V5.
+
+Kerberos V5 jest systemem uwierzytelniania rozwijanym w MIT. W tym
+systemie klient (użytkownik lub usługa) wysyła żądanie biletu do
+Centrum Dystrybucji Kluczy (KDC). KDC tworzy zakodowany kredyt (TGT),
+używając hasła klienta do jego zaszyfrowania i wysyła go z powrotem do
+klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
+pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
+hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
+
 %package client
 Summary:	Kerberos V5 programs for use on workstations
 Summary(pl.UTF-8):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Obsoletes:	heimdal
 
 %description client
@@ -158,6 +189,7 @@ Summary:	Kerberos V5 Server
 Summary(pl.UTF-8):	Serwer Kerberos V5
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	words
 Obsoletes:	heimdal-server
 
@@ -211,6 +243,7 @@ Summary:	The standard UNIX FTP (file transfer protocol) server
 Summary(pl.UTF-8):	Serwer FTP
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	ftpd
 Obsoletes:	heimdal-ftpd
@@ -228,6 +261,7 @@ Summary:	Kerberized remote shell server
 Summary(pl.UTF-8):	Skerberyzowany serwer zdalnego dostępu
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rshd
 Obsoletes:	heimdal-rshd
@@ -247,6 +281,7 @@ Summary:	Server for the telnet remote login
 Summary(pl.UTF-8):	Serwer protokołu telnet
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	telnetd
 Obsoletes:	heimdal-telnetd
@@ -266,6 +301,7 @@ Summary:	Remote login server
 Summary(pl.UTF-8):	Serwer zdalnego logowania
 Group:		Networking/Daemons
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rlogind
 
@@ -282,6 +318,7 @@ Summary:	rlogin is used when signing onto a system
 Summary(pl.UTF-8):	Narzędzie do logowania w systemie
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Provides:	rlogin
 
 %description rlogin
@@ -301,6 +338,7 @@ Summary:	Clients for remote access commands (rsh, rlogin, rcp)
 Summary(pl.UTF-8):	Klient zdalnego dostępu (rsh, rlogin, rcp)
 Group:		Applications/Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Obsoletes:	rcp
 Obsoletes:	rsh
 Obsoletes:	heimdal-rsh
@@ -322,6 +360,7 @@ Summary:	The standard UNIX FTP (file transfer protocol) client
 Summary(pl.UTF-8):	Klient protokołu FTP
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Obsoletes:	heimdal-ftp
 
 %description ftp
@@ -340,6 +379,7 @@ Summary:	Client for the telnet remote login
 Summary(pl.UTF-8):	Klient usługi telnet
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	%{name}-common = %{version}-%{release}
 Obsoletes:	telnet
 Obsoletes:	heimdal-telnet
 
@@ -627,6 +667,7 @@ fi
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
 
 %{_mandir}/man1/krb5-send-pr.1*
+%{_mandir}/man5/kdc.conf.5*
 %{_mandir}/man8/kadmin.8*
 %{_mandir}/man8/kadmin.local.8*
 %{_mandir}/man8/kdb5_util.8*
@@ -724,16 +765,21 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/klogind
 %{_mandir}/man8/klogind.8*
 
-%files libs
+%files common
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
-
-%attr(700,root,root) %dir %{_localstatedir}
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5.keytab
-
 %dir %{_libdir}/krb5
 %dir %{_libdir}/krb5/plugins
 %dir %{_libdir}/krb5/plugins/kdb
+%attr(700,root,root) %dir %{_localstatedir}
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5.keytab
+
+%attr(755,root,root) %{_sbindir}/login.krb5
+%{_mandir}/man8/login.krb5.8*
+%{_mandir}/man5/krb5.conf.5*
+
+%files libs
+%defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libdes425.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libdes425.so.?
 %attr(755,root,root) %{_libdir}/libgss*.so.*.*
@@ -746,11 +792,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libkdb5.so.?
 %attr(755,root,root) %{_libdir}/libkrb5*.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkrb5*.so.?
-%attr(755,root,root) %{_sbindir}/login.krb5
-
-%{_mandir}/man8/login.krb5.8*
-%{_mandir}/man5/krb5.conf.5*
-%{_mandir}/man5/kdc.conf.5*
 
 %files devel
 %defattr(644,root,root,755)
