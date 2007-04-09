@@ -1,7 +1,4 @@
 #
-# TODO:
-# - split kdc/kadmind/krb524d/kpropd to separate subpackages
-#
 # - making check in plugins/kdb/db2/libdb2/test... fails on x86_64
 #	temporaryli disabled this test on x86_64 - it's problem with Th builder
 #
@@ -194,7 +191,7 @@ Requires:	words
 Obsoletes:	heimdal-server
 
 %description server
-Master KDC.
+Common files required by Kerberos 5 servers.
 
 Kerberos V5 is based on the Kerberos authentication system developed
 at MIT. Under Kerberos, a client (generally either a user or a
@@ -208,7 +205,7 @@ keeps the decrypted TGT, which indicates proof of the client's
 identity.
 
 %description server -l pl.UTF-8
-Główne centrum dystrybucji kluczy (KDC).
+Wspólne pliki wymagane przez usługi serwerowe Kerberos 5.
 
 Kerberos V5 jest systemem uwierzytelniania rozwijanym w MIT. W tym
 systemie klient (użytkownik lub usługa) wysyła żądanie biletu do
@@ -217,6 +214,71 @@ używając hasła klienta do jego zaszyfrowania i wysyła go z powrotem do
 klienta. Klient następnie przystępuje do rozkodowywania kredytu przy
 pomocy swojego hasła. Jeżeli zrobi to prawidłowo (tzn. poda poprawne
 hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
+
+%package server-kdc
+Summary:	Kerberos V5 AS/KDC Server
+Summary(pl.UTF-8):	Serwer AS/KDC Kerberos V5
+Group:		Networking
+Requires:	%{name}-server = %{version}-%{release}
+
+%description server-kdc
+This package constains the Kerberos version 5 Authentication Service
+and Key Distribution Center (AS/KDC).
+
+%description server-kdc -l pl.UTF-8
+Ten pakiet zawiera centrum dystrybucji kluczy (KDC).
+
+%package server-kadmind
+Summary:	Kerberos V5 administration server
+Summary(pl.UTF-8):	Serwer administracyjny Kerberos V5
+Group:		Networking
+Requires:	%{name}-server = %{version}-%{release}
+
+%description server-kadmind
+This package contains the KADM5 administration server.
+If the database is db2, the administration server runs
+on the master Kerberos server, which stores the KDC prinicpal
+database and the KADM5 policy database.
+If the database is LDAP, the administration server and the KDC
+server need not run on the same machine.
+Kadmind accepts remote requests to administer the information
+in these databases.
+Remote requests are sent, for example, by kadmin(8)
+and the kpasswd(1) command, both of which are clients of kadmind.
+
+#%description server-kadmind -l pl.UTF-8
+
+%package server-krb524d
+Summary:	Version 5 to Version 4 Credentials Conversion Daemon
+#Summary(pl.UTF-8):	Serwer Kerberos V5
+Group:		Networking
+Requires:	%{name}-server-kdc = %{version}-%{release}
+
+%description server-krb524d
+This package contains the Kerberos Version 5 to Version 4
+Credentials Conversion daemon.
+It works in conjuction with a krb5kdc to allow clients to
+acquire Kerberos version 4 tickets from Kerberos version 5 tickets
+without specifying a password.
+
+#%description server-krb524d -l pl.UTF-8
+
+%package server-kpropd
+Summary:	Kerberos V5 slave KDC update server
+#Summary(pl.UTF-8):	Serwer Kerberos V5
+Group:		Networking
+Requires:	%{name}-server-kdc = %{version}-%{release}
+
+%description server-kpropd
+kpropd is a slave KDC update server which accepts connections
+from the kprop program from the master KDC and updates the KDC
+database running on the slave server.
+Thus, the master Kerberos server can use kprop(8) to propagate
+its database to the slave slavers.  Upon a  successful download
+of the KDC database file, the slave Kerberos server will have
+an up-to-date KDC database.
+					  
+#%description server-kpropd -l pl.UTF-8
 
 %package server-ldap
 Summary:	The LDAP storage plugin for the Kerberos 5 KDC
@@ -559,37 +621,49 @@ rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post server
+%post server-kdc
 /sbin/chkconfig --add krb5kdc
 %service krb5kdc restart "krb5kdc daemon"
 
+%post server-kadmind
 /sbin/chkconfig --add kadmind
 %service kadmind restart "kadmind daemon"
 
+%post server-kpropd
 /sbin/chkconfig --add kpropd
 %service kpropd restart "kpropd daemon"
 
 %if %{with krb4}
+%post server-krb524d
 /sbin/chkconfig --add krb524d
 %service krb524d restart "krb524d daemon"
 %endif
 
-%postun server
+%postun server-kdc
 if [ "$1" = 0 ]; then
 	%service krb5kdc stop
 	/sbin/chkconfig --del krb5kdc
+fi
 
+%postun server-kadmind
+if [ "$1" = 0 ]; then
 	%service kadmind stop
 	/sbin/chkconfig --del kadmind
+fi
 
+%postun server-kpropd
+if [ "$1" = 0 ]; then
 	%service kpropd stop
 	/sbin/chkconfig --del kpropd
+fi
 
-	%if %{with krb4}
+%if %{with krb4}
+%postun server-krb524d
+if [ "$1" = 0 ]; then
 	%service krb524d stop
 	/sbin/chkconfig --del krb524d
-	%endif
 fi
+%endif
 
 %post ftpd
 %service -q rc-inetd reload
@@ -623,60 +697,38 @@ if [ "$1" = 0 ]; then
 	%service -q rc-inetd reload
 fi
 
-%post libs
-/sbin/ldconfig
-
-%postun libs
-/sbin/ldconfig
+%post libs -p /sbin/ldconfig
+%postun libs -p /sbin/ldconfig
 
 %files server
 %defattr(644,root,root,755)
 %doc doc/krb5-{admin,install}.html doc/{admin,install,krb425}-guide.pdf
-%doc %{?with_krb4:doc/krb425.html}
-%attr(754,root,root) /etc/rc.d/init.d/krb5kdc
-%attr(754,root,root) /etc/rc.d/init.d/kadmind
-%attr(754,root,root) /etc/rc.d/init.d/kpropd
-%{?with_krb4:%attr(754,root,root) /etc/rc.d/init.d/krb524d}
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.acl
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kdc.conf
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.dict
 
 %attr(755,root,root) %{_sbindir}/kadmin
 %attr(755,root,root) %{_sbindir}/kadmin.local
 %attr(755,root,root) %{_sbindir}/propagation
 %attr(755,root,root) %{_sbindir}/kdb5_util
 %attr(755,root,root) %{_sbindir}/kprop
-%attr(755,root,root) %{_sbindir}/kpropd
 %attr(755,root,root) %{_sbindir}/krb5-send-pr
-%attr(755,root,root) %{_sbindir}/krb5kdc
-%attr(755,root,root) %{_sbindir}/kadmind
 %attr(755,root,root) %{_sbindir}/ktutil
 %attr(755,root,root) %{_sbindir}/k5srvutil
 %attr(755,root,root) %{_sbindir}/gss-server
 %attr(755,root,root) %{_sbindir}/sim_server
 %attr(755,root,root) %{_sbindir}/sserver
 %attr(755,root,root) %{_sbindir}/uuserver
-%{?with_krb4:%attr(755,root,root) %{_sbindir}/kadmind4}
-%{?with_krb4:%attr(755,root,root) %{_sbindir}/krb524d}
-
-%attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
 
 %{_mandir}/man1/krb5-send-pr.1*
-%{_mandir}/man5/kdc.conf.5*
+%{_mandir}/man8/k5srvutil.8*
 %{_mandir}/man8/kadmin.8*
 %{_mandir}/man8/kadmin.local.8*
 %{_mandir}/man8/kdb5_util.8*
 %{_mandir}/man8/kprop.8*
-%{_mandir}/man8/kpropd.8*
-%{_mandir}/man8/krb5kdc.8*
-%{_mandir}/man8/kadmind.8*
 %{_mandir}/man8/ktutil.8*
-%{_mandir}/man8/k5srvutil.8*
 %{_mandir}/man8/sserver.8*
 
 %if %{with openldap}
@@ -687,6 +739,39 @@ fi
 %attr(755,root,root) %{_libdir}/libkdb_ldap.so.*
 %attr(755,root,root) %{_sbindir}/kdb5_ldap_util
 %{_mandir}/man8/kdb5_ldap_util.8*
+%endif
+
+%files server-kdc
+%defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/krb5kdc
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kdc.conf
+%attr(755,root,root) %{_sbindir}/krb5kdc
+%attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
+%{_mandir}/man5/kdc.conf.5*
+%{_mandir}/man8/krb5kdc.8*
+
+%files server-kadmind
+%defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/kadmind
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.acl
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.dict
+%attr(755,root,root) %{_sbindir}/kadmind
+%{_mandir}/man8/kadmind.8*
+
+%files server-kpropd
+%defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/kpropd
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kpropd.acl
+%attr(755,root,root) %{_sbindir}/kpropd
+%{_mandir}/man8/kpropd.8*
+
+%if %{with krb4}
+%files server-krb524d
+%defattr(644,root,root,755)
+%doc doc/krb425.html
+%attr(754,root,root) /etc/rc.d/init.d/krb524d
+%attr(755,root,root) %{_sbindir}/kadmind4
+%attr(755,root,root) %{_sbindir}/krb524d
 %endif
 
 %files client
