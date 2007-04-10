@@ -1,7 +1,4 @@
 #
-# - making check in plugins/kdb/db2/libdb2/test... fails on x86_64
-#	temporaryli disabled this test on x86_64 - it's problem with Th builder
-#
 # Conditional build:
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
@@ -35,6 +32,7 @@ Source14:	kshell.inetd
 Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
+Source18:	kpropd.acl
 URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-telnetd.patch
 Patch1:		%{name}-manpages.patch
@@ -611,6 +609,7 @@ install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
 install %{SOURCE7} $RPM_BUILD_ROOT%{_localstatedir}
 install %{SOURCE4} $RPM_BUILD_ROOT%{_localstatedir}
+install %{SOURCE18} $RPM_BUILD_ROOT%{_localstatedir}
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
 install %{SOURCE8} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE15} $RPM_BUILD_ROOT%{_sbindir}/propagation
