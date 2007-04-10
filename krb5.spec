@@ -226,7 +226,8 @@ This package constains the Kerberos version 5 Authentication Service
 and Key Distribution Center (AS/KDC).
 
 %description server-kdc -l pl.UTF-8
-Ten pakiet zawiera centrum dystrybucji kluczy (KDC).
+Ten pakiet zawiera serwis autoryzacyjny i
+centrum dystrybucji kluczy (AS/KDC).
 
 %package server-kadmind
 Summary:	Kerberos V5 administration server
@@ -237,7 +238,7 @@ Requires:	%{name}-server = %{version}-%{release}
 %description server-kadmind
 This package contains the KADM5 administration server.
 If the database is db2, the administration server runs
-on the master Kerberos server, which stores the KDC prinicpal
+on the master Kerberos server, which stores the KDC principal
 database and the KADM5 policy database.
 If the database is LDAP, the administration server and the KDC
 server need not run on the same machine.
@@ -246,11 +247,21 @@ in these databases.
 Remote requests are sent, for example, by kadmin(8)
 and the kpasswd(1) command, both of which are clients of kadmind.
 
-#%description server-kadmind -l pl.UTF-8
+%description server-kadmind -l pl.UTF-8
+Ten pakiet zawiera serwer administracyjny KADM5.
+Jeżeli baza kerberosa jest w formacie db2, serwer administracyjny
+jest uruchamiany na głównym serwerze kerberosa, który utrzymuje 
+bazę kluczy KDC i KADM5.
+Jeżeli baza kerberosa jest w formacie LDAP, serwer administracyjny
+może być uruchomiony na innej maszynie niż KDC.
+Kadmind przyjmuje zdalne zlecenia administracyjne dla wyżej
+wymienionych baz.
+Zdalne zlecenia są wysyłane na przykład przez programy kadmin
+i kpasswd, które są klientami kadmind.
 
 %package server-krb524d
 Summary:	Version 5 to Version 4 Credentials Conversion Daemon
-#Summary(pl.UTF-8):	Serwer Kerberos V5
+Summary(pl.UTF-8):	Serwer tłumaczący wersję 5 na wersję 4 kerberosa
 Group:		Networking
 Requires:	%{name}-server-kdc = %{version}-%{release}
 
@@ -261,11 +272,16 @@ It works in conjuction with a krb5kdc to allow clients to
 acquire Kerberos version 4 tickets from Kerberos version 5 tickets
 without specifying a password.
 
-#%description server-krb524d -l pl.UTF-8
+%description server-krb524d -l pl.UTF-8
+Ten pakiet zawiera demon konwerujący uwierzytelnienia kerberosa 5
+na wersję 4.
+Demon krb524d działa w połączeniu z krb5kdc umożliwiając klientom
+uzyskanie biletów kerberosa 4 z biletów kerberosa 5 bez konieczności
+podawania hasła.
 
 %package server-kpropd
 Summary:	Kerberos V5 slave KDC update server
-#Summary(pl.UTF-8):	Serwer Kerberos V5
+Summary(pl.UTF-8):	Podporządkowany serwer KDC Kerberos V5
 Group:		Networking
 Requires:	%{name}-server-kdc = %{version}-%{release}
 
@@ -278,7 +294,8 @@ its database to the slave slavers.  Upon a  successful download
 of the KDC database file, the slave Kerberos server will have
 an up-to-date KDC database.
 					  
-#%description server-kpropd -l pl.UTF-8
+%description server-kpropd -l pl.UTF-8
+kpropd jest serwerem odświerzającym dla popdorządkowanego serwera KDC.
 
 %package server-ldap
 Summary:	The LDAP storage plugin for the Kerberos 5 KDC
