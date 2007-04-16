@@ -228,8 +228,8 @@ This package constains the Kerberos version 5 Authentication Service
 and Key Distribution Center (AS/KDC).
 
 %description server-kdc -l pl.UTF-8
-Ten pakiet zawiera serwis autoryzacyjny i
-centrum dystrybucji kluczy (AS/KDC).
+Ten pakiet zawiera usługę uwierzytelniającą Kerberosa 5 i centrum
+dystrybucji kluczy (AS/KDC).
 
 %package server-kadmind
 Summary:	Kerberos V5 administration server
@@ -239,27 +239,31 @@ Requires:	%{name}-server = %{version}-%{release}
 
 %description server-kadmind
 This package contains the KADM5 administration server.
-If the database is db2, the administration server runs
-on the master Kerberos server, which stores the KDC principal
-database and the KADM5 policy database.
-If the database is LDAP, the administration server and the KDC
-server need not run on the same machine.
-Kadmind accepts remote requests to administer the information
-in these databases.
-Remote requests are sent, for example, by kadmin(8)
-and the kpasswd(1) command, both of which are clients of kadmind.
+
+If the database is db2, the administration server runs on the master
+Kerberos server, which stores the KDC principal database and the KADM5
+policy database.
+
+If the database is LDAP, the administration server and the KDC server
+need not run on the same machine.
+
+Kadmind accepts remote requests to administer the information in these
+databases. Remote requests are sent, for example, by kadmin(8) and the
+kpasswd(1) command, both of which are clients of kadmind.
 
 %description server-kadmind -l pl.UTF-8
 Ten pakiet zawiera serwer administracyjny KADM5.
-Jeżeli baza kerberosa jest w formacie db2, serwer administracyjny
-jest uruchamiany na głównym serwerze kerberosa, który utrzymuje 
-bazę kluczy KDC i KADM5.
-Jeżeli baza kerberosa jest w formacie LDAP, serwer administracyjny
+
+Jeżeli baza Kerberosa jest w formacie db2, serwer administracyjny jest
+uruchamiany na głównym serwerze kerberosa, który utrzymuje bazę kluczy
+KDC i KADM5.
+
+Jeżeli baza Kerberosa jest w formacie LDAP, serwer administracyjny
 może być uruchomiony na innej maszynie niż KDC.
+
 Kadmind przyjmuje zdalne zlecenia administracyjne dla wyżej
-wymienionych baz.
-Zdalne zlecenia są wysyłane na przykład przez programy kadmin
-i kpasswd, które są klientami kadmind.
+wymienionych baz. Zdalne zlecenia są wysyłane na przykład przez
+programy kadmin i kpasswd, które są klientami kadmind.
 
 %package server-krb524d
 Summary:	Version 5 to Version 4 Credentials Conversion Daemon
@@ -268,17 +272,19 @@ Group:		Networking
 Requires:	%{name}-server-kdc = %{version}-%{release}
 
 %description server-krb524d
-This package contains the Kerberos Version 5 to Version 4
-Credentials Conversion daemon.
-It works in conjuction with a krb5kdc to allow clients to
-acquire Kerberos version 4 tickets from Kerberos version 5 tickets
-without specifying a password.
+This package contains the Kerberos Version 5 to Version 4 Credentials
+Conversion daemon.
+
+It works in conjuction with a krb5kdc to allow clients to acquire
+Kerberos version 4 tickets from Kerberos version 5 tickets without
+specifying a password.
 
 %description server-krb524d -l pl.UTF-8
-Ten pakiet zawiera demon konwerujący uwierzytelnienia kerberosa 5
-na wersję 4.
+Ten pakiet zawiera demon konwerujący uwierzytelnienia Kerberosa 5 na
+wersję 4.
+
 Demon krb524d działa w połączeniu z krb5kdc umożliwiając klientom
-uzyskanie biletów kerberosa 4 z biletów kerberosa 5 bez konieczności
+uzyskanie biletów Kerberosa 4 z biletów Kerberosa 5 bez konieczności
 podawania hasła.
 
 %package server-kpropd
@@ -288,16 +294,24 @@ Group:		Networking
 Requires:	%{name}-server-kdc = %{version}-%{release}
 
 %description server-kpropd
-kpropd is a slave KDC update server which accepts connections
-from the kprop program from the master KDC and updates the KDC
-database running on the slave server.
-Thus, the master Kerberos server can use kprop(8) to propagate
-its database to the slave slavers.  Upon a  successful download
-of the KDC database file, the slave Kerberos server will have
-an up-to-date KDC database.
+kpropd is a slave KDC update server which accepts connections from the
+kprop program from the master KDC and updates the KDC database running
+on the slave server.
+
+Thus, the master Kerberos server can use kprop(8) to propagate its
+database to the slave slavers. Upon a successful download of the KDC
+database file, the slave Kerberos server will have an up-to-date KDC
+database.
 					  
 %description server-kpropd -l pl.UTF-8
-kpropd jest serwerem odświerzającym dla popdorządkowanego serwera KDC.
+kpropd jest podporządkowanym serwerem odświerzającym KDC przyjmującym
+połączenia od programu prop z nadrzędnego KDC i uaktualniającego bazę
+danych KDC działającą na serwerze podporządkowanym.
+
+W ten sposób nadrzędny serwer Kerberosa może używać kprop(8) do
+propagowania swojej bazy danych na serwery podporządkowane. Po
+pomyślnym ściągnięciu pliku bazy KDC podrzędny serwer Kerberosa będzie
+zawierał aktualną bazę KDC.
 
 %package server-ldap
 Summary:	The LDAP storage plugin for the Kerberos 5 KDC
