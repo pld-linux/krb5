@@ -1,4 +1,7 @@
 #
+# TODO:
+# - kill -as-needed from krb5-config --libs output
+#
 # making check in plugins/kdb/db2/libdb2/test... fails on x86_64
 # temporarily disabled this test on x86_64 (patch33)
 #	- it's problem with Th builder
@@ -508,6 +511,7 @@ Summary:	Header files for Kerberos V5 libraries and documentation
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
+Requires:	libcom_err-devel
 Obsoletes:	heimdal-devel
 
 %description devel
