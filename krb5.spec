@@ -502,7 +502,7 @@ Requires(post,preun):	grep
 Requires(preun):	coreutils
 Obsoletes:	krb5-configs
 Obsoletes:	krb5-lib
-#Obsoletes:	heimdal-libs
+Conflicts:	heimdal-libs < 0.8-0.rc7.2
 
 %description libs
 Libraries for Kerberos V5 Server and Client
