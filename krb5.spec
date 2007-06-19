@@ -96,6 +96,10 @@ BuildRequires:	words
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_localstatedir	/var/lib/kerberos
+# doesn't handle %{__cc} with spaces properly
+%undefine	with_ccache
+# mungles cflags
+%undefine	configure_cache
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed
@@ -498,7 +502,7 @@ Requires(post,preun):	grep
 Requires(preun):	coreutils
 Obsoletes:	krb5-configs
 Obsoletes:	krb5-lib
-Obsoletes:	heimdal-libs
+#Obsoletes:	heimdal-libs
 
 %description libs
 Libraries for Kerberos V5 Server and Client
