@@ -1,7 +1,5 @@
 #
-# TODO:
-# - kill -as-needed from krb5-config --libs output
-#
+# NOTE:
 # making check in plugins/kdb/db2/libdb2/test... fails on x86_64
 # temporarily disabled this test on x86_64 (patch33)
 #	- it's problem with Th builder
@@ -75,7 +73,8 @@ Patch29:	%{name}-telnet-environ.patch
 Patch30:	%{name}-as-needed.patch
 Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
-Patch33:	%{name}-no-db-tests.patch
+Patch33:	%{name}-config.patch
+Patch34:	%{name}-no-db-tests.patch
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -571,8 +570,9 @@ Biblioteki statyczne Kerberosa V5.
 %patch30 -p1
 %patch31 -p1
 %patch32 -p1
-%ifarch %{x8664}
 %patch33 -p1
+%ifarch %{x8664}
+%patch34 -p1
 %endif
 
 cp src/krb524/README README.krb524
