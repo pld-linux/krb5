@@ -8,19 +8,17 @@
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
+%bcond_without	tests
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.6
-Release:	4
+Version:	1.6.1
+Release:	1
 License:	MIT
 Group:		Networking
-# http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
-Source0:	%{name}-%{version}.tar.gz
-# Source0-md5:	b84d437c4a67240c70e370f557f561de
-Source1:	%{name}-%{version}.tar.gz.asc
-# Source1-md5:	4b79615e695c55216f25058a03f6dfde
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
+# Source0-md5:	6052c437226ea0a04a37f656f1a079b9
 Source2:	%{name}kdc.init
 Source3:	%{name}24d.init
 Source4:	kadm5.acl
@@ -59,7 +57,6 @@ Patch15:	%{name}-brokenrev.patch
 Patch16:	%{name}-dns.patch
 Patch17:	%{name}-enospc.patch
 Patch18:	%{name}-fclose.patch
-Patch19:	%{name}-fix-sendto_kdc-memset.patch
 Patch20:	%{name}-gssinit.patch
 Patch21:	%{name}-io.patch
 Patch22:	%{name}-kprop-mktemp.patch
@@ -536,7 +533,9 @@ Static Kerberos V5 libraries.
 Biblioteki statyczne Kerberosa V5.
 
 %prep
-%setup -q
+%setup -q -c
+tar xf %{name}-%{version}.tar.gz
+cd %{name}-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -556,7 +555,7 @@ Biblioteki statyczne Kerberosa V5.
 %patch16 -p1
 %patch17 -p1
 %patch18 -p1
-%patch19 -p0
+
 %patch20 -p1
 %patch21 -p1
 %patch22 -p1
@@ -578,7 +577,7 @@ Biblioteki statyczne Kerberosa V5.
 cp src/krb524/README README.krb524
 
 %build
-cd src
+cd %{name}-%{version}/src
 # Get LFS support on systems that need it which aren't already 64-bit.
 %ifarch %{ix86} s390 ppc sparc
 CFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
@@ -616,7 +615,6 @@ done
 	--with-system-ss
 
 %{__make}
-%{__make} check
 
 cd ../doc
 %{__make}
@@ -624,8 +622,11 @@ cd ../doc
 %{__make} -C implement
 %{__make} -C kadm5
 
+%{?with_tests:%{__make} -j1 -C ../src/ check}
+
 %install
 rm -rf $RPM_BUILD_ROOT
+cd %{name}-%{version}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos,%{_infodir},%{_mandir}}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
@@ -744,7 +745,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc doc/krb5-{admin,install}.html doc/{admin,install,krb425}-guide.pdf
+%doc %{name}-%{version}/doc/krb5-{admin,install}.html %{name}-%{version}/doc/{admin,install,krb425}-guide.pdf
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
@@ -810,7 +811,7 @@ fi
 %if %{with krb4}
 %files server-krb524d
 %defattr(644,root,root,755)
-%doc doc/krb425.html
+%doc %{name}-%{version}/doc/krb425.html
 %attr(754,root,root) /etc/rc.d/init.d/krb524d
 %attr(755,root,root) %{_sbindir}/kadmind4
 %attr(755,root,root) %{_sbindir}/krb524d
@@ -818,7 +819,7 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%doc doc/krb5-user.html doc/user-guide.pdf
+%doc %{name}-%{version}/doc/krb5-user.html %{name}-%{version}/doc/user-guide.pdf
 %attr(755,root,root) /etc/shrc.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
@@ -922,7 +923,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/{kadmin,krb5-protocol} doc/{api,implement,kadm5}/*.pdf
+%doc %{name}-%{version}/doc/{kadmin,krb5-protocol} %{name}-%{version}/doc/{api,implement,kadm5}/*.pdf
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/libdes425.so
 %attr(755,root,root) %{_libdir}/libgss*.so
