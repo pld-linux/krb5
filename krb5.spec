@@ -1,3 +1,4 @@
+# TODO: CVE-2007-2442 CVE-2007-2443
 #
 # NOTE:
 # making check in plugins/kdb/db2/libdb2/test... fails on x86_64
