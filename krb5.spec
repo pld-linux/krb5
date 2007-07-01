@@ -9,7 +9,7 @@
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
-%bcond_without	tests
+%bcond_without	tests		# don't perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -623,7 +623,7 @@ cd ../doc
 %{__make} -C implement
 %{__make} -C kadm5
 
-%{?with_tests:%{__make} -j1 -C ../src/ check}
+%{?with_tests:%{__make} -j1 -C ../src check}
 
 %install
 rm -rf $RPM_BUILD_ROOT
