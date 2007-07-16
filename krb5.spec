@@ -1,4 +1,3 @@
-# TODO: CVE-2007-2442 CVE-2007-2443
 #
 # NOTE:
 # making check in plugins/kdb/db2/libdb2/test... fails on x86_64
@@ -14,12 +13,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.6.1
+Version:	1.6.2
 Release:	1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
-# Source0-md5:	6052c437226ea0a04a37f656f1a079b9
+# Source0-md5:	45dedeb7180347a8b0d824f2874b2693
 Source2:	%{name}kdc.init
 Source3:	%{name}24d.init
 Source4:	kadm5.acl
