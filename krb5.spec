@@ -13,12 +13,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.6.2
+Version:	1.6.3
 Release:	1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
-# Source0-md5:	45dedeb7180347a8b0d824f2874b2693
+# Source0-md5:	2dc1307686eb1c2bf1ab08ea805dad46
 Source2:	%{name}kdc.init
 Source3:	%{name}24d.init
 Source4:	kadm5.acl
@@ -36,7 +36,6 @@ Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
-URL:		http://web.mit.edu/kerberos/www/
 Patch0:		%{name}-telnetd.patch
 Patch1:		%{name}-manpages.patch
 Patch2:		%{name}-netkit-rsh.patch
@@ -72,6 +71,7 @@ Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
 Patch33:	%{name}-config.patch
 Patch34:	%{name}-no-db-tests.patch
+URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
 BuildRequires:	automake
@@ -790,6 +790,8 @@ fi
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kdc.conf
 %attr(755,root,root) %{_sbindir}/krb5kdc
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
+%dir %{_libdir}/krb5/plugins/preauth
+%attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
 %{_mandir}/man5/kdc.conf.5*
 %{_mandir}/man8/krb5kdc.8*
 
