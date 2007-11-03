@@ -80,7 +80,7 @@ BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
 BuildRequires:	ghostscript
 BuildRequires:	ncurses-devel
-%{?with_openldap:BuildRequires:	openldap-devel}
+%{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	texinfo
