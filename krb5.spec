@@ -512,8 +512,8 @@ Summary:	Header files for Kerberos V5 libraries and documentation
 Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
-Requires:	libcom_err-devel
 Requires:	keyutils-devel
+Requires:	libcom_err-devel
 Obsoletes:	heimdal-devel
 
 %description devel
