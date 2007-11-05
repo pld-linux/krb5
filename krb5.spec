@@ -79,6 +79,7 @@ BuildRequires:	bison
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
 BuildRequires:	ghostscript
+BuildRequires:	keyutils-devel
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -512,6 +513,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	libcom_err-devel
+Requires:	keyutils-devel
 Obsoletes:	heimdal-devel
 
 %description devel
