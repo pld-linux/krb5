@@ -9,3 +9,24 @@
  	$(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
  	$(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
  
+--- krb5-1.6.3/krb5-1.6.3/src/plugins/kdb/db2/libdb2/test/run.test~	2007-11-21 17:52:04.000000000 +0100
++++ krb5-1.6.3/krb5-1.6.3/src/plugins/kdb/db2/libdb2/test/run.test	2007-11-21 17:58:16.000000000 +0100
+@@ -12,17 +12,7 @@
+ 	TMP2=${TMPDIR-.}/t2
+ 	TMP3=${TMPDIR-.}/t3
+ 
+-	if [ \! -z "$WORDLIST" -a -f "$WORDLIST" ]; then
+-		DICT=$WORDLIST
+-	elif [ -f /usr/local/lib/dict/words ]; then
+-		DICT=/usr/local/lib/dict/words
+-	elif [ -f /usr/share/dict/words ]; then
+-		DICT=/usr/share/dict/words
+-	elif [ -f /usr/dict/words ]; then
+-		DICT=/usr/dict/words
+-	elif [ -f /usr/share/lib/dict/words ]; then
+-		DICT=/usr/share/lib/dict/words
+-	elif [ -f $srcdir/../test/dictionary ]; then
++	if [ -f $srcdir/../test/dictionary ]; then
+ 		DICT=`cd $srcdir/../test && pwd`/dictionary
+ 	else
+ 		echo 'run.test: no dictionary'
