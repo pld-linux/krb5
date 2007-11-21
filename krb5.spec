@@ -573,7 +573,7 @@ cd %{name}-%{version}
 %patch32 -p1
 %patch33 -p1
 %ifarch %{x8664}
-%patch34 -p1
+#patch34 -p1
 %endif
 
 cp src/krb524/README README.krb524
