@@ -1,7 +1,7 @@
 #
 # NOTE:
-# making check in plugins/kdb/db2/libdb2/test... fails on x86_64
-# temporarily disabled this test on x86_64 (patch33)
+# making check in plugins/kdb/db2/libdb2/test... fails on x86_64 and athlon
+# temporarily disabled this test on x86_64 and athlon (patch34)
 #	- it's problem with Th builder
 #
 # Conditional build:
@@ -9,6 +9,9 @@
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
 %bcond_without	tests		# don't perform make check
+#
+# Disable db2 tests on those broken builders
+%define	broken_builders	%{x8664} athlon
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -572,8 +575,8 @@ cd %{name}-%{version}
 %patch31 -p1
 %patch32 -p1
 %patch33 -p1
-%ifarch %{x8664}
-#patch34 -p1
+%ifarch %{broken_builders}
+%patch34 -p1
 %endif
 
 cp src/krb524/README README.krb524
