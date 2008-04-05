@@ -1,4 +1,4 @@
-SERVICE=ktelnetd
+SERVICE_NAME=ktelnetd
 SOCK_TYPE=stream
 PROTOCOL=tcp
 PORT=23
