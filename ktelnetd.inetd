@@ -1,10 +1,10 @@
-SERVICE_NAME=ktelnetd
+SERVICE_NAME=telnet
 SOCK_TYPE=stream
 PROTOCOL=tcp
 PORT=23
 FLAGS=nowait
 USER=root
 SERVER=tcpd
-DAEMON=/usr/sbin/ktelnetd
+DAEMON=/usr/sbin/telnetd
 # for encrypted sessions use the following
 #DAEMONARGS="-e"
