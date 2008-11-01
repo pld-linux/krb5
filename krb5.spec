@@ -79,6 +79,8 @@ BuildRequires:	/bin/csh
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
+# for bindir/mk_cmds
+BuildRequires:	e2fsprogs
 BuildRequires:	e2fsprogs-devel >= 1.35
 BuildRequires:	flex
 BuildRequires:	ghostscript
