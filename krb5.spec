@@ -542,7 +542,7 @@ Biblioteki statyczne Kerberosa V5.
 %prep
 %setup -q -c
 tar xf %{name}-%{version}.tar.gz
-cd %{name}-%{version}
+mv %{name}-%{version}/* .
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
@@ -584,7 +584,7 @@ cd %{name}-%{version}
 cp src/krb524/README README.krb524
 
 %build
-cd %{name}-%{version}/src
+cd src
 # Get LFS support on systems that need it which aren't already 64-bit.
 %ifarch %{ix86} s390 ppc sparc
 CFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
@@ -633,7 +633,6 @@ cd ../doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
-cd %{name}-%{version}
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos,%{_infodir},%{_mandir}}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
@@ -752,7 +751,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc %{name}-%{version}/doc/krb5-{admin,install}.html %{name}-%{version}/doc/{admin,install,krb425}-guide.pdf
+%doc doc/krb5-{admin,install}.html doc/{admin,install,krb425}-guide.pdf
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
@@ -820,7 +819,7 @@ fi
 %if %{with krb4}
 %files server-krb524d
 %defattr(644,root,root,755)
-%doc %{name}-%{version}/doc/krb425.html
+%doc doc/krb425.html
 %attr(754,root,root) /etc/rc.d/init.d/krb524d
 %attr(755,root,root) %{_sbindir}/kadmind4
 %attr(755,root,root) %{_sbindir}/krb524d
@@ -828,7 +827,7 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%doc %{name}-%{version}/doc/krb5-user.html %{name}-%{version}/doc/user-guide.pdf
+%doc doc/krb5-user.html doc/user-guide.pdf
 %attr(755,root,root) /etc/shrc.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
@@ -932,7 +931,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%doc %{name}-%{version}/doc/{kadmin,krb5-protocol} %{name}-%{version}/doc/{api,implement,kadm5}/*.pdf
+%doc doc/{kadmin,krb5-protocol} doc/{api,implement,kadm5}/*.pdf
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/libdes425.so
 %attr(755,root,root) %{_libdir}/libgss*.so
