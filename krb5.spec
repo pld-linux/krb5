@@ -5,6 +5,7 @@
 #	- it's problem with Th builder
 #
 # Conditional build:
+%bcond_without	doc             # without documentation which needed TeX
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
@@ -89,11 +90,13 @@ BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
+%if %{with doc}
 BuildRequires:	texinfo
 BuildRequires:	tetex-format-latex
 BuildRequires:	tetex-format-pdflatex
 BuildRequires:	tetex-latex
 BuildRequires:	tetex-makeindex
+%endif
 BuildRequires:	words
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -624,11 +627,12 @@ done
 %{__make}
 
 cd ../doc
+%if %{with doc}
 %{__make}
 %{__make} -C api
 %{__make} -C implement
 %{__make} -C kadm5
-
+%endif
 %{?with_tests:%{__make} -j1 -C ../src check}
 
 %install
@@ -751,7 +755,7 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc doc/krb5-{admin,install}.html doc/{admin,install,krb425}-guide.pdf
+%doc doc/krb5-{admin,install}.html %{?with_doc:doc/{admin,install,krb425}-guide.pdf}
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
@@ -827,7 +831,7 @@ fi
 
 %files client
 %defattr(644,root,root,755)
-%doc doc/krb5-user.html doc/user-guide.pdf
+%doc doc/krb5-user.html %{?with_doc:doc/user-guide.pdf}
 %attr(755,root,root) /etc/shrc.d/kerberos.*
 
 %attr(755,root,root) %{_bindir}/kdestroy
@@ -931,7 +935,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%doc doc/{kadmin,krb5-protocol} doc/{api,implement,kadm5}/*.pdf
+%doc doc/{kadmin,krb5-protocol} %{?with_doc:doc/{api,implement,kadm5}/*.pdf}
 %attr(755,root,root) %{_bindir}/krb5-config
 %attr(755,root,root) %{_libdir}/libdes425.so
 %attr(755,root,root) %{_libdir}/libgss*.so
