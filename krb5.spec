@@ -12,7 +12,7 @@
 %bcond_without	tests		# don't perform make check
 #
 # Disable db2 tests on those broken builders
-%define	broken_builders	%{x8664} athlon
+#efine	broken_builders	%{x8664} athlon
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
