@@ -18,7 +18,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.6.3
-Release:	3
+Release:	3.1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
@@ -105,6 +105,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %undefine	with_ccache
 # mungles cflags
 %undefine	configure_cache
+
+%define		schemadir	/usr/share/openldap/schema
 
 %description
 Kerberos V5 is based on the Kerberos authentication system developed
@@ -344,6 +346,19 @@ zawiera programy, które muszą być zainstalowane w centrum dystrybucji
 kluczy Kerberosa 5 (KDC). W przypadku instalacji KDC Kerberosa 5 z
 użyciem serwera usług katalogowych do przechowywania danych należy
 zainstalować ten pakiet.
+
+%package -n openldap-schema-krb5
+Summary:	Kerberos LDAP schema
+Summary(pl.UTF-8):	Schemat LDAP dla kerberosa
+Group:		Networking/Daemons
+Requires(post,postun):	sed >= 4.0
+Requires:	openldap-servers
+
+%description -n openldap-schema-krb5
+This package contains kerberos LDAP schema for openldap.
+
+%description -n openldap-schema-krb5 -l pl.UTF-8
+Ten pakiet zawiera schemat kerberosa dla openldap-a.
 
 %package ftpd
 Summary:	The standard UNIX FTP (file transfer protocol) server
@@ -637,8 +652,9 @@ cd ../doc
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos,%{_infodir},%{_mandir}}
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos} \
+	$RPM_BUILD_ROOT{%{schemadir},%{_infodir},%{_mandir}} \
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
 %{__make} -C src install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -662,6 +678,10 @@ install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{with krb4}
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
+%endif
+
+%if %{with openldap}
+install src/plugins/kdb/ldap/libkdb_ldap/kerberos.{schema,ldif} $RPM_BUILD_ROOT%{schemadir}
 %endif
 
 ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
@@ -753,6 +773,16 @@ fi
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig
 
+%post -n openldap-schema-krb5
+%openldap_schema_register %{schemadir}/kerberos.schema
+%service -q ldap restart
+
+%postun -n openldap-schema-krb5
+if [ "$1" = "0" ]; then
+	%openldap_schema_unregister %{schemadir}/kerberos.schema
+	%service -q ldap restart
+fi
+
 %files server
 %defattr(644,root,root,755)
 %doc doc/krb5-{admin,install}.html %{?with_doc:doc/{admin,install,krb425}-guide.pdf}
@@ -792,6 +822,11 @@ fi
 %attr(755,root,root) %{_libdir}/libkdb_ldap.so.*
 %attr(755,root,root) %{_sbindir}/kdb5_ldap_util
 %{_mandir}/man8/kdb5_ldap_util.8*
+
+%files -n openldap-schema-krb5
+%defattr(644,root,root,755)
+%{schemadir}/*.ldif
+%{schemadir}/*.schema
 %endif
 
 %files server-kdc
