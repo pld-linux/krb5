@@ -5,7 +5,7 @@
  
  check:: resolve addrinfo-test
 -	$(RUN_SETUP) $(VALGRIND) ./resolve
-+	$(RUN_SETUP) $(VALGRIND) ./resolve www.pld-linux.org
++	$(RUN_SETUP) $(VALGRIND) ./resolve ep09.pld-linux.org
  	$(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
  	$(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
  
