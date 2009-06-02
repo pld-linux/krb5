@@ -617,6 +617,7 @@ mv %{name}-%{version}/* .
 cp src/krb524/README README.krb524
 
 %build
+ls -l /etc/resolv.conf
 cat /etc/resolv.conf
 host -t srv _kerberos._udp.ATHENA.MIT.EDU
 
