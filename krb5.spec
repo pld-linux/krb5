@@ -1,18 +1,13 @@
 #
 # NOTE:
-# making check in plugins/kdb/db2/libdb2/test... fails on x86_64 and athlon
-# temporarily disabled this test on x86_64 and athlon (patch34)
-#	- it's problem with Th builder
+# - make check is disabled because builders don't have networking
 #
 # Conditional build:
 %bcond_without	doc             # without documentation which needed TeX
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
-%bcond_without	tests		# don't perform make check
-#
-# Disable db2 tests on those broken builders
-#efine	broken_builders	%{x8664} athlon
+%bcond_with	tests		# perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -74,7 +69,6 @@ Patch30:	%{name}-as-needed.patch
 Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
 Patch33:	%{name}-config.patch
-Patch34:	%{name}-no-db-tests.patch
 Patch100:	%{name}-CVE-2007-5901.patch
 Patch101:	%{name}-CVE-2007-5971.patch
 Patch102:	%{name}-CVE-2008-0062,0063.patch
@@ -602,9 +596,6 @@ mv %{name}-%{version}/* .
 %patch31 -p1
 %patch32 -p1
 %patch33 -p1
-%ifarch %{broken_builders}
-%patch34 -p1
-%endif
 
 %patch100 -p0
 %patch101 -p0
@@ -617,10 +608,6 @@ mv %{name}-%{version}/* .
 cp src/krb524/README README.krb524
 
 %build
-ls -l /etc/resolv.conf
-cat /etc/resolv.conf
-host -t srv _kerberos._udp.ATHENA.MIT.EDU
-
 cd src
 # Get LFS support on systems that need it which aren't already 64-bit.
 %ifarch %{ix86} s390 ppc sparc
