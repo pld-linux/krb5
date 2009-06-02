@@ -664,6 +664,7 @@ cd ../doc
 %{__make} -C kadm5
 %endif
 
+cat /etc/resolv.conf
 host -t srv _kerberos._udp.ATHENA.MIT.EDU
 
 %{?with_tests:%{__make} -j1 -C ../src check}
