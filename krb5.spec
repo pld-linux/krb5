@@ -663,6 +663,9 @@ cd ../doc
 %{__make} -C implement
 %{__make} -C kadm5
 %endif
+
+host -t srv _kerberos._udp.ATHENA.MIT.EDU
+
 %{?with_tests:%{__make} -j1 -C ../src check}
 
 %install
