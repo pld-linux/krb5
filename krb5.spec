@@ -75,6 +75,13 @@ Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
 Patch33:	%{name}-config.patch
 Patch34:	%{name}-no-db-tests.patch
+Patch100:	%{name}-CVE-2007-5901.patch
+Patch101:	%{name}-CVE-2007-5971.patch
+Patch102:	%{name}-CVE-2008-0062,0063.patch
+Patch103:	%{name}-CVE-2008-0947.patch
+Patch104:	%{name}-CVE-2009-0844-0845-2.patch
+Patch105:	%{name}-CVE-2009-0846.patch
+Patch106:	%{name}-CVE-2009-0847.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
@@ -598,6 +605,14 @@ mv %{name}-%{version}/* .
 %ifarch %{broken_builders}
 %patch34 -p1
 %endif
+
+%patch100 -p0
+%patch101 -p0
+%patch102 -p0
+%patch103 -p0
+%patch104 -p1
+%patch105 -p1
+%patch106 -p1
 
 cp src/krb524/README README.krb524
 
