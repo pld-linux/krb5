@@ -617,6 +617,9 @@ mv %{name}-%{version}/* .
 cp src/krb524/README README.krb524
 
 %build
+cat /etc/resolv.conf
+host -t srv _kerberos._udp.ATHENA.MIT.EDU
+
 cd src
 # Get LFS support on systems that need it which aren't already 64-bit.
 %ifarch %{ix86} s390 ppc sparc
@@ -663,9 +666,6 @@ cd ../doc
 %{__make} -C implement
 %{__make} -C kadm5
 %endif
-
-cat /etc/resolv.conf
-host -t srv _kerberos._udp.ATHENA.MIT.EDU
 
 %{?with_tests:%{__make} -j1 -C ../src check}
 
