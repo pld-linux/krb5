@@ -968,13 +968,13 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
 +AC_ARG_WITH(pam,[AC_HELP_STRING(--with-pam,[compile with PAM support])],
 +	    withpam="$withval",withpam=auto)
 +AC_ARG_WITH(pam-login-service,[AC_HELP_STRING(--with-login-service,[PAM service name for login ["login"]])],
-+	    withloginpamservice="$withval",withloginpamservice=login)
++	    withloginpamservice="$withval",withloginpamservice=klogin)
 +AC_ARG_WITH(pam-kshell-service,[AC_HELP_STRING(--with-kshell-service,[PAM service name for unencrypted rsh ["kshell"]])],
 +	    withkshellpamservice="$withval",withkshellpamservice=kshell)
 +AC_ARG_WITH(pam-ekshell-service,[AC_HELP_STRING(--with-ekshell-service,[PAM service name for encrypted rsh ["ekshell"]])],
-+	    withekshellpamservice="$withval",withekshellpamservice=ekshell)
++	    withekshellpamservice="$withval",withekshellpamservice=kshell)
 +AC_ARG_WITH(pam-ftp-service,[AC_HELP_STRING(--with-ftp-service,[PAM service name for ftpd ["gssftp"]])],
-+	    withftppamservice="$withval",withftppamservice=gssftp)
++	    withftppamservice="$withval",withftppamservice=kftpd)
 +old_LIBS="$LIBS"
 +if test "$withpam" != no ; then
 +	AC_MSG_RESULT([checking for PAM...])
