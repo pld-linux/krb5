@@ -1,0 +1,17 @@
+fix an uninitialized length value which could cause a crash when parsing
+key data coming from a directory server
+
+Index: src/lib/krb5/asn.1/ldap_key_seq.c
+===================================================================
+--- src/lib/krb5/asn.1/ldap_key_seq.c	(revision 19509)
++++ src/lib/krb5/asn.1/ldap_key_seq.c	(working copy)
+@@ -341,7 +341,8 @@
+ 	if (asn1buf_remains(&slt, 0) != 0) { /* Salt value is optional */
+ 	    ret = decode_tagged_octetstring (&slt, 1, &keylen,
+ 		    &key->key_data_contents[1]); checkerr;
+-	}
++	} else
++	    keylen = 0;
+ 	safe_syncbuf (&subbuf, &slt);
+ 	key->key_data_length[1] = keylen; /* XXX range check?? */
+ 

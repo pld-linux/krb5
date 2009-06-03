@@ -65,6 +65,14 @@ Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
 Patch33:	%{name}-config.patch
 Patch34:	%{name}-any-fixup.patch
+Patch35:	%{name}-ftp_fdleak.patch
+Patch36:	%{name}-ftp_glob_runique.patch
+Patch37:	%{name}-key_exp.patch
+Patch38:	%{name}-ldap-init.patch
+Patch39:	%{name}-ldap-man.patch
+Patch40:	%{name}-lucid-acceptor.patch
+Patch41:	%{name}-pam.patch
+Patch42:	%{name}-selinux-label.patch
 Patch100:	%{name}-CVE-2007-5901.patch
 Patch101:	%{name}-CVE-2007-5971.patch
 Patch102:	%{name}-CVE-2008-0062,0063.patch
@@ -594,6 +602,14 @@ mv %{name}-%{version}/* .
 %patch32 -p1
 %patch33 -p1
 %patch34 -p0
+%patch35 -p1
+%patch36 -p1
+%patch37 -p1
+%patch38 -p0
+%patch39 -p0
+%patch40 -p0
+%patch41 -p1
+%patch42 -p1
 
 %patch100 -p0
 %patch101 -p0
