@@ -1,0 +1,26 @@
+patch from Greg Hudson to make srvtab routines report missing-file
+errors at same point that keytab routines do (#241805)
+https://bugzilla.redhat.com/show_bug.cgi?id=241805
+
+Index: kt_srvtab.c
+===================================================================
+RCS file: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/krb5/keytab/kt_srvtab.c,v
+retrieving revision 1.1.1.1
+retrieving revision 1.2
+diff -u -r1.1.1.1 -r1.2
+--- src/lib/krb5/keytab/kt_srvtab.c	27 Feb 2004 04:00:00 -0000	1.1.1.1
++++ src/lib/krb5/keytab/kt_srvtab.c	27 Feb 2004 09:56:29 -0000	1.2
+@@ -117,13 +117,6 @@
+ krb5_ktsrvtab_resolve(krb5_context context, const char *name, krb5_keytab *id)
+ {
+     krb5_ktsrvtab_data *data;
+-    FILE *fp;
+-
+-    /* Make sure we can open the srvtab file for reading. */
+-    fp = fopen(name, "r");
+-    if (!fp)
+-	return(errno);
+-    fclose(fp);
+ 
+     if ((*id = (krb5_keytab) malloc(sizeof(**id))) == NULL)
+ 	return(ENOMEM);
