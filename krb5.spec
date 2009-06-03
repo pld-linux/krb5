@@ -35,6 +35,9 @@ Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
+Source19:	kftpd.pamd
+Source20:	klogin.pamd
+Source21:	kshell.pamd
 Patch0:		%{name}-manpages.patch
 Patch1:		%{name}-netkit-rsh.patch
 Patch2:		%{name}-rlogind-environ.patch
