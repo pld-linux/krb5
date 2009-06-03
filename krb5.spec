@@ -35,13 +35,11 @@ Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
-Patch0:		%{name}-telnetd.patch
 Patch1:		%{name}-manpages.patch
 Patch2:		%{name}-netkit-rsh.patch
 Patch3:		%{name}-rlogind-environ.patch
 Patch4:		%{name}-ksu-access.patch
 Patch5:		%{name}-ksu-path.patch
-Patch6:		%{name}-tiocgltc.patch
 Patch7:		%{name}-passive.patch
 # http://lite.mit.edu/
 Patch8:		%{name}-ktany.patch
@@ -55,20 +53,18 @@ Patch15:	%{name}-brokenrev.patch
 Patch16:	%{name}-dns.patch
 Patch17:	%{name}-enospc.patch
 Patch18:	%{name}-fclose.patch
-Patch20:	%{name}-gssinit.patch
 Patch21:	%{name}-io.patch
 Patch22:	%{name}-kprop-mktemp.patch
 Patch23:	%{name}-login-lpass.patch
-Patch24:	%{name}-null.patch
 Patch25:	%{name}-rcp-markus.patch
 Patch26:	%{name}-rcp-sendlarge.patch
-Patch27:	%{name}-reject-bad-transited.patch
 Patch28:	%{name}-send-pr-tempfile.patch
 Patch29:	%{name}-telnet-environ.patch
 Patch30:	%{name}-as-needed.patch
 Patch31:	%{name}-doc.patch
 Patch32:	%{name}-tests.patch
 Patch33:	%{name}-config.patch
+Patch34:	%{name}-any-fixup.patch
 Patch100:	%{name}-CVE-2007-5901.patch
 Patch101:	%{name}-CVE-2007-5971.patch
 Patch102:	%{name}-CVE-2008-0062,0063.patch
@@ -76,6 +72,12 @@ Patch103:	%{name}-CVE-2008-0947.patch
 Patch104:	%{name}-CVE-2009-0844-0845-2.patch
 Patch105:	%{name}-CVE-2009-0846.patch
 Patch106:	%{name}-CVE-2009-0847.patch
+Patch200:	%{name}-trunk-doublelog.patch
+Patch201:	%{name}-trunk-ftp_mget_case.patch
+Patch202:	%{name}-trunk-kpasswd_tcp.patch
+Patch203:	%{name}-trunk-seqnum.patch
+Patch204:	%{name}-trunk-preauth-master.patch
+Patch205:	%{name}-trunk-spnego_delegation.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
@@ -562,13 +564,11 @@ Biblioteki statyczne Kerberosa V5.
 %setup -q -c
 tar xf %{name}-%{version}.tar.gz
 mv %{name}-%{version}/* .
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p0
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
@@ -582,20 +582,18 @@ mv %{name}-%{version}/* .
 %patch17 -p1
 %patch18 -p1
 
-%patch20 -p1
 %patch21 -p1
 %patch22 -p1
 %patch23 -p1
-%patch24 -p1
 %patch25 -p1
 %patch26 -p1
-%patch27 -p1
 %patch28 -p1
 %patch29 -p1
 %patch30 -p1
 %patch31 -p1
 %patch32 -p1
 %patch33 -p1
+%patch34 -p0
 
 %patch100 -p0
 %patch101 -p0
@@ -604,6 +602,13 @@ mv %{name}-%{version}/* .
 %patch104 -p1
 %patch105 -p1
 %patch106 -p1
+
+%patch200 -p0
+%patch201 -p0
+%patch202 -p0
+%patch203 -p0
+%patch204 -p0
+%patch205 -p0
 
 cp src/krb524/README README.krb524
 
