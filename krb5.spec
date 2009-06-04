@@ -7,7 +7,8 @@
 %bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
-%bcond_with	tests		# perform make check
+%bcond_with	selinux		# build with selinux support
+%bcond_without	tests		# perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -104,7 +105,7 @@ BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 0.9.8
 BuildRequires:	pam-devel
-BuildRequires:	libselinux-devel
+%{?with_selinux:BuildRequires:	libselinux-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 %if %{with doc}
@@ -658,6 +659,7 @@ done
 	CPPFLAGS="$CPPFLAGS" \
 	%{?with_openldap:OPENLDAP_PLUGIN=yes} \
 	%{!?with_openldap:OPENLDAP_PLUGIN=""} \
+	--with%{!?with_selinux:out}-selinux \
 	--libexecdir=%{_libdir} \
 	--enable-shared \
 	%{?with_krb4:--with-krb4} \
