@@ -615,7 +615,7 @@ mv %{name}-%{version}/* .
 %patch33 -p0
 %patch34 -p0
 %patch35 -p1
-%patch36 -p1
+%{?with_selinux:%patch36 -p1}
 
 %patch100 -p0
 %patch101 -p0
@@ -659,7 +659,7 @@ done
 	CPPFLAGS="$CPPFLAGS" \
 	%{?with_openldap:OPENLDAP_PLUGIN=yes} \
 	%{!?with_openldap:OPENLDAP_PLUGIN=""} \
-	--with%{!?with_selinux:out}-selinux \
+	%{?with_selinux:--with-selinux} \
 	--libexecdir=%{_libdir} \
 	--enable-shared \
 	%{?with_krb4:--with-krb4} \
