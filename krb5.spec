@@ -102,6 +102,9 @@ BuildRequires:	ghostscript
 BuildRequires:	keyutils-devel
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
+BuildRequires:	openssl-devel >= 0.9.8
+BuildRequires:	pam-devel
+BuildRequires:	libselinux-devel
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 %if %{with doc}
@@ -684,7 +687,7 @@ cd ../doc
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos} \
 	$RPM_BUILD_ROOT{%{schemadir},%{_infodir},%{_mandir}} \
-	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
+	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
 %{__make} -C src install \
 	DESTDIR=$RPM_BUILD_ROOT
@@ -709,6 +712,10 @@ install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 %if %{with krb4}
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
 %endif
+
+install %{SOURCE19} $RPM_BUILD_ROOT/etc/pam.d/kftpd
+install %{SOURCE20} $RPM_BUILD_ROOT/etc/pam.d/klogin
+install %{SOURCE21} $RPM_BUILD_ROOT/etc/pam.d/kshell
 
 %if %{with openldap}
 install src/plugins/kdb/ldap/libkdb_ldap/kerberos.{schema,ldif} $RPM_BUILD_ROOT%{schemadir}
@@ -956,18 +963,21 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/ftpd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/ftpd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kftp
 %{_mandir}/man8/ftpd.8*
 
 %files kshd
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/kshd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/kshd
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kshell
 %{_mandir}/man8/kshd.8*
 
 %files klogind
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/klogind
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/klogind
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/klogin
 %{_mandir}/man8/klogind.8*
 
 %files common
