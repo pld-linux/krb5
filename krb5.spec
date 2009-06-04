@@ -681,7 +681,7 @@ cd ../doc
 %{__make} -C kadm5
 %endif
 
-%{?with_tests:%{__make} -j1 -C ../src check}
+%{?with_tests:%{__make} -j1 -C ../src check SKIP_NET_TESTS=1}
 
 %install
 rm -rf $RPM_BUILD_ROOT
