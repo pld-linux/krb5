@@ -963,7 +963,7 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/ftpd
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/ftpd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kftp
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kftpd
 %{_mandir}/man8/ftpd.8*
 
 %files kshd
