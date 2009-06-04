@@ -153,19 +153,18 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
         invoke Kerberos rcp on this end, not normal rcp, even if the
 --- krb5-1.6.1/src/appl/bsd/Makefile.in	2006-10-06 17:17:56.000000000 -0400
 +++ krb5-1.6.1/src/appl/bsd/Makefile.in	2007-06-21 17:39:57.000000000 -0400
-@@ -14,13 +14,14 @@ LIBOBJS=@LIBOBJS@
+@@ -14,12 +14,13 @@ LIBOBJS=@LIBOBJS@
  V4RCP=@V4RCP@
  V4RCPO=@V4RCPO@
  KRSHDLIBS=@KRSHDLIBS@
 +PAMOBJS=pam.o
  
  SRCS= $(srcdir)/krcp.c $(srcdir)/krlogin.c $(srcdir)/krsh.c $(srcdir)/kcmd.c \
- 	$(srcdir)/forward.c $(srcdir)/compat_recv.c \
- 	$(srcdir)/login.c $(srcdir)/krshd.c $(srcdir)/krlogind.c \
- 	$(srcdir)/v4rcp.c
- OBJS= krcp.o krlogin.o krsh.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) \
--	login.o krshd.o krlogind.o $(V4RCPO) $(LIBOBJS)
-+	login.o krshd.o krlogind.o $(V4RCPO) $(LIBOBJS) $(PAMOBJS)
+ 	$(srcdir)/forward.c $(srcdir)/login.c $(srcdir)/krshd.c \
+ 	$(srcdir)/krlogind.c
+ OBJS= krcp.o krlogin.o krsh.o kcmd.o forward.o $(SETENVOBJ) login.o krshd.o \
+-	krlogind.o $(LIBOBJS)
++	krlogind.o $(LIBOBJS) $(PAMOBJS)
  
  UCB_RLOGIN = @UCB_RLOGIN@
  UCB_RSH = @UCB_RSH@
@@ -173,10 +172,10 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
  		${DESTDIR}$(CLIENT_MANDIR)/`echo $$f|sed '$(transform)'`.1; \
  	fi
  
--kshd: krshd.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS) $(APPUTILS_DEPLIB)
--	$(CC_LINK) -o kshd krshd.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(KRSHDLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS) $(APPUTILS_LIB)
-+kshd: krshd.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS) $(APPUTILS_DEPLIB)
-+	$(CC_LINK) -o kshd krshd.o kcmd.o forward.o compat_recv.o $(PAMOBJS) $(SETENVOBJ) $(LIBOBJS) $(KRSHDLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS) $(PAM_LIBS) $(APPUTILS_LIB)
+-kshd: krshd.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB5_BASE_DEPLIBS) $(APPUTILS_DEPLIB)
+-	$(CC_LINK) -o kshd krshd.o kcmd.o forward.o $(SETENVOBJ) $(LIBOBJS) $(KRSHDLIBS) $(PTY_LIB) $(UTIL_LIB) $(KRB5_BASE_LIBS) $(APPUTILS_LIB)
++kshd: krshd.o kcmd.o forward.o $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(PTY_DEPLIB) $(KRB5_BASE_DEPLIBS) $(APPUTILS_DEPLIB)
++	$(CC_LINK) -o kshd krshd.o kcmd.o forward.o $(PAMOBJS) $(SETENVOBJ) $(LIBOBJS) $(KRSHDLIBS) $(PTY_LIB) $(UTIL_LIB) $(PAM_LIBS) $(KRB5_BASE_DEPLIBS) $(APPUTILS_LIB)
  
  klogind: krlogind.o kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS) $(APPUTILS_DEPLIB)
  	$(CC_LINK) -o klogind krlogind.o  kcmd.o forward.o compat_recv.o $(SETENVOBJ) $(LIBOBJS) $(PTY_LIB) $(UTIL_LIB) $(KRB4COMPAT_LIBS) $(APPUTILS_LIB)
@@ -184,10 +183,10 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
  # No program name transformation is done with login.krb5 since it is directly
  # referenced by klogind.
  #
--login.krb5: login.o  $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS)
--	$(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB4COMPAT_LIBS)
-+login.krb5: login.o  $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(PTY_DEPLIB) $(KRB4COMPAT_DEPLIBS)
-+	$(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB4COMPAT_LIBS) $(PAM_LIBS)
+-login.krb5: login.o  $(SETENVOBJ) $(LIBOBJS) $(PTY_DEPLIB) $(KRB5_BASE_DEPLIBS)
+-	$(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB5_BASE_LIBS)
++login.krb5: login.o  $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(PTY_DEPLIB) $(KRB5_BASE_DEPLIBS)
++	$(CC_LINK) -o login.krb5 login.o $(SETENVOBJ) $(PAMOBJS) $(LIBOBJS) $(LOGINLIBS) $(PTY_LIB) $(KRB5_BASE_DEPLIBS) $(PAM_LIBS)
  
  install::
  	$(INSTALL_PROGRAM) login.krb5 $(DESTDIR)$(SERVER_BINDIR)/login.krb5
@@ -202,9 +201,9 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
 +int login_use_pam = 1;
 +#endif
 +
- #ifdef KRB4_KLOGIN
- /* support for running under v4 klogind, -k -K flags */
- #define KRB4
+ #ifndef __STDC__
+ #ifndef volatile
+ #define volatile
 @@ -351,6 +356,9 @@ static struct login_confs {
      char *flagname;
      int *flag;
@@ -231,9 +230,9 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
 +	    }
 +	}
 +#endif
- 	/* we have several sets of code:
- 	   1) get v5 tickets alone -DKRB5_GET_TICKETS
- 	   2) get v4 tickets alone [** don't! only get them *with* v5 **]
+ #ifdef KRB5_GET_TICKETS
+ 	if (login_krb5_get_tickets) {
+ 	    /* rename these to something more verbose */
 @@ -1406,6 +1420,24 @@ int main(argc, argv)
      /* committed to login -- turn off timeout */
      (void) alarm((u_int) 0);
@@ -794,13 +793,13 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
 -	  secure.o $(LIBOBJS) $(SETENVOBJ)
 +	  secure.o pam.o getdtablesize.o $(LIBOBJS) $(SETENVOBJ)
  
- LOCALINCLUDES = -I$(srcdir)/.. -I$(srcdir) @KRB4_INCLUDES@
+ LOCALINCLUDES = -I$(srcdir)/.. -I$(srcdir)
  
  all::	ftpd
  
- ftpd:	$(OBJS) $(PTY_DEPLIB) $(GSS_DEPLIBS) $(KRB4COMPAT_DEPLIBS)
--	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(UTIL_LIB) $(GSS_LIBS) $(KRB4COMPAT_LIBS)
-+	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(UTIL_LIB) $(GSS_LIBS) $(PAM_LIBS) $(KRB4COMPAT_LIBS)
+ ftpd:	$(OBJS) $(PTY_DEPLIB) $(GSS_DEPLIBS) $(KRB5_BASE_DEPLIBS)
+-	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(UTIL_LIB) $(GSS_LIBS) $(KRB5_BASE_LIBS)
++	$(CC_LINK) -o $@ $(OBJS) $(FTPD_LIBS) $(PTY_LIB) $(UTIL_LIB) $(GSS_LIBS) $(KRB5_BASE_LIBS) $(PAM_LIBS)
  
  generate-files-mac: ftpcmd.c
  
@@ -946,9 +945,9 @@ When enabled, ftpd, krshd, and login.krb5 gain dependence on libpam.
 --- krb5-1.6.1/src/config/pre.in	2007-06-21 17:39:57.000000000 -0400
 +++ krb5-1.6.1/src/config/pre.in	2007-06-21 17:39:57.000000000 -0400
 @@ -180,6 +180,7 @@ SRVLIBS = @SRVLIBS@
- SRVDEPLIBS = @SRVDEPLIBS@
- CLNTLIBS = @CLNTLIBS@
- CLNTDEPLIBS = @CLNTDEPLIBS@
+ LD_SHLIBDIR_PREFIX = @LD_SHLIBDIR_PREFIX@
+ LDARGS = @LDARGS@
+ LIBS = @LIBS@
 +PAM_LIBS = @PAM_LIBS@
  
  INSTALL=@INSTALL@
