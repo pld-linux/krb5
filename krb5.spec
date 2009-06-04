@@ -13,12 +13,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.6.3
-Release:	3.1
+Version:	1.7
+Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.6/%{name}-%{version}-signed.tar
-# Source0-md5:	2dc1307686eb1c2bf1ab08ea805dad46
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
+# Source0-md5:	9f7b3402b4731a7fa543db193bf1b564
 Source2:	%{name}kdc.init
 Source3:	%{name}24d.init
 Source4:	kadm5.acl
@@ -49,14 +49,11 @@ Patch5:		%{name}-passive.patch
 Patch6:		%{name}-ktany.patch
 Patch7:		%{name}-size.patch
 Patch8:		%{name}-ftp-glob.patch
-Patch9:		%{name}-norpath.patch
 Patch10:	%{name}-paths.patch
 Patch11:	%{name}-autoconf.patch
-Patch12:	%{name}-api.patch
 Patch13:	%{name}-brokenrev.patch
 Patch14:	%{name}-dns.patch
 Patch15:	%{name}-enospc.patch
-Patch16:	%{name}-fclose.patch
 Patch17:	%{name}-io.patch
 Patch18:	%{name}-kprop-mktemp.patch
 Patch19:	%{name}-login-lpass.patch
@@ -68,28 +65,14 @@ Patch24:	%{name}-as-needed.patch
 Patch25:	%{name}-doc.patch
 Patch26:	%{name}-tests.patch
 Patch27:	%{name}-config.patch
-Patch28:	%{name}-any-fixup.patch
 Patch29:	%{name}-ftp_fdleak.patch
 Patch30:	%{name}-ftp_glob_runique.patch
 Patch31:	%{name}-key_exp.patch
-Patch32:	%{name}-ldap-init.patch
-Patch33:	%{name}-ldap-man.patch
-Patch34:	%{name}-lucid-acceptor.patch
 Patch35:	%{name}-pam.patch
 Patch36:	%{name}-selinux-label.patch
-Patch100:	%{name}-CVE-2007-5901.patch
-Patch101:	%{name}-CVE-2007-5971.patch
-Patch102:	%{name}-CVE-2008-0062,0063.patch
-Patch103:	%{name}-CVE-2008-0947.patch
-Patch104:	%{name}-CVE-2009-0844-0845-2.patch
-Patch105:	%{name}-CVE-2009-0846.patch
-Patch106:	%{name}-CVE-2009-0847.patch
 Patch200:	%{name}-trunk-doublelog.patch
 Patch201:	%{name}-trunk-ftp_mget_case.patch
 Patch202:	%{name}-trunk-kpasswd_tcp.patch
-Patch203:	%{name}-trunk-seqnum.patch
-Patch204:	%{name}-trunk-preauth-master.patch
-Patch205:	%{name}-trunk-spnego_delegation.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 BuildRequires:	autoconf
@@ -588,14 +571,11 @@ mv %{name}-%{version}/* .
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p1
-%patch10 -p1
+#%patch10 -p1
 %patch11 -p1
-%patch12 -p1
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
-%patch16 -p1
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
@@ -607,32 +587,15 @@ mv %{name}-%{version}/* .
 %patch25 -p1
 %patch26 -p1
 %patch27 -p1
-%patch28 -p0
 %patch29 -p1
 %patch30 -p1
 %patch31 -p1
-%patch32 -p0
-%patch33 -p0
-%patch34 -p0
-%patch35 -p1
+#%patch35 -p1
 %{?with_selinux:%patch36 -p1}
-
-%patch100 -p0
-%patch101 -p0
-%patch102 -p0
-%patch103 -p0
-%patch104 -p1
-%patch105 -p1
-%patch106 -p1
 
 %patch200 -p0
 %patch201 -p0
 %patch202 -p0
-%patch203 -p0
-%patch204 -p0
-%patch205 -p0
-
-cp src/krb524/README README.krb524
 
 %build
 cd src
@@ -662,6 +625,7 @@ done
 	%{?with_selinux:--with-selinux} \
 	--libexecdir=%{_libdir} \
 	--enable-shared \
+	--disable-rpath \
 	%{?with_krb4:--with-krb4} \
 	%{!?with_krb4:--without-krb4} \
 	--enable-dns \

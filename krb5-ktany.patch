@@ -1,9 +1,9 @@
 --- krb5-1.4/src/lib/krb5/keytab/ktbase.c.ktany	2004-05-27 23:44:32.000000000 -0400
 +++ krb5-1.4/src/lib/krb5/keytab/ktbase.c	2005-02-18 11:01:18.000000000 -0500
 @@ -34,14 +34,19 @@
- extern const krb5_kt_ops krb5_ktf_ops;
  extern const krb5_kt_ops krb5_ktf_writable_ops;
  extern const krb5_kt_ops krb5_kts_ops;
+ extern const krb5_kt_ops krb5_mkt_ops;
 +extern const krb5_kt_ops krb5_kta_ops;
  
  struct krb5_kt_typelist {
@@ -12,15 +12,15 @@
  };
 +static struct krb5_kt_typelist krb5_kt_typelist_any  = {
 +    &krb5_kta_ops,
-+    0
++    NULL
 +};
- const static struct krb5_kt_typelist krb5_kt_typelist_wrfile  = {
-     &krb5_ktf_writable_ops,
--    0
+ const static struct krb5_kt_typelist krb5_kt_typelist_srvtab = {
+     &krb5_kts_ops,
+-    NULL
 +    &krb5_kt_typelist_any
  };
- const static struct krb5_kt_typelist krb5_kt_typelist_file  = {
-     &krb5_ktf_ops,
+ const static struct krb5_kt_typelist krb5_kt_typelist_memory = {
+     &krb5_mkt_ops,
 --- /dev/null	2005-02-18 05:27:12.242575752 -0500
 +++ krb5-1.4/src/lib/krb5/keytab/kt_any.c	2005-02-18 10:38:09.000000000 -0500
 @@ -0,0 +1,292 @@

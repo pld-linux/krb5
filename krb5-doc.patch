@@ -28,23 +28,6 @@ diff -urN krb5-1.6/doc/Makefile krb5-1.6.doc/doc/Makefile
  
  user-guide.ps: $(USER_GUIDE_DEPS)
  	$(DVI) user-guide.texinfo
-@@ -122,12 +122,15 @@
- krb425-guide-full:: krb425-guide krb425-guide-info krb425-guide-html
- 
- .PHONY: krb425-guide
--krb425-guide:: krb425-guide.ps
-+krb425-guide:: krb425-guide.pdf
- 
- krb425-guide.ps: $(KRB425_DEPS)
- 	$(DVI) krb425.texinfo
- 	$(DVIPS) krb425
- 
-+krb425-guide.pdf: krb425-guide.ps
-+	$(PSPDF) krb425-guide.ps krb425-guide.pdf
-+
- .PHONY: krb425-guide-html
- krb425-guide-html:: krb425.html
- 
 diff -urN krb5-1.6/doc/api/Makefile krb5-1.6.doc/doc/api/Makefile
 --- krb5-1.6/doc/api/Makefile	2005-08-29 21:22:52.000000000 +0200
 +++ krb5-1.6.doc/doc/api/Makefile	2007-03-30 21:16:19.067733731 +0200

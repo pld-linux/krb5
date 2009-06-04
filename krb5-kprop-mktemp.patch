@@ -20,7 +20,7 @@ Use an in-memory ccache to silence a compiler warning.
 +	 * Initialize an in-memory cache for temporary use
  	 */
 -	(void) mktemp(tkstring);
--	sprintf(buf, "FILE:%s", tkstring);
+-	snprintf(buf, sizeof(buf), "FILE:%s", tkstring);
 -
 -	retval = krb5_cc_resolve(context, buf, &ccache);
 +	retval = krb5_cc_resolve(context, tkstring, &ccache);
