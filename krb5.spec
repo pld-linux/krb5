@@ -110,10 +110,10 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 %if %{with doc}
 BuildRequires:	texinfo
-BuildRequires:	tetex-format-latex
-BuildRequires:	tetex-format-pdflatex
-BuildRequires:	tetex-latex
-BuildRequires:	tetex-makeindex
+BuildRequires:	texlive-latex
+BuildRequires:	texlive-format-pdflatex
+BuildRequires:	texlive-makeindex
+BuildRequires:	texlive-xetex
 %endif
 BuildRequires:	words
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
