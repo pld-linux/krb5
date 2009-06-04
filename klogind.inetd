@@ -1,4 +1,4 @@
-SERVICE_NAME=klogind
+SERVICE_NAME=klogin
 SOCK_TYPE=stream
 PROTOCOL=tcp
 FLAGS=nowait
