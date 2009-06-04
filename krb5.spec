@@ -1,7 +1,4 @@
 #
-# NOTE:
-# - make check is disabled because builders don't have networking
-#
 # Conditional build:
 %bcond_without	doc             # without documentation which needed TeX
 %bcond_with	krb4		# build with Kerberos V4 support
@@ -590,7 +587,7 @@ mv %{name}-%{version}/* .
 %patch29 -p1
 %patch30 -p1
 %patch31 -p1
-#%patch35 -p1
+%patch35 -p1
 %{?with_selinux:%patch36 -p1}
 
 %patch200 -p0
