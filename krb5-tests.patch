@@ -7,9 +7,9 @@
 -	$(RUN_SETUP) $(VALGRIND) ./resolve
 -	$(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
 -	$(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
-+	test -n "$(SKIP_NET_TESTS)" || $(RUN_SETUP) $(VALGRIND) ./resolve ep09.pld-linux.org
-+	test -n "$(SKIP_NET_TESTS)" || $(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
-+	test -n "$(SKIP_NET_TESTS)" || $(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
++	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./resolve ep09.pld-linux.org ; fi
++	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet ; fi
++	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet ; fi
  
  install::
  
