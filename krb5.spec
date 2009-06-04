@@ -788,33 +788,35 @@ fi
 
 %files server
 %defattr(644,root,root,755)
-%doc doc/krb5-{admin,install}.html %{?with_doc:doc/{admin,install,krb425}-guide.pdf}
+%doc doc/krb5-{admin,install}.html %{?with_doc:doc/{admin,install}-guide.pdf}
 
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
 
-%attr(755,root,root) %{_sbindir}/kadmin
+%attr(755,root,root) %{_bindir}/kadmin
+%attr(755,root,root) %{_bindir}/ktutil
+%attr(755,root,root) %{_bindir}/k5srvutil
 %attr(755,root,root) %{_sbindir}/kadmin.local
 %attr(755,root,root) %{_sbindir}/propagation
 %attr(755,root,root) %{_sbindir}/kdb5_util
 %attr(755,root,root) %{_sbindir}/kprop
+%attr(755,root,root) %{_sbindir}/kproplog
 %attr(755,root,root) %{_sbindir}/krb5-send-pr
-%attr(755,root,root) %{_sbindir}/ktutil
-%attr(755,root,root) %{_sbindir}/k5srvutil
 %attr(755,root,root) %{_sbindir}/gss-server
 %attr(755,root,root) %{_sbindir}/sim_server
 %attr(755,root,root) %{_sbindir}/sserver
 %attr(755,root,root) %{_sbindir}/uuserver
 
 %{_mandir}/man1/krb5-send-pr.1*
-%{_mandir}/man8/k5srvutil.8*
-%{_mandir}/man8/kadmin.8*
+%{_mandir}/man1/k5srvutil.1*
+%{_mandir}/man1/kadmin.1*
+%{_mandir}/man1/ktutil.1*
 %{_mandir}/man8/kadmin.local.8*
 %{_mandir}/man8/kdb5_util.8*
 %{_mandir}/man8/kprop.8*
-%{_mandir}/man8/ktutil.8*
+%{_mandir}/man8/kproplog.8*
 %{_mandir}/man8/sserver.8*
 
 %if %{with openldap}
@@ -840,6 +842,7 @@ fi
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
 %dir %{_libdir}/krb5/plugins/preauth
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
+%attr(755,root,root) %{_libdir}/krb5/plugins/preauth/encrypted_challenge.so
 %{_mandir}/man5/kdc.conf.5*
 %{_mandir}/man8/krb5kdc.8*
 
@@ -861,7 +864,6 @@ fi
 %if %{with krb4}
 %files server-krb524d
 %defattr(644,root,root,755)
-%doc doc/krb425.html
 %attr(754,root,root) /etc/rc.d/init.d/krb524d
 %attr(755,root,root) %{_sbindir}/kadmind4
 %attr(755,root,root) %{_sbindir}/krb524d
@@ -961,8 +963,6 @@ fi
 
 %files libs
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libdes425.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libdes425.so.?
 %attr(755,root,root) %{_libdir}/libgss*.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgss*.so.?
 %attr(755,root,root) %{_libdir}/libk5crypto.so.*.*
@@ -978,7 +978,6 @@ fi
 %defattr(644,root,root,755)
 %doc doc/{kadmin,krb5-protocol} %{?with_doc:doc/{api,implement,kadm5}/*.pdf}
 %attr(755,root,root) %{_bindir}/krb5-config
-%attr(755,root,root) %{_libdir}/libdes425.so
 %attr(755,root,root) %{_libdir}/libgss*.so
 %attr(755,root,root) %{_libdir}/libk5crypto.so
 %attr(755,root,root) %{_libdir}/libkadm*.so
@@ -986,6 +985,7 @@ fi
 %attr(755,root,root) %{_libdir}/libkrb5*.so
 %{_includedir}/gssapi
 %{_includedir}/gssrpc
+%{_includedir}/kadm5
 %{_includedir}/krb5
 %{?with_krb4:%{_includedir}/kerberosIV}
 %{_includedir}/*.h
