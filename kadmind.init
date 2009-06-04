@@ -37,6 +37,8 @@ fi
 case "$1" in
   start)
         if [ ! -f "$KERBEROS_DATABASE" ] ; then
+	    # It MAY be in LDAP
+	    if ! grep -q 'db_library.*=.*kldap' /etc/krb5.conf ; then
                 cat << END_OF_MSG
 Kerberos database could not be found in $KERBEROS_DATABASE!
 You have to create Kerberos database prior to running administrative server.
@@ -47,6 +49,7 @@ See kdb5_util(8) for more information.
 END_OF_MSG
 
         	exit 1
+	    fi
         fi
         if [ -f "$KERBEROS_KPROPD_ACL_FILE" ] ; then
 		show "This service should only be run on the master server for a realm!"
@@ -67,7 +70,7 @@ END_OF_MSG
         # Check if the service is already running?
         if [ ! -f /var/lock/subsys/kadmind ]; then
                 msg_starting "Kerberos V5 Administrative Server"
-                daemon kadmind
+                daemon kadmind ${KERBEROS_REALM:+-r ${KERBEROS_REALM}} $KADMIND_ARGS
                 RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/kadmind
         else

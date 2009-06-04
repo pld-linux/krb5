@@ -36,6 +36,8 @@ fi
 case "$1" in
   start)
         if [ ! -f "${KERBEROS_DATABASE}" ] ; then
+	    # It MAY be in LDAP
+	    if ! grep -q 'db_library.*=.*kldap' /etc/krb5.conf ; then
 	    	cat << END_OF_MSG
 Kerberos database could not be found in ${KERBEROS_DATABASE}!
 You have to create Kerberos database prior to running KDC server.
@@ -45,12 +47,13 @@ kdb5_util create -r <kerberos_realm> -s -d ${KERBEROS_DATABASE}
 See kdb5_util(8) for more information.
 END_OF_MSG
 		exit 1
+	    fi
         fi
 
         # Check if the service is already running?
         if [ ! -f /var/lock/subsys/krb5kdc ]; then
                 msg_starting "Kerberos V5 KDC"
-                daemon krb5kdc -4 ${KERBEROS_V4_MODE} -d ${KERBEROS_DATABASE}
+                daemon krb5kdc -4 ${KERBEROS_V4_MODE} ${KERBEROS_REALM:+-r ${KERBEROS_REALM}} -d ${KERBEROS_DATABASE} $KRB5KDC_ARGS
                 RETVAL=$?
                 [ $RETVAL -eq 0 ] && touch /var/lock/subsys/krb5kdc
         else

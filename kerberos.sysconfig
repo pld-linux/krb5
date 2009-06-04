@@ -13,7 +13,7 @@ KPROPD_SERVICE_RUN_NICE_LEVEL="+0"
 KERBEROS_REALM=
 
 # Kerberos database
-KERBEROS_DATABASE_FILE="/var/lib/kerberos/principal"
+KERBEROS_DATABASE="/var/lib/kerberos/principal"
 
 # Kerberos Propagation Client ACL file used on slave KDCs
 # Must contain principals for each of the KDCs
@@ -25,3 +25,7 @@ KERBEROS_KADM_KEYTAB_FILE="/var/lib/kerberos/kadm5.keytab"
 # This option specifies how the KDC responds to kerberos V4 requests
 # for tickets. Possible options are: none/disable/full/nopreauth
 KERBEROS_V4_MODE="none"
+
+KADMIND_ARGS=
+
+KRB5KDC_ARGS=
