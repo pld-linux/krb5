@@ -1,11 +1,10 @@
 #
 # Conditional build:
 %bcond_without	doc             # without documentation which needed TeX
-%bcond_with	krb4		# build with Kerberos V4 support
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	openldap	# don't build openldap plugin
 %bcond_with	selinux		# build with selinux support
-%bcond_without	tests		# perform make check
+%bcond_without	tests		# don't perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
@@ -17,7 +16,6 @@ Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
 # Source0-md5:	9f7b3402b4731a7fa543db193bf1b564
 Source2:	%{name}kdc.init
-Source3:	%{name}24d.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
 Source6:	%{name}.conf
@@ -277,28 +275,6 @@ Kadmind przyjmuje zdalne zlecenia administracyjne dla wyżej
 wymienionych baz. Zdalne zlecenia są wysyłane na przykład przez
 programy kadmin i kpasswd, które są klientami kadmind.
 
-%package server-krb524d
-Summary:	Version 5 to Version 4 Credentials Conversion Daemon
-Summary(pl.UTF-8):	Serwer tłumaczący wersję 5 na wersję 4 kerberosa
-Group:		Networking
-Requires:	%{name}-server-kdc = %{version}-%{release}
-
-%description server-krb524d
-This package contains the Kerberos Version 5 to Version 4 Credentials
-Conversion daemon.
-
-It works in conjuction with a krb5kdc to allow clients to acquire
-Kerberos version 4 tickets from Kerberos version 5 tickets without
-specifying a password.
-
-%description server-krb524d -l pl.UTF-8
-Ten pakiet zawiera demon konwerujący uwierzytelnienia Kerberosa 5 na
-wersję 4.
-
-Demon krb524d działa w połączeniu z krb5kdc umożliwiając klientom
-uzyskanie biletów Kerberosa 4 z biletów Kerberosa 5 bez konieczności
-podawania hasła.
-
 %package server-kpropd
 Summary:	Kerberos V5 slave KDC update server
 Summary(pl.UTF-8):	Podporządkowany serwer KDC Kerberos V5
@@ -329,7 +305,7 @@ zawierał aktualną bazę KDC.
 Summary:	The LDAP storage plugin for the Kerberos 5 KDC
 Summary(pl.UTF8):	Wtyczka przechowywania danych w LDAP dla KDC Kerberosa 5
 Group:		Networking
-Requires:	%{name}-server = %{version}-%{release}
+Requires:	%{name}-server-kdc = %{version}-%{release}
 
 %description server-ldap
 Kerberos is a network authentication system. The krb5-server package
@@ -568,7 +544,7 @@ mv %{name}-%{version}/* .
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-#%patch10 -p1
+%patch10 -p1
 %patch11 -p1
 %patch13 -p1
 %patch14 -p1
@@ -623,8 +599,6 @@ done
 	--libexecdir=%{_libdir} \
 	--enable-shared \
 	--disable-rpath \
-	%{?with_krb4:--with-krb4} \
-	%{!?with_krb4:--without-krb4} \
 	--enable-dns \
 	--enable-dns-for-kdc \
 	--enable-dns-for-realm \
@@ -656,9 +630,9 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
-install %{SOURCE7} $RPM_BUILD_ROOT%{_localstatedir}
-install %{SOURCE4} $RPM_BUILD_ROOT%{_localstatedir}
-install %{SOURCE18} $RPM_BUILD_ROOT%{_localstatedir}
+install %{SOURCE7} $RPM_BUILD_ROOT%{_localstatedir}/krb5kdc
+install %{SOURCE4} $RPM_BUILD_ROOT%{_localstatedir}/krb5kdc
+install %{SOURCE18} $RPM_BUILD_ROOT%{_localstatedir}/krb5kdc
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/logrotate.d/kerberos
 install %{SOURCE8} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE15} $RPM_BUILD_ROOT%{_sbindir}/propagation
@@ -672,9 +646,6 @@ install %{SOURCE14} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
-%if %{with krb4}
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb524d
-%endif
 
 install %{SOURCE19} $RPM_BUILD_ROOT/etc/pam.d/kftpd
 install %{SOURCE20} $RPM_BUILD_ROOT/etc/pam.d/klogin
@@ -684,8 +655,8 @@ install %{SOURCE21} $RPM_BUILD_ROOT/etc/pam.d/kshell
 install src/plugins/kdb/ldap/libkdb_ldap/kerberos.{schema,ldif} $RPM_BUILD_ROOT%{schemadir}
 %endif
 
-ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/kadm5.dict
-touch $RPM_BUILD_ROOT%{_localstatedir}/krb5.keytab
+ln -sf %{_datadir}/dict/words $RPM_BUILD_ROOT%{_localstatedir}/krb5kdc/kadm5.dict
+touch $RPM_BUILD_ROOT/etc/krb5.keytab
 
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
@@ -706,12 +677,6 @@ rm -rf $RPM_BUILD_ROOT
 /sbin/chkconfig --add kpropd
 %service kpropd restart "kpropd daemon"
 
-%if %{with krb4}
-%post server-krb524d
-/sbin/chkconfig --add krb524d
-%service krb524d restart "krb524d daemon"
-%endif
-
 %postun server-kdc
 if [ "$1" = 0 ]; then
 	%service krb5kdc stop
@@ -729,14 +694,6 @@ if [ "$1" = 0 ]; then
 	%service kpropd stop
 	/sbin/chkconfig --del kpropd
 fi
-
-%if %{with krb4}
-%postun server-krb524d
-if [ "$1" = 0 ]; then
-	%service krb524d stop
-	/sbin/chkconfig --del krb524d
-fi
-%endif
 
 %post ftpd
 %service -q rc-inetd reload
@@ -783,6 +740,49 @@ if [ "$1" = "0" ]; then
 	%service -q ldap restart
 fi
 
+%triggerpostun server -- krb5-server < 1.7
+for f in principal .k5.* krb5_adm.acl kadm_old.acl kadm5.keytab; do
+	if [ -f %{_localstatedir}/$f.rpmsave ]; then
+		if [ -f %{_localstatedir}/krb5kdc/$f ]; then
+			mv %{_localstatedir}/krb5kdc/$f{,.rpmnew}
+		fi
+		mv -f %{_localstatedir}/$f.rpmsave %{_localstatedir}/krb5kdc/$f
+	fi
+done
+cp -f /etc/sysconfig/kerberos{,.rpmorig}
+%{__sed} -i -e "s,/var/lib/kerberos/principal,/var/lib/kerberos/krb5kdc/principal," \
+	-e "s,/var/lib/kerberos/kpropd.acl,/var/lib/kerberos/krb5kdc/kpropd.acl," \
+	-e "s,/var/lib/kerberos/kadm5.keytab,/var/lib/kerberos/krb5kdc/kadm5.keytab," \
+	/etc/sysconfig/kerberos
+
+%triggerpostun server-kdc -- krb5-server-kdc < 1.7
+if [ -f %{_localstatedir}/kdc.conf.rpmsave ]; then
+	mv %{_localstatedir}/krb5kdc/kdc.conf{,.rpmnew}
+	mv -f %{_localstatedir}/kdc.conf.rpmsave %{_localstatedir}/krb5kdc/kdc.conf
+fi
+
+%triggerpostun server-kadmind -- krb5-server-kadmind < 1.7
+if [ -f %{_localstatedir}/kadm5.acl.rpmsave ]; then
+	mv %{_localstatedir}/krb5kdc/kadm5.acl{,.rpmnew}
+	mv -f %{_localstatedir}/kadm5.acl.rpmsave %{_localstatedir}/krb5kdc/kadm5.acl
+fi
+
+%triggerpostun server-kpropd -- krb5-server-kpropd < 1.7
+for f in slave_datatrans from_master kpropd.acl; do
+	if [ -f %{_localstatedir}/$f.rpmsave ]; then
+		if [ -f %{_localstatedir}/krb5kdc/$f ]; then
+			mv %{_localstatedir}/krb5kdc/$f{,.rpmnew}
+		fi
+		mv -f %{_localstatedir}/$f.rpmsave %{_localstatedir}/krb5kdc/$f
+	fi
+done
+
+%triggerpostun common -- krb5-common < 1.7
+if [ -f %{_localstatedir}/krb5.keytab.rpmsave ]; then
+	mv /etc/krb5.keytab{,.rpmnew}
+	mv -f %{_localstatedir}/krb5.keytab.rpmsave /etc/krb5.keytab
+fi
+
 %files server
 %defattr(644,root,root,755)
 %doc doc/krb5-{admin,install}.html %{?with_doc:doc/{admin,install}-guide.pdf}
@@ -791,6 +791,9 @@ fi
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/kerberos
 
 %attr(750,root,root) %dir /var/log/kerberos
+
+%attr(700,root,root) %dir %{_localstatedir}
+%attr(700,root,root) %dir %{_localstatedir}/krb5kdc
 
 %attr(755,root,root) %{_bindir}/kadmin
 %attr(755,root,root) %{_bindir}/ktutil
@@ -834,8 +837,11 @@ fi
 %files server-kdc
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/krb5kdc
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kdc.conf
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kdc.conf
 %attr(755,root,root) %{_sbindir}/krb5kdc
+%dir %{_libdir}/krb5
+%dir %{_libdir}/krb5/plugins
+%dir %{_libdir}/krb5/plugins/kdb
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
 %dir %{_libdir}/krb5/plugins/preauth
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
@@ -846,25 +852,17 @@ fi
 %files server-kadmind
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.acl
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kadm5.dict
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kadm5.acl
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kadm5.dict
 %attr(755,root,root) %{_sbindir}/kadmind
 %{_mandir}/man8/kadmind.8*
 
 %files server-kpropd
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/kpropd
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/kpropd.acl
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kpropd.acl
 %attr(755,root,root) %{_sbindir}/kpropd
 %{_mandir}/man8/kpropd.8*
-
-%if %{with krb4}
-%files server-krb524d
-%defattr(644,root,root,755)
-%attr(754,root,root) /etc/rc.d/init.d/krb524d
-%attr(755,root,root) %{_sbindir}/kadmind4
-%attr(755,root,root) %{_sbindir}/krb524d
-%endif
 
 %files client
 %defattr(644,root,root,755)
@@ -878,7 +876,6 @@ fi
 %attr(755,root,root) %{_bindir}/sim_client
 %attr(755,root,root) %{_bindir}/uuclient
 %attr(4755,root,root) %{_bindir}/ksu
-%{?with_krb4:%attr(755,root,root) %{_bindir}/krb524init}
 
 %attr(755,root,root) %{_bindir}/kpasswd
 %attr(755,root,root) %{_bindir}/sclient
@@ -908,10 +905,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/rcp
 %attr(755,root,root) %{_bindir}/rsh
-%{?with_krb4:%attr(755,root,root) %{_bindir}/v4rcp}
 %{_mandir}/man1/rsh.1*
 %{_mandir}/man1/rcp.1*
-%{?with_krb4:%{_mandir}/man1/v4rcp.1*}
 
 %files telnet
 %defattr(644,root,root,755)
@@ -948,12 +943,7 @@ fi
 %files common
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
-%dir %{_libdir}/krb5
-%dir %{_libdir}/krb5/plugins
-%dir %{_libdir}/krb5/plugins/kdb
-%attr(700,root,root) %dir %{_localstatedir}
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5.keytab
-
+%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/krb5.keytab
 %attr(755,root,root) %{_sbindir}/login.krb5
 %{_mandir}/man8/login.krb5.8*
 %{_mandir}/man5/krb5.conf.5*
@@ -984,7 +974,6 @@ fi
 %{_includedir}/gssrpc
 %{_includedir}/kadm5
 %{_includedir}/krb5
-%{?with_krb4:%{_includedir}/kerberosIV}
 %{_includedir}/*.h
 %{_mandir}/man1/krb5-config.1*
 

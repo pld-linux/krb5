@@ -15,9 +15,9 @@
 # Get network config
 . /etc/sysconfig/network
 
-KERBEROS_DATABASE=/var/lib/kerberos/principal
-KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/kpropd.acl
-KERBEROS_KADM_KEYTAB_FILE=/var/lib/kerberos/kadm5.keytab
+KERBEROS_DATABASE=/var/lib/kerberos/krb5kdc/principal
+KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/krb5kdc/kpropd.acl
+KERBEROS_KADM_KEYTAB_FILE=/var/lib/kerberos/krb5kdc/kadm5.keytab
 
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos

@@ -16,7 +16,7 @@
 . /etc/sysconfig/network
 
 KERBEROS_V4_MODE="none"
-KERBEROS_DATABASE=/var/lib/kerberos/principal
+KERBEROS_DATABASE=/var/lib/kerberos/krb5kdc/principal
 
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos

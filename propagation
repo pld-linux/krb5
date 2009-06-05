@@ -4,7 +4,7 @@
 # (dumpfile.dump_ok) or if database has been dumped since last successful
 # propagation (dumpfile.<slave machine>.last_prop)
 
-KDB_DIR=/var/lib/kerberos
+KDB_DIR=/var/lib/kerberos/krb5kdc
 
 KDB_FILE=$KDB_DIR/principal
 DUMPFILE=$KDB_DIR/slave_datatrans

@@ -15,7 +15,7 @@
 # Get network config
 . /etc/sysconfig/network
 
-KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/kpropd.acl
+KERBEROS_KPROPD_ACL_FILE=/var/lib/kerberos/krb5kdc/kpropd.acl
 
 # Get service config - may override defaults
 [ -f /etc/sysconfig/kerberos ] && . /etc/sysconfig/kerberos
