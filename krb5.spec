@@ -44,27 +44,27 @@ Patch5:		%{name}-passive.patch
 Patch6:		%{name}-ktany.patch
 Patch7:		%{name}-size.patch
 Patch8:		%{name}-ftp-glob.patch
-Patch10:	%{name}-paths.patch
-Patch11:	%{name}-autoconf.patch
-Patch13:	%{name}-brokenrev.patch
-Patch14:	%{name}-dns.patch
-Patch15:	%{name}-enospc.patch
-Patch17:	%{name}-io.patch
-Patch18:	%{name}-kprop-mktemp.patch
-Patch19:	%{name}-login-lpass.patch
-Patch20:	%{name}-rcp-markus.patch
-Patch21:	%{name}-rcp-sendlarge.patch
-Patch22:	%{name}-send-pr-tempfile.patch
-Patch23:	%{name}-telnet-environ.patch
-Patch24:	%{name}-as-needed.patch
-Patch25:	%{name}-doc.patch
-Patch26:	%{name}-tests.patch
-Patch27:	%{name}-config.patch
-Patch29:	%{name}-ftp_fdleak.patch
-Patch30:	%{name}-ftp_glob_runique.patch
-Patch31:	%{name}-key_exp.patch
-Patch35:	%{name}-pam.patch
-Patch36:	%{name}-selinux-label.patch
+Patch9:		%{name}-paths.patch
+Patch10:	%{name}-autoconf.patch
+Patch11:	%{name}-brokenrev.patch
+Patch12:	%{name}-dns.patch
+Patch13:	%{name}-enospc.patch
+Patch14:	%{name}-io.patch
+Patch15:	%{name}-kprop-mktemp.patch
+Patch16:	%{name}-login-lpass.patch
+Patch17:	%{name}-rcp-markus.patch
+Patch18:	%{name}-rcp-sendlarge.patch
+Patch19:	%{name}-send-pr-tempfile.patch
+Patch20:	%{name}-telnet-environ.patch
+Patch21:	%{name}-as-needed.patch
+Patch22:	%{name}-doc.patch
+Patch23:	%{name}-tests.patch
+Patch24:	%{name}-config.patch
+Patch25:	%{name}-ftp_fdleak.patch
+Patch26:	%{name}-ftp_glob_runique.patch
+Patch27:	%{name}-key_exp.patch
+Patch28:	%{name}-pam.patch
+Patch29:	%{name}-selinux-label.patch
 Patch200:	%{name}-trunk-doublelog.patch
 Patch201:	%{name}-trunk-ftp_mget_case.patch
 Patch202:	%{name}-trunk-kpasswd_tcp.patch
@@ -197,6 +197,7 @@ hasło), jego bilet uaktywnia się i będzie ważny na daną usługę.
 Summary:	Kerberos V5 Server
 Summary(pl.UTF-8):	Serwer Kerberos V5
 Group:		Networking
+Requires(post,postun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	words
@@ -544,11 +545,14 @@ mv %{name}-%{version}/* .
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
 %patch13 -p1
 %patch14 -p1
 %patch15 -p1
+%patch16 -p1
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
@@ -560,11 +564,8 @@ mv %{name}-%{version}/* .
 %patch25 -p1
 %patch26 -p1
 %patch27 -p1
-%patch29 -p1
-%patch30 -p1
-%patch31 -p1
-%patch35 -p1
-%{?with_selinux:%patch36 -p1}
+%patch28 -p1
+%{?with_selinux:%patch29 -p1}
 
 %patch200 -p0
 %patch201 -p0
