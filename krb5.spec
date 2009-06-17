@@ -10,7 +10,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.7
-Release:	1
+Release:	2
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
@@ -166,7 +166,7 @@ Summary(pl.UTF-8):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
-Obsoletes:	heimdal
+Conflicts:	heimdal
 
 %description client
 Kerberos V5 Clients.
@@ -201,7 +201,7 @@ Requires(post,postun):	sed >= 4.0
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	words
-Obsoletes:	heimdal-server
+Conflicts:	heimdal-server
 
 %description server
 Common files required by Kerberos 5 servers.
@@ -343,7 +343,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	ftpd
-Obsoletes:	heimdal-ftpd
+Conflicts:	heimdal-ftpd
 
 %description ftpd
 FTP is the file transfer protocol, which is a widely used Internet
@@ -361,7 +361,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
 Requires:	rc-inetd >= 0.8.1
 Obsoletes:	rshd
-Obsoletes:	heimdal-rshd
+Conflicts:	heimdal-rshd
 
 %description kshd
 The kshd package contains kerberized remote shell server which
@@ -512,7 +512,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	keyutils-devel
 Requires:	libcom_err-devel
-Obsoletes:	heimdal-devel
+Conflicts:	heimdal-devel
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
