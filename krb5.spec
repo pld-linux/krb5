@@ -10,7 +10,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.7
-Release:	2
+Release:	3
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
@@ -88,10 +88,17 @@ BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 %if %{with doc}
 BuildRequires:	texinfo
+%if "%{pld_release}" == "ti"
+BuildRequires:	tetex-format-latex
+BuildRequires:	tetex-format-pdflatex
+BuildRequires:	tetex-latex
+BuildRequires:	tetex-makeindex
+%else
 BuildRequires:	texlive-latex
 BuildRequires:	texlive-format-pdflatex
 BuildRequires:	texlive-makeindex
 BuildRequires:	texlive-xetex
+%endif
 %endif
 BuildRequires:	words
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
