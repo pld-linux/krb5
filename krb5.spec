@@ -10,7 +10,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.7
-Release:	3
+Release:	4
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
@@ -669,6 +669,9 @@ touch $RPM_BUILD_ROOT/etc/krb5.keytab
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
 rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
+
+# fix permissions for deps generation
+find $RPM_BUILD_ROOT -type f -name '*.so*' -exec chmod +x "{}" ";"
 
 %clean
 rm -rf $RPM_BUILD_ROOT
