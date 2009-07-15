@@ -589,9 +589,9 @@ CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
 CPPFLAGS="-I%{_includedir}/et -I%{_includedir}/ncurses"
 %endif
 
-top=`pwd`
-for configurein in `find -name configure.in -type f` ; do
-	cd `dirname $configurein`
+top=$(pwd)
+for configurein in $(find -name configure.in -type f); do
+	cd $(dirname $configurein)
 	grep -q A._CONFIG_HEADER configure.in && %{__autoheader} -I "$top"
 	%{__autoconf} -I "$top"
 	cd $top
@@ -671,7 +671,7 @@ echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
 
 # fix permissions for deps generation
-find $RPM_BUILD_ROOT -type f -name '*.so*' -exec chmod +x "{}" ";"
+find $RPM_BUILD_ROOT -type f -name '*.so*' | xargs chmod +x
 
 %clean
 rm -rf $RPM_BUILD_ROOT
