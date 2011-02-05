@@ -310,7 +310,7 @@ zawierał aktualną bazę KDC.
 
 %package server-ldap
 Summary:	The LDAP storage plugin for the Kerberos 5 KDC
-Summary(pl.UTF8):	Wtyczka przechowywania danych w LDAP dla KDC Kerberosa 5
+Summary(pl.UTF-8):	Wtyczka przechowywania danych w LDAP dla KDC Kerberosa 5
 Group:		Networking
 Requires:	%{name}-server-kdc = %{version}-%{release}
 
