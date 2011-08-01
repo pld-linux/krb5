@@ -1,4 +1,10 @@
 #
+# WARNING!! Please do NOT rebuild it for Th!
+# These packages on ftp only confuse people uneducated in Kerberos.
+# We use Heimdal implementation in Th. If someone really wants MIT,
+# (s)he is on hers/his own.
+#				- baggins/at/pld-linux.org
+#
 # Conditional build:
 %bcond_without	doc             # without documentation which needed TeX
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
@@ -10,7 +16,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.7
-Release:	4
+Release:	4.1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
