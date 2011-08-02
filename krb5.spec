@@ -439,7 +439,7 @@ cd ../doc
 
 %if %{with tests}
 %{__make} -C ../src check \
-	OFFLINE=1 \
+	OFFLINE=yes \
 	TCL_LIBPATH="-L%{_libdir}" \
 	PYTESTFLAGS="-v"
 %endif
