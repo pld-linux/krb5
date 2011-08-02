@@ -60,3 +60,16 @@
  
  install::
  	$(INSTALL_PROGRAM) krb5kdc ${DESTDIR}$(SERVER_BINDIR)/krb5kdc
+--- krb5-1.9.1/src/appl/gss-sample/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
++++ krb5-1.9.1/src/appl/gss-sample/Makefile.in	2011-08-03 01:03:37.904570242 +0200
+@@ -45,7 +45,9 @@
+ 	$(RM) gss-server gss-client
+ 
+ check-pytests::
+-	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ install-unix::
+ 	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
