@@ -426,7 +426,8 @@ done
 	--with-system-et \
 	--with-system-ss
 
-%{__make} TCL_LIBPATH="-L%{_libdir}"
+%{__make} \
+	TCL_LIBPATH="-L%{_libdir}"
 
 cd ../doc
 %if %{with doc}
@@ -436,7 +437,12 @@ cd ../doc
 %{__make} -C kadm5
 %endif
 
-%{?with_tests:%{__make} -j1 -C ../src check OFFLINE=1 TCL_LIBPATH="-L%{_libdir}"}
+%if %{with tests}
+:%{__make} -C ../src check \
+	OFFLINE=1 \
+	TCL_LIBPATH="-L%{_libdir}" \
+	PYTESTFLAGS="-v"
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
