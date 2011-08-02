@@ -436,7 +436,7 @@ cd ../doc
 %{__make} -C kadm5
 %endif
 
-%{?with_tests:%{__make} -j1 -C ../src check OFFLINE=1}
+%{?with_tests:%{__make} -j1 -C ../src check OFFLINE=1 TCL_LIBPATH="-L%{_libdir}"}
 
 %install
 rm -rf $RPM_BUILD_ROOT
