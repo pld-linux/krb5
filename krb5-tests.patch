@@ -47,3 +47,16 @@
  
  clean::
  	$(RM) $(OUTPRE)t_walk_rtree$(EXEEXT) $(OUTPRE)t_walk_rtree.$(OBJEXT) \
+--- krb5-1.9.1/src/kdc/Makefile.in~	2010-11-01 20:49:29.000000000 +0100
++++ krb5-1.9.1/src/kdc/Makefile.in	2011-08-03 00:50:14.395525895 +0200
+@@ -66,7 +66,9 @@
+ 	$(RM) test.out
+ 
+ check-pytests::
+-	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ install::
+ 	$(INSTALL_PROGRAM) krb5kdc ${DESTDIR}$(SERVER_BINDIR)/krb5kdc
