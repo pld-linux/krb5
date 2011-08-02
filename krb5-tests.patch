@@ -7,9 +7,9 @@
 -	$(RUN_SETUP) $(VALGRIND) ./resolve
 -	$(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet
 -	$(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet
-+	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./resolve ep09.pld-linux.org ; fi
-+	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet ; fi
-+	if test -z "$(SKIP_NET_TESTS)"; then $(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet ; fi
++	if [ "$(OFFLINE)" = no ]; then $(RUN_SETUP) $(VALGRIND) ./resolve ep09.pld-linux.org ; fi
++	if [ "$(OFFLINE)" = no ]; then $(RUN_SETUP) $(VALGRIND) ./addrinfo-test -p telnet ; fi
++	if [ "$(OFFLINE)" = no ]; then $(RUN_SETUP) $(VALGRIND) ./fake-addrinfo-test -p telnet ; fi
  
  install::
  
@@ -34,3 +34,16 @@
  		DICT=`cd $srcdir/../test && pwd`/dictionary
  	else
  		echo 'run.test: no dictionary'
+--- krb5-1.9.1/src/lib/krb5/krb/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
++++ krb5-1.9.1/src/lib/krb5/krb/Makefile.in	2011-08-03 00:38:37.538243651 +0200
+@@ -431,7 +431,9 @@
+ 	$(RUN_SETUP) $(VALGRIND) ./t_etypes
+ 
+ check-pytests:: t_expire_warn
+-	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ clean::
+ 	$(RM) $(OUTPRE)t_walk_rtree$(EXEEXT) $(OUTPRE)t_walk_rtree.$(OBJEXT) \
