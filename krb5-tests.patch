@@ -96,3 +96,16 @@
  
  clean::
  	$(RM) kdc.conf
+--- krb5-1.9.1/src/tests/gssapi/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
++++ krb5-1.9.1/src/tests/gssapi/Makefile.in	2011-08-03 01:15:11.187294436 +0200
+@@ -11,7 +11,9 @@
+ all:: t_imp_name t_s4u t_namingexts t_gssexts t_spnego t_saslname
+ 
+ check-pytests:: t_spnego
+-	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ t_imp_name: t_imp_name.o $(GSS_DEPLIBS) $(KRB5_BASE_DEPLIBS)
+ 	$(CC_LINK) -o t_imp_name t_imp_name.o $(GSS_LIBS) $(KRB5_BASE_LIBS)
