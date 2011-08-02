@@ -1,5 +1,5 @@
 #
-# WARNING!! Please do NOT rebuild it for Th!
+# WARNING!! Please do NOT rebuild it for Th! Its place is in th-obsolete!
 # These packages on ftp only confuse people uneducated in Kerberos.
 # We use Heimdal implementation in Th. If someone really wants MIT,
 # (s)he is on hers/his own.
@@ -15,12 +15,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.7
-Release:	4.1
+Version:	1.9.1
+Release:	1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.7/%{name}-%{version}-signed.tar
-# Source0-md5:	9f7b3402b4731a7fa543db193bf1b564
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.9/%{name}-%{version}-signed.tar
+# Source0-md5:	b9f237015fbb83f75d17941588b12b7d
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -29,50 +29,26 @@ Source7:	kdc.conf
 Source8:	kerberos.sysconfig
 Source9:	kerberos.sh
 Source10:	kerberos.csh
-Source11:	klogind.inetd
-Source12:	kftpd.inetd
-Source13:	ktelnetd.inetd
-Source14:	kshell.inetd
 Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
-Source19:	kftpd.pamd
-Source20:	klogin.pamd
-Source21:	kshell.pamd
 Patch0:		%{name}-manpages.patch
-Patch1:		%{name}-netkit-rsh.patch
-Patch2:		%{name}-rlogind-environ.patch
 Patch3:		%{name}-ksu-access.patch
 Patch4:		%{name}-ksu-path.patch
-Patch5:		%{name}-passive.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
-Patch7:		%{name}-size.patch
-Patch8:		%{name}-ftp-glob.patch
-Patch9:		%{name}-paths.patch
 Patch10:	%{name}-autoconf.patch
 Patch11:	%{name}-brokenrev.patch
 Patch12:	%{name}-dns.patch
 Patch13:	%{name}-enospc.patch
-Patch14:	%{name}-io.patch
 Patch15:	%{name}-kprop-mktemp.patch
-Patch16:	%{name}-login-lpass.patch
-Patch17:	%{name}-rcp-markus.patch
-Patch18:	%{name}-rcp-sendlarge.patch
 Patch19:	%{name}-send-pr-tempfile.patch
-Patch20:	%{name}-telnet-environ.patch
-Patch21:	%{name}-as-needed.patch
 Patch22:	%{name}-doc.patch
 Patch23:	%{name}-tests.patch
 Patch24:	%{name}-config.patch
-Patch25:	%{name}-ftp_fdleak.patch
-Patch26:	%{name}-ftp_glob_runique.patch
-Patch27:	%{name}-key_exp.patch
-Patch28:	%{name}-pam.patch
 Patch29:	%{name}-selinux-label.patch
 Patch200:	%{name}-trunk-doublelog.patch
-Patch201:	%{name}-trunk-ftp_mget_case.patch
 Patch202:	%{name}-trunk-kpasswd_tcp.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
@@ -87,7 +63,6 @@ BuildRequires:	libss-devel >= 1.35
 BuildRequires:	ncurses-devel
 %{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 0.9.8
-BuildRequires:	pam-devel
 %{?with_selinux:BuildRequires:	libselinux-devel}
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
@@ -347,159 +322,6 @@ This package contains kerberos LDAP schema for openldap.
 %description -n openldap-schema-krb5 -l pl.UTF-8
 Ten pakiet zawiera schemat kerberosa dla openldap-a.
 
-%package ftpd
-Summary:	The standard UNIX FTP (file transfer protocol) server
-Summary(pl.UTF-8):	Serwer FTP
-Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Requires:	rc-inetd >= 0.8.1
-Obsoletes:	ftpd
-Conflicts:	heimdal-ftpd
-
-%description ftpd
-FTP is the file transfer protocol, which is a widely used Internet
-protocol for transferring files and for archiving files.
-
-%description ftpd -l pl.UTF-8
-FTP jest protokołem transmisji plików szeroko rozpowszechnionym w
-Internecie.
-
-%package kshd
-Summary:	Kerberized remote shell server
-Summary(pl.UTF-8):	Skerberyzowany serwer zdalnego dostępu
-Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Requires:	rc-inetd >= 0.8.1
-Obsoletes:	rshd
-Conflicts:	heimdal-rshd
-
-%description kshd
-The kshd package contains kerberized remote shell server which
-provides remote execution facilities with authentication based on the
-Kerberos authentication system.
-
-%description kshd -l pl.UTF-8
-Ten pakiet zawiera skerberyzowaną wersję serwer zdalnego dostępu,
-który umożliwia zdalne wykonywanie poleceń w oparciu o system
-uwierzytelniania Kerberos.
-
-%package telnetd
-Summary:	Server for the telnet remote login
-Summary(pl.UTF-8):	Serwer protokołu telnet
-Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Requires:	rc-inetd >= 0.8.1
-Obsoletes:	telnetd
-Obsoletes:	heimdal-telnetd
-
-%description telnetd
-Telnet is a popular protocol for remote logins across the Internet.
-This package provides a telnet daemon which allows remote logins into
-the machine it is running on.
-
-%description telnetd -l pl.UTF-8
-Telnet jest popularnym protokołem zdalnego logowania. Ten pakiet
-zawiera serwer pozwalający na zdalne logowanie się klientów na maszynę
-na której działa.
-
-%package klogind
-Summary:	Remote login server
-Summary(pl.UTF-8):	Serwer zdalnego logowania
-Group:		Networking/Daemons
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Requires:	rc-inetd >= 0.8.1
-Obsoletes:	rlogind
-
-%description klogind
-Klogind is the server for the rlogin program. The server is based on
-rlogind but uses Kerberos authentication.
-
-%description klogind -l pl.UTF-8
-Klogind jest serwerem dla programu rlogin. Oparty jest na rlogind ale
-wykorzystuje system uwierzytelniania Kerberos.
-
-%package rlogin
-Summary:	rlogin is used when signing onto a system
-Summary(pl.UTF-8):	Narzędzie do logowania w systemie
-Group:		Networking
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Provides:	rlogin
-
-%description rlogin
-login is used when signing onto a system. It can also be used to
-switch from one user to another at any time (most modern shells have
-support for this feature built into them, however). This package
-contain kerberized version login program.
-
-%description rlogin -l pl.UTF-8
-login jest używany przy logowaniu do systemu. Może być także użyty do
-przełączenia z jednego użytkownika na innego w dowolnej chwili
-(większość współczesnych shelli ma wbudowaną obsługę tego). Ten pakiet
-zawiera skerberyzowaną wersję programu rlogin.
-
-%package rsh
-Summary:	Clients for remote access commands (rsh, rlogin, rcp)
-Summary(pl.UTF-8):	Klient zdalnego dostępu (rsh, rlogin, rcp)
-Group:		Applications/Networking
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Obsoletes:	rcp
-Obsoletes:	rsh
-Obsoletes:	heimdal-rsh
-
-%description rsh
-The rsh package contains a set of programs which allow users to run
-commands on remote machines, login to other machines and copy files
-between machines (rsh, rlogin and rcp). All three of these commands
-use rhosts style authentication. This package contains the clients
-needed for all of these services.
-
-%description rsh -l pl.UTF-8
-Ten pakiet zawiera zestaw narzędzi pozwalających na wykonywanie
-poleceń na zdalnych maszynach, logowanie na inne maszyny oraz
-kopiowanie plików pomiędzy maszynami (rsh, rlogin, rcp).
-
-%package ftp
-Summary:	The standard UNIX FTP (file transfer protocol) client
-Summary(pl.UTF-8):	Klient protokołu FTP
-Group:		Networking
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Obsoletes:	heimdal-ftp
-
-%description ftp
-The ftp package provides the standard UNIX command-line FTP client
-with kerberos authentication support. FTP is the file transfer
-protocol, which is a widely used Internet protocol for transferring
-files and for archiving files.
-
-%description ftp -l pl.UTF-8
-Ten pakiet dostarcza standardowego klienta FTP z wbudowaną obsługą
-kerberosa. FTP jest protokołem do przesyłania plików szeroko
-rozpowszechnionym w Internecie.
-
-%package telnet
-Summary:	Client for the telnet remote login
-Summary(pl.UTF-8):	Klient usługi telnet
-Group:		Networking
-Requires:	%{name}-libs = %{version}-%{release}
-Requires:	%{name}-common = %{version}-%{release}
-Obsoletes:	telnet
-Obsoletes:	heimdal-telnet
-
-%description telnet
-Telnet is a popular protocol for remote logins across the Internet.
-This package provides a command line telnet client.
-
-%description telnet -l pl.UTF-8
-Telnet jest popularnym protokołem zdalnego logowania. Ten pakiet
-zawiera klienta tej usługi.
-
 %package libs
 Summary:	Kerberos V5 shared libraries
 Summary(pl.UTF-8):	Biblioteki dzielone dla Kerberosa V5
@@ -549,38 +371,21 @@ Biblioteki statyczne Kerberosa V5.
 tar xf %{name}-%{version}.tar.gz
 mv %{name}-%{version}/* .
 %patch0 -p1
-%patch1 -p1
-%patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
 %patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
 %patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
 %patch19 -p1
-%patch20 -p1
-%patch21 -p1
 %patch22 -p1
 %patch23 -p1
 %patch24 -p1
-%patch25 -p1
-%patch26 -p1
-%patch27 -p1
-%patch28 -p1
 %{?with_selinux:%patch29 -p1}
 
 %patch200 -p0
-%patch201 -p0
 %patch202 -p0
 
 %build
@@ -621,7 +426,7 @@ done
 	--with-system-et \
 	--with-system-ss
 
-%{__make}
+%{__make} TCL_LIBPATH="-L%{_libdir}"
 
 cd ../doc
 %if %{with doc}
@@ -631,15 +436,16 @@ cd ../doc
 %{__make} -C kadm5
 %endif
 
-%{?with_tests:%{__make} -j1 -C ../src check SKIP_NET_TESTS=1}
+%{?with_tests:%{__make} -j1 -C ../src check OFFLINE=1}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos} \
 	$RPM_BUILD_ROOT{%{schemadir},%{_infodir},%{_mandir}} \
-	$RPM_BUILD_ROOT/etc/{pam.d,rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
+	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
 %{__make} -C src install \
+	TCL_LIBPATH="-L%{_libdir}" \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
@@ -651,18 +457,9 @@ install %{SOURCE8} $RPM_BUILD_ROOT/etc/sysconfig/kerberos
 install %{SOURCE15} $RPM_BUILD_ROOT%{_sbindir}/propagation
 install %{SOURCE9} %{SOURCE10} $RPM_BUILD_ROOT/etc/shrc.d
 
-install %{SOURCE11} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/klogind
-install %{SOURCE12} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/ftpd
-install %{SOURCE13} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/telnetd
-install %{SOURCE14} $RPM_BUILD_ROOT/etc/sysconfig/rc-inetd/kshd
-
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
-
-install %{SOURCE19} $RPM_BUILD_ROOT/etc/pam.d/kftpd
-install %{SOURCE20} $RPM_BUILD_ROOT/etc/pam.d/klogin
-install %{SOURCE21} $RPM_BUILD_ROOT/etc/pam.d/kshell
 
 %if %{with openldap}
 install src/plugins/kdb/ldap/libkdb_ldap/kerberos.{schema,ldif} $RPM_BUILD_ROOT%{schemadir}
@@ -709,38 +506,6 @@ fi
 if [ "$1" = 0 ]; then
 	%service kpropd stop
 	/sbin/chkconfig --del kpropd
-fi
-
-%post ftpd
-%service -q rc-inetd reload
-
-%postun ftpd
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
-fi
-
-%post kshd
-%service -q rc-inetd reload
-
-%postun kshd
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
-fi
-
-%post telnetd
-%service -q rc-inetd reload
-
-%postun telnetd
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
-fi
-
-%post klogind
-%service -q rc-inetd reload
-
-%postun klogind
-if [ "$1" = 0 ]; then
-	%service -q rc-inetd reload
 fi
 
 %post libs -p /sbin/ldconfig
@@ -907,61 +672,10 @@ fi
 %{_mandir}/man1/kvno.1*
 %{_mandir}/man5/.k5login.5*
 
-%files rlogin
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/rlogin
-%{_mandir}/man1/rlogin.1*
-
-%files ftp
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/ftp
-%{_mandir}/man1/ftp.1*
-
-%files rsh
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/rcp
-%attr(755,root,root) %{_bindir}/rsh
-%{_mandir}/man1/rsh.1*
-%{_mandir}/man1/rcp.1*
-
-%files telnet
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_bindir}/telnet
-%{_mandir}/man1/telnet.1*
-
-%files telnetd
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/telnetd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/telnetd
-%{_mandir}/man8/telnetd.8*
-
-%files ftpd
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/ftpd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/ftpd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kftpd
-%{_mandir}/man8/ftpd.8*
-
-%files kshd
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/kshd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/kshd
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/kshell
-%{_mandir}/man8/kshd.8*
-
-%files klogind
-%defattr(644,root,root,755)
-%attr(755,root,root) %{_sbindir}/klogind
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/rc-inetd/klogind
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/pam.d/klogin
-%{_mandir}/man8/klogind.8*
-
 %files common
 %defattr(644,root,root,755)
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/krb5.keytab
-%attr(755,root,root) %{_sbindir}/login.krb5
-%{_mandir}/man8/login.krb5.8*
 %{_mandir}/man5/krb5.conf.5*
 
 %files libs

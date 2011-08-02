@@ -34,29 +34,3 @@
  		DICT=`cd $srcdir/../test && pwd`/dictionary
  	else
  		echo 'run.test: no dictionary'
-@@ -404,9 +404,9 @@
- 	awk 'BEGIN {
- 		for (i = 1; i <= 10; ++i) {
- 			printf("p\nkkey1\nD/bin/sh\n");
--			printf("p\nkkey2\nD/bin/csh\n");
-+			printf("p\nkkey2\nD/bin/awk\n");
- 			if (i % 8 == 0) {
--				printf("c\nkkey2\nD/bin/csh\n");
-+				printf("c\nkkey2\nD/bin/awk\n");
- 				printf("c\nkkey1\nD/bin/sh\n");
- 				printf("e\t%d of 10 (comparison)\n", i);
- 			} else
---- krb5-1.6.3/src/lib/krb5/os/Makefile.in~	2007-09-18 06:22:24.000000000 +0200
-+++ krb5-1.6.3/src/lib/krb5/os/Makefile.in	2009-06-04 15:29:43.187625635 +0200
-@@ -206,8 +206,10 @@
- 		-r pgp.good.idea -r no_domain > test.out
- 	cmp test.out $(srcdir)/ref_std_conf.out
- 	$(RM) test.out
-+	if test -z "$(SKIP_NET_TESTS)"; then \
- 	KRB5_CONFIG=$(srcdir)/td_krb5.conf ; export KRB5_CONFIG ;\
--	$(KRB5_RUN_ENV) $(VALGRIND) ./t_locate_kdc ATHENA.MIT.EDU
-+	$(KRB5_RUN_ENV) $(VALGRIND) ./t_locate_kdc ATHENA.MIT.EDU ;\
-+	fi
- 
- #
- # Do some aname-to-lname testing.

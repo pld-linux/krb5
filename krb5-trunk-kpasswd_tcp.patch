@@ -6,14 +6,14 @@ Index: src/lib/krb5/os/changepw.c
 --- src/lib/krb5/os/changepw.c	(revision 20199)
 +++ src/lib/krb5/os/changepw.c	(working copy)
 @@ -251,11 +251,22 @@
- 				   NULL,
- 				   NULL
- 		 ))) {
+                                    NULL,
+                                    NULL
+              ))) {
 -
--	    /*
--	     * Here we may want to switch to TCP on some errors.
--	     * right?
--	     */
+-            /*
+-             * Here we may want to switch to TCP on some errors.
+-             * right?
+-             */
 +	    /* if we're not using a stream socket, and it's an error which
 +	     * might reasonably be specific to a datagram "connection", try
 +	     * again with a stream socket */
@@ -30,6 +30,6 @@ Index: src/lib/krb5/os/changepw.c
 +		    break;
 +		}
 +	    }
- 	    break;
- 	}
+             break;
+         }
  
