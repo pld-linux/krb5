@@ -73,3 +73,26 @@
  
  install-unix::
  	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
+--- krb5-1.9.1/src/tests/Makefile.in~	2010-12-15 00:10:42.000000000 +0100
++++ krb5-1.9.1/src/tests/Makefile.in	2011-08-03 01:13:45.330962610 +0200
+@@ -61,12 +61,14 @@
+ 	$(RM) $(TEST_DB)* stash_file
+ 
+ check-pytests::
+-	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_anonpkinit.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_lockout.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_anonpkinit.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_lockout.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ clean::
+ 	$(RM) kdc.conf
