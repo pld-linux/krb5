@@ -438,7 +438,7 @@ cd ../doc
 %endif
 
 %if %{with tests}
-:%{__make} -C ../src check \
+%{__make} -C ../src check \
 	OFFLINE=1 \
 	TCL_LIBPATH="-L%{_libdir}" \
 	PYTESTFLAGS="-v"
