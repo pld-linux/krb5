@@ -109,3 +109,91 @@
  
  t_imp_name: t_imp_name.o $(GSS_DEPLIBS) $(KRB5_BASE_DEPLIBS)
  	$(CC_LINK) -o t_imp_name t_imp_name.o $(GSS_LIBS) $(KRB5_BASE_LIBS)
+--- krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
++++ krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in	2011-08-03 12:55:23.507781811 +0200
+@@ -37,14 +37,16 @@
+ 
+ # Verify that the mkey stash code is backward compat with old/non-keytab stashfile format
+ mkeystash_check: kdc.conf krb5.conf bigendian
+-	$(RM) $(TEST_DB)* stash_file
+-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) create -s -W
+-	# overwrite keytab stash file with old format stash, depends on endianness of current test system
+-	./bigendian && cp $(srcdir)/old_stash_bendian stash_file || cp $(srcdir)/old_stash_lendian stash_file
+-	# getprinc will fail if old stash file can not be read
+-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/cli/kadmin.local $(KADMIN_OPTS) -q 'getprinc K/M'
+-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) destroy -f
+-	$(RM) $(TEST_DB)* stash_file
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RM) $(TEST_DB)* stash_file && \
++	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) create -s -W && \
++	# overwrite keytab stash file with old format stash, depends on endianness of current test system && \
++	./bigendian && cp $(srcdir)/old_stash_bendian stash_file || cp $(srcdir)/old_stash_lendian stash_file && \
++	# getprinc will fail if old stash file can not be read && \
++	$(RUN_SETUP) $(VALGRIND) ../../kadmin/cli/kadmin.local $(KADMIN_OPTS) -q 'getprinc K/M' && \
++	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) destroy -f && \
++	$(RM) $(TEST_DB)* stash_file ; \
++	fi
+ 
+ clean::
+ 	$(RM) kdc.conf krb5.conf bigendian.$(OBJEXT) bigendian
+--- krb5-1.9.1/src/tests/Makefile.in~	2011-08-03 12:52:47.476781846 +0200
++++ krb5-1.9.1/src/tests/Makefile.in	2011-08-03 12:56:18.963781798 +0200
+@@ -34,31 +34,33 @@
+ 	mv krb5.new krb5.conf
+ 
+ kdb_check: kdc.conf krb5.conf
+-	$(RM) $(TEST_DB)*
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W
+-	$(RUN_SETUP) $(VALGRIND) ../tests/create/kdb5_mkdums $(KTEST_OPTS) 
+-	$(RUN_SETUP) $(VALGRIND) ../tests/verify/kdb5_verify $(KTEST_OPTS) 
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f
+-	@echo "====> NOTE!"
+-	@echo "The following 'create' command is needed due to a change"
+-	@echo "in functionality caused by DAL integration.  See ticket 3973."
+-	@echo ====
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load $(TEST_DB).dump 
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load -update -ov $(TEST_DB).ovdump 
+-	$(RUN_SETUP) $(VALGRIND) ../tests/verify/kdb5_verify $(KTEST_OPTS) 
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump2
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump2
+-	sort $(TEST_DB).dump > $(TEST_DB).sort
+-	sort $(TEST_DB).dump2 > $(TEST_DB).sort2
+-	sort $(TEST_DB).ovdump > $(TEST_DB).ovsort
+-	sort $(TEST_DB).ovdump2 > $(TEST_DB).ovsort2
+-	cmp $(TEST_DB).sort $(TEST_DB).sort2
+-	cmp $(TEST_DB).ovsort $(TEST_DB).ovsort2
+-	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f
+-	$(RM) $(TEST_DB)* stash_file
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RM) $(TEST_DB)* && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W && \
++	$(RUN_SETUP) $(VALGRIND) ../tests/create/kdb5_mkdums $(KTEST_OPTS)  && \
++	$(RUN_SETUP) $(VALGRIND) ../tests/verify/kdb5_verify $(KTEST_OPTS)  && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f && \
++	@echo "====> NOTE!" ;\
++	@echo "The following 'create' command is needed due to a change" ;\
++	@echo "in functionality caused by DAL integration.  See ticket 3973." ;\
++	@echo ==== ;\
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load $(TEST_DB).dump  && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load -update -ov $(TEST_DB).ovdump  && \
++	$(RUN_SETUP) $(VALGRIND) ../tests/verify/kdb5_verify $(KTEST_OPTS)  && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump2 && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump2 && \
++	sort $(TEST_DB).dump > $(TEST_DB).sort && \
++	sort $(TEST_DB).dump2 > $(TEST_DB).sort2 && \
++	sort $(TEST_DB).ovdump > $(TEST_DB).ovsort && \
++	sort $(TEST_DB).ovdump2 > $(TEST_DB).ovsort2 && \
++	cmp $(TEST_DB).sort $(TEST_DB).sort2 && \
++	cmp $(TEST_DB).ovsort $(TEST_DB).ovsort2 && \
++	$(RUN_SETUP) $(VALGRIND) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f && \
++	$(RM) $(TEST_DB)* stash_file ;\
++	fi
+ 
+ check-pytests::
+ 	if [ "$(OFFLINE)" = no ]; then \
