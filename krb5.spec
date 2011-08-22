@@ -476,8 +476,6 @@ touch $RPM_BUILD_ROOT/etc/krb5.keytab
 
 echo .so kadmin.8 > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 
-rm -rf $RPM_BUILD_ROOT%{_includedir}/asn.1
-
 # fix permissions for deps generation
 find $RPM_BUILD_ROOT -type f -name '*.so*' | xargs chmod +x
 
