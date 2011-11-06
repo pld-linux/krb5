@@ -15,12 +15,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.9.1
+Version:	1.9.2
 Release:	1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.9/%{name}-%{version}-signed.tar
-# Source0-md5:	b9f237015fbb83f75d17941588b12b7d
+# Source0-md5:	8de1e9111612f0af0b0560789ae11cb9
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
