@@ -1,83 +1,31 @@
---- krb5-1.3/src/appl/sample/sserver/sserver.M
-+++ krb5-1.3/src/appl/sample/sserver/sserver.M
+--- krb5-1.12.1/src/man/sserver.man.orig	2014-01-16 01:44:15.000000000 +0100
++++ krb5-1.12.1/src/man/sserver.man	2014-03-13 16:34:04.903857332 +0100
 @@ -59,7 +59,7 @@
- using a line in
- /etc/inetd.conf that looks like this:
- .PP
--sample  stream  tcp     nowait  root /usr/local/sbin/sserver	sserver
-+sample  stream  tcp     nowait  root /usr/sbin/sserver		sserver
- .PP
- Since \fBsample\fP is normally not a port defined in /etc/services, you will
- usually have to add a line to /etc/services which looks like this:
---- krb5-1.3/src/config-files/kdc.conf.M
-+++ krb5-1.3/src/config-files/kdc.conf.M
-@@ -235,7 +235,7 @@
- realm names and the [capaths] section of its krb5.conf file
- 
- .SH FILES 
--/usr/local/var/krb5kdc/kdc.conf
-+/etc/kerberos/kdc.conf
- 
- .SH SEE ALSO
- krb5.conf(5), krb5kdc(8)
---- krb5-1.3/src/kadmin/cli/kadmin.M
-+++ krb5-1.3/src/kadmin/cli/kadmin.M
-@@ -733,9 +733,9 @@
- .RS
- .TP
- EXAMPLE:
--kadmin: ktremove -k /usr/local/var/krb5kdc/kadmind.keytab kadmin/admin
-+kadmin: ktremove -k /var/lib/kerberos/kadm5.keytab kadmin/admin
- Entry for principal kadmin/admin with kvno 3 removed
--	from keytab WRFILE:/usr/local/var/krb5kdc/kadmind.keytab.
-+	from keytab WRFILE:/var/lib/kerberos/kadm5.keytab.
- kadmin:
- .RE
+ .sp
+ .nf
+ .ft C
+-sample stream tcp nowait root /usr/local/sbin/sserver sserver
++sample stream tcp nowait root /usr/sbin/sserver sserver
+ .ft P
  .fi
---- krb5-1.3/src/slave/kprop.M
-+++ krb5-1.3/src/slave/kprop.M
-@@ -39,7 +39,7 @@
- This is done by transmitting the dumped database file to the slave
- server over an encrypted, secure channel.  The dump file must be created
- by kdb5_util, and is normally KPROP_DEFAULT_FILE
--(/usr/local/var/krb5kdc/slave_datatrans).
-+(/var/lib/kerberos/slave_datatrans).
- .SH OPTIONS
+ .UNINDENT
+--- krb5-1.12.1/src/man/kpropd.man.orig	2014-01-16 01:44:15.000000000 +0100
++++ krb5-1.12.1/src/man/kpropd.man	2014-03-13 16:45:10.723829391 +0100
+@@ -63,7 +63,7 @@
+ .sp
+ .nf
+ .ft C
+-kprop  stream  tcp  nowait  root  /usr/local/sbin/kpropd  kpropd
++kprop  stream  tcp  nowait  root  /usr/sbin/kpropd  kpropd
+ .ft P
+ .fi
+ .UNINDENT
+@@ -134,7 +134,7 @@
  .TP
- \fB\-r\fP \fIrealm\fP
-@@ -51,7 +51,7 @@
- \fB\-f\fP \fIfile\fP
- specifies the filename where the dumped principal database file is to be
- found; by default the dumped database file is KPROP_DEFAULT_FILE
--(normally /usr/local/var/krb5kdc/slave_datatrans).
-+(normally /var/lib/kerberos/slave_datatrans).
- .TP
- \fB\-P\fP \fIport\fP
- specifies the port to use to contact the
---- krb5-1.3/src/slave/kpropd.M
-+++ krb5-1.3/src/slave/kpropd.M
-@@ -69,7 +69,7 @@
- This is done by adding a line to the inetd.conf file which looks like
- this:
- 
--kprop	stream	tcp	nowait	root	/usr/local/sbin/kpropd	kpropd
-+kprop	stream	tcp	nowait	root	/usr/sbin/kpropd	kpropd
- 
- However, kpropd can also run as a standalone deamon, if the
- .B \-S
-@@ -87,13 +87,13 @@
- \fB\-f\fP \fIfile\fP
- specifies the filename where the dumped principal database file is to be
- stored; by default the dumped database file is KPROPD_DEFAULT_FILE
--(normally /usr/local/var/krb5kdc/from_master).
-+(normally /var/lib/kerberos/from_master).
- .TP
- .B \-p
- allows the user to specify the pathname to the
- .IR kdb5_util (8)
- program; by default the pathname used is KPROPD_DEFAULT_KDB5_UTIL
--(normally /usr/local/sbin/kdb5_util).
-+(normally /usr/sbin/kdb5_util).
- .TP
- .B \-S
- turn on standalone mode.  Normally, kpropd is invoked out of
+ .B kpropd.acl
+ Access file for kpropd; the default location is
+-\fB/usr/local/var/krb5kdc/kpropd.acl\fP.  Each entry is a line
++\fB/var/lib/kerberos/krb5kdc/kpropd.acl\fP.  Each entry is a line
+ containing the principal of a host from which the local machine
+ will allow Kerberos database propagation via \fIkprop(8)\fP.
+ .UNINDENT

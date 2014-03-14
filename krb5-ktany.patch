@@ -131,7 +131,7 @@
 +    if ((data = (krb5_ktany_data *)malloc(sizeof(krb5_ktany_data))) == NULL)
 +	return(ENOMEM);
 +    if ((data->name = (char *)malloc(strlen(name) + 1)) == NULL) {
-+	krb5_xfree(data);
++	free(data);
 +	return(ENOMEM);
 +    }
 +    strcpy(data->name, name);
@@ -142,8 +142,8 @@
 +	data->nchoices++;
 +    if ((data->choices = (krb5_keytab *)
 +	 malloc(data->nchoices * sizeof(krb5_keytab))) == NULL) {
-+	krb5_xfree(data->name);
-+	krb5_xfree(data);
++	free(data->name);
++	free(data);
 +	return(ENOMEM);
 +    }
 +
@@ -160,7 +160,7 @@
 +
 +	/* Try resolving the choice name. */
 +	kerror = krb5_kt_resolve(context, copy, &data->choices[i]);
-+	krb5_xfree(copy);
++	free(copy);
 +	if (kerror) {
 +	    cleanup(context, data, i);
 +	    return(kerror);
@@ -208,7 +208,7 @@
 +
 +    cleanup(context, data, data->nchoices);
 +    id->ops = 0;
-+    krb5_xfree(id);
++    free(id);
 +    return(0);
 +}
 +
@@ -254,14 +254,14 @@
 +					    &cdata->cursor)) == 0)
 +	    break;
 +	else if (kerror != ENOENT) {
-+	    krb5_xfree(cdata);
++	    free(cdata);
 +	    return(kerror);
 +	}
 +    }
 +
 +    if (i == data->nchoices) {
 +	/* Everyone returned ENOENT, so no go. */
-+	krb5_xfree(cdata);
++	free(cdata);
 +	return(kerror);
 +    }
 +
@@ -298,7 +298,7 @@
 +
 +    choice_id = data->choices[cdata->which];
 +    kerror = krb5_kt_end_seq_get(context, choice_id, &cdata->cursor);
-+    krb5_xfree(cdata);
++    free(cdata);
 +    return(kerror);
 +}
 +
@@ -310,11 +310,11 @@
 +{
 +    int i;
 +
-+    krb5_xfree(data->name);
++    free(data->name);
 +    for (i = 0; i < nchoices; i++)
 +	krb5_kt_close(context, data->choices[i]);
-+    krb5_xfree(data->choices);
-+    krb5_xfree(data);
++    free(data->choices);
++    free(data);
 +}
 --- krb5-1.4/src/lib/krb5/keytab/Makefile.in.ktany	2004-05-27 23:44:32.000000000 -0400
 +++ krb5-1.4/src/lib/krb5/keytab/Makefile.in	2005-02-18 10:38:09.000000000 -0500

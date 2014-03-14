@@ -32,14 +32,14 @@ not.  Still needs work, I think.
          retval = krb5_cc_get_principal(context, cc_source, &cc_def_princ);
          if (retval)
              return retval;
---- krb5-1.3/src/clients/ksu/main.c
-+++ krb5-1.3/src/clients/ksu/main.c
-@@ -263,7 +263,7 @@
+--- krb5-1.12.1/src/clients/ksu/main.c.orig	2014-03-13 16:45:48.897161122 +0100
++++ krb5-1.12.1/src/clients/ksu/main.c	2014-03-13 16:46:56.597158281 +0100
+@@ -265,7 +265,7 @@
                  if ( strchr(cc_source_tag, ':')){
                      cc_source_tag_tmp = strchr(cc_source_tag, ':') + 1;
  
 -                    if( stat( cc_source_tag_tmp, &st_temp)){
 +                    if( access( cc_source_tag_tmp, F_OK | R_OK) || stat( cc_source_tag_tmp, &st_temp)){
-                         com_err (prog_name, errno,
-                                  "while looking for credentials file %s",
-                                  cc_source_tag_tmp);
+                         com_err(prog_name, errno,
+                                 _("while looking for credentials file %s"),
+                                 cc_source_tag_tmp);

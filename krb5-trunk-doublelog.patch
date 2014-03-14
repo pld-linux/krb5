@@ -1,18 +1,16 @@
 Don't double-log (actually, don't process /etc/krb5.conf twice) just
 because we built with --sysconfdir=/etc.  RT#3277
 
-Index: src/include/Makefile.in
-===================================================================
---- src/include/Makefile.in	(revision 20235)
-+++ src/include/Makefile.in	(working copy)
-@@ -61,7 +61,9 @@
- 		  -e "s+@SBINDIR+$(SBINDIR)+" \
- 		  -e "s+@MODULEDIR+$(MODULE_DIR)+" \
- 	-e 's+@LOCALSTATEDIR+$(LOCALSTATEDIR)+' \
--	-e 's+@SYSCONFDIR+$(SYSCONFDIR)+' 
-+	-e 's+@SYSCONFDIR+$(SYSCONFDIR)+' \
-+	-e 's+:/etc/krb5.conf:/etc/krb5.conf"+:/etc/krb5.conf"+' \
-+	-e 's+"/etc/krb5.conf:/etc/krb5.conf"+"/etc/krb5.conf"+'
+--- krb5-1.12.1/src/include/Makefile.in.orig	2014-03-13 19:19:48.720106696 +0100
++++ krb5-1.12.1/src/include/Makefile.in	2014-03-13 19:28:05.226752528 +0100
+@@ -67,7 +67,9 @@
+ 		  -e "s+@GSSMODULEDIR+$(GSS_MODULE_DIR)+" \
+ 		  -e 's+@LOCALSTATEDIR+$(LOCALSTATEDIR)+' \
+ 		  -e 's+@SYSCONFDIR+$(SYSCONFDIR)+' \
+-		  -e 's+@DYNOBJEXT+$(DYNOBJEXT)+'
++		  -e 's+@DYNOBJEXT+$(DYNOBJEXT)+' \
++		  -e 's+:/etc/krb5.conf:/etc/krb5.conf"+:/etc/krb5.conf"+' \
++		  -e 's+"/etc/krb5.conf:/etc/krb5.conf"+"/etc/krb5.conf"+'
  
- OSCONFSRC = $(srcdir)/stock/osconf.h
+ OSCONFSRC = $(srcdir)/osconf.hin
  

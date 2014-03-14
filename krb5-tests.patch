@@ -34,28 +34,34 @@
  		DICT=`cd $srcdir/../test && pwd`/dictionary
  	else
  		echo 'run.test: no dictionary'
---- krb5-1.9.1/src/lib/krb5/krb/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
-+++ krb5-1.9.1/src/lib/krb5/krb/Makefile.in	2011-08-03 00:38:37.538243651 +0200
-@@ -431,7 +431,9 @@
- 	$(RUN_SETUP) $(VALGRIND) ./t_etypes
+--- krb5-1.12.1/src/lib/krb5/krb/Makefile.in.orig	2014-03-13 17:10:07.517099910 +0100
++++ krb5-1.12.1/src/lib/krb5/krb/Makefile.in	2014-03-13 17:48:55.017002233 +0100
+@@ -481,9 +481,11 @@
+ 		$(RUN_SETUP) $(VALGRIND) ./t_copy_context
  
- check-pytests:: t_expire_warn
+ check-pytests:: t_expire_warn t_vfy_increds
 -	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS) ; \
 +	fi
  
  clean::
  	$(RM) $(OUTPRE)t_walk_rtree$(EXEEXT) $(OUTPRE)t_walk_rtree.$(OBJEXT) \
---- krb5-1.9.1/src/kdc/Makefile.in~	2010-11-01 20:49:29.000000000 +0100
-+++ krb5-1.9.1/src/kdc/Makefile.in	2011-08-03 00:50:14.395525895 +0200
-@@ -66,7 +66,9 @@
+--- krb5-1.12.1/src/kdc/Makefile.in.orig	2014-03-13 17:10:07.517099910 +0100
++++ krb5-1.12.1/src/kdc/Makefile.in	2014-03-13 17:52:29.930326550 +0100
+@@ -69,8 +69,10 @@
  	$(RM) test.out
  
  check-pytests::
 -	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS) ; \
 +	fi
  
  install::
@@ -73,42 +79,29 @@
  
  install-unix::
  	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
---- krb5-1.9.1/src/tests/Makefile.in~	2010-12-15 00:10:42.000000000 +0100
-+++ krb5-1.9.1/src/tests/Makefile.in	2011-08-03 01:13:45.330962610 +0200
-@@ -61,12 +61,14 @@
- 	$(RM) $(TEST_DB)* stash_file
- 
- check-pytests::
--	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_anonpkinit.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_lockout.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS)
-+	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_anonpkinit.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_lockout.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS) ; \
-+	fi
- 
- clean::
- 	$(RM) kdc.conf
---- krb5-1.9.1/src/tests/gssapi/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
-+++ krb5-1.9.1/src/tests/gssapi/Makefile.in	2011-08-03 01:15:11.187294436 +0200
-@@ -11,7 +11,9 @@
- all:: t_imp_name t_s4u t_namingexts t_gssexts t_spnego t_saslname
- 
- check-pytests:: t_spnego
+--- krb5-1.12.1/src/tests/gssapi/Makefile.in.orig	2014-03-13 18:30:36.910230571 +0100
++++ krb5-1.12.1/src/tests/gssapi/Makefile.in	2014-03-13 18:43:46.143530790 +0100
+@@ -32,12 +32,14 @@
+ check-pytests:: ccinit ccrefresh t_accname t_ccselect t_credstore t_enctypes \
+ 	t_err t_export_cred t_export_name t_imp_cred t_inq_cred \
+ 	t_inq_mechs_name t_iov t_s4u t_s4u2proxy_krb5 t_spnego
 -	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_enctypes.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_export_cred.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_s4u.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_enctypes.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_export_cred.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_s4u.py $(PYTESTFLAGS) ; \
 +	fi
  
- t_imp_name: t_imp_name.o $(GSS_DEPLIBS) $(KRB5_BASE_DEPLIBS)
- 	$(CC_LINK) -o t_imp_name t_imp_name.o $(GSS_LIBS) $(KRB5_BASE_LIBS)
+ ccinit: ccinit.o $(KRB5_BASE_DEPLIBS)
+ 	$(CC_LINK) -o ccinit ccinit.o $(KRB5_BASE_LIBS)
 --- krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
 +++ krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in	2011-08-03 12:55:23.507781811 +0200
 @@ -37,14 +37,16 @@
@@ -136,9 +129,9 @@
  
  clean::
  	$(RM) kdc.conf krb5.conf bigendian.$(OBJEXT) bigendian
---- krb5-1.9.1/src/tests/Makefile.in~	2011-08-03 12:52:47.476781846 +0200
-+++ krb5-1.9.1/src/tests/Makefile.in	2011-08-03 12:56:18.963781798 +0200
-@@ -34,31 +34,33 @@
+--- krb5-1.12.1/src/tests/Makefile.in.orig	2014-01-16 01:44:15.000000000 +0100
++++ krb5-1.12.1/src/tests/Makefile.in	2014-03-13 18:29:22.833567017 +0100
+@@ -61,68 +61,72 @@
  	mv krb5.new krb5.conf
  
  kdb_check: kdc.conf krb5.conf
@@ -195,5 +188,77 @@
 +	$(RM) $(TEST_DB)* stash_file ;\
 +	fi
  
- check-pytests::
- 	if [ "$(OFFLINE)" = no ]; then \
+ check-pytests:: gcred hist hrealm kdbtest plugorder responder
+ check-pytests:: t_init_creds t_localauth
+-	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_dump.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_iprop.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kprop.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_policy.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_pkinit.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_pwqual.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_hostrealm.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kdb_locking.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_renprinc.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_ccache.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_stringattr.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_sesskeynego.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_crossrealm.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_referral.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_skew.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_keytab.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kadmin_acl.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kdb.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_keydata.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_cve-2012-1014.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_cve-2012-1015.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_cve-2013-1416.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_cve-2013-1417.py $(PYTESTFLAGS)
+-	$(RM) au.log
+-	$(RUNPYTEST) $(srcdir)/t_audit.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_dump.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_iprop.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kprop.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_policy.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_pkinit.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_pwqual.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_hostrealm.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kdb_locking.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_keyrollover.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_renew.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_renprinc.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_ccache.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_stringattr.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_sesskeynego.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_crossrealm.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_referral.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_skew.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_keytab.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kadmin_acl.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kdb.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_keydata.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_cve-2012-1014.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_cve-2012-1015.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_cve-2013-1416.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_cve-2013-1417.py $(PYTESTFLAGS) && \
++	$(RM) au.log && \
++	$(RUNPYTEST) $(srcdir)/t_audit.py $(PYTESTFLAGS) && \
+ 	$(RUNPYTEST) $(srcdir)/jsonwalker.py -d $(srcdir)/au_dict.json \
+-			-i au.log
+-	$(RUNPYTEST) $(srcdir)/t_bogus_kdc_req.py $(PYTESTFLAGS)
++			-i au.log && \
++	$(RUNPYTEST) $(srcdir)/t_bogus_kdc_req.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ clean::
+ 	$(RM) gcred hist hrealm kdbtest plugorder responder
