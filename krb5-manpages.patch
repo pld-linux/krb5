@@ -9,9 +9,9 @@
  .ft P
  .fi
  .UNINDENT
---- krb5-1.12.1/src/man/kpropd.man.orig	2014-01-16 01:44:15.000000000 +0100
-+++ krb5-1.12.1/src/man/kpropd.man	2014-03-13 16:45:10.723829391 +0100
-@@ -63,7 +63,7 @@
+--- krb5-1.15/src/man/kpropd.man.orig	2016-12-01 23:31:25.000000000 +0100
++++ krb5-1.15/src/man/kpropd.man	2017-02-01 21:32:44.744070801 +0100
+@@ -65,7 +65,7 @@
  .sp
  .nf
  .ft C
@@ -20,12 +20,12 @@
  .ft P
  .fi
  .UNINDENT
-@@ -134,7 +134,7 @@
+@@ -146,7 +146,7 @@
  .TP
  .B kpropd.acl
  Access file for kpropd; the default location is
--\fB/usr/local/var/krb5kdc/kpropd.acl\fP.  Each entry is a line
-+\fB/var/lib/kerberos/krb5kdc/kpropd.acl\fP.  Each entry is a line
+-\fB/usr/local/var/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
++\fB/var/lib/kerberos/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
  containing the principal of a host from which the local machine
- will allow Kerberos database propagation via \fIkprop(8)\fP.
+ will allow Kerberos database propagation via \fIkprop(8)\fP\&.
  .UNINDENT

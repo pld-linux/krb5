@@ -1,0 +1,49 @@
+--- krb5-1.15/src/plugins/audit/simple/Makefile.in.orig	2017-02-18 20:40:33.750668806 +0100
++++ krb5-1.15/src/plugins/audit/simple/Makefile.in	2017-02-18 20:40:37.277335431 +0100
+@@ -1,5 +1,6 @@
+ mydir=plugins$(S)audit$(S)simple
+ BUILDTOP=$(REL)..$(S)..$(S)..
++MODULE_INSTALL_DIR = $(KRB5_AUDIT_MODULE_DIR)
+ 
+ LIBBASE=k5audit
+ LIBMAJOR=1
+@@ -8,7 +8,7 @@
+ 
+ #Depends on libkrb5 and libkrb5support.
+ SHLIB_EXPDEPS= $(KRB5_BASE_DEPLIBS)
+-SHLIB_EXPLIBS= $(KRB5_BASE_LIBS)
++SHLIB_EXPLIBS= $(KRB5_BASE_LIBS) $(AUDIT_IMPL_LIBS)
+ 
+ STOBJLISTS= OBJS.ST ../OBJS.ST
+ STLIBOBJS= au_simple_main.o
+--- krb5-1.15/src/config/pre.in.orig	2016-12-01 23:31:24.000000000 +0100
++++ krb5-1.15/src/config/pre.in	2017-02-18 20:50:40.537328544 +0100
+@@ -217,6 +217,8 @@
+ KRB5_AD_MODULE_DIR = $(MODULE_DIR)/authdata
+ KRB5_LIBKRB5_MODULE_DIR = $(MODULE_DIR)/libkrb5
+ KRB5_TLS_MODULE_DIR = $(MODULE_DIR)/tls
++# TODO: check subdir name
++KRB5_AUDIT_MODULE_DIR = $(MODULE_DIR)/audit
+ KRB5_LOCALEDIR = @localedir@
+ GSS_MODULE_DIR = @libdir@/gss
+ KRB5_INCSUBDIRS = \
+@@ -445,6 +445,8 @@
+ TLS_IMPL_CFLAGS = @TLS_IMPL_CFLAGS@
+ TLS_IMPL_LIBS	= @TLS_IMPL_LIBS@
+ 
++AUDIT_IMPL_LIBS = @AUDIT_IMPL_LIBS@
++
+ # Whether we have the SASL header file for the LDAP KDB module
+ HAVE_SASL = @HAVE_SASL@
+ 
+--- krb5-1.15/src/Makefile.in.orig	2016-12-01 23:31:24.000000000 +0100
++++ krb5-1.15/src/Makefile.in	2017-02-18 22:24:54.577263986 +0100
+@@ -64,7 +64,7 @@
+ 		$(KRB5_LIBDIR) $(KRB5_INCDIR) \
+ 		$(KRB5_DB_MODULE_DIR) $(KRB5_PA_MODULE_DIR) \
+ 		$(KRB5_AD_MODULE_DIR) \
+-		$(KRB5_LIBKRB5_MODULE_DIR) $(KRB5_TLS_MODULE_DIR) \
++		$(KRB5_LIBKRB5_MODULE_DIR) $(KRB5_TLS_MODULE_DIR) $(KRB5_AUDIT_MODULE_DIR) \
+ 		@localstatedir@ @localstatedir@/krb5kdc \
+ 		@runstatedir@ @runstatedir@/krb5kdc \
+ 		$(KRB5_INCSUBDIRS) $(datadir) $(EXAMPLEDIR) \

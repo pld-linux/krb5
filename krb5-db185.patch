@@ -1,0 +1,44 @@
+--- krb5-1.15/src/plugins/kdb/db2/adb_openclose.c.orig	2016-12-01 23:31:25.000000000 +0100
++++ krb5-1.15/src/plugins/kdb/db2/adb_openclose.c	2017-02-18 20:57:02.910657512 +0100
+@@ -11,7 +11,7 @@
+ #include        <unistd.h>
+ #include        "policy_db.h"
+ #include        <stdlib.h>
+-#include        <db.h>
++#include        <db_185.h>
+ 
+ struct _locklist {
+     osa_adb_lock_ent lockinfo;
+--- krb5-1.15/src/plugins/kdb/db2/db2_exp.c.orig	2016-12-01 23:31:25.000000000 +0100
++++ krb5-1.15/src/plugins/kdb/db2/db2_exp.c	2017-02-18 20:57:11.003990754 +0100
+@@ -38,7 +38,7 @@
+ #include <unistd.h>
+ #endif
+ 
+-#include <db.h>
++#include <db_185.h>
+ #include <stdio.h>
+ #include <errno.h>
+ #include <utime.h>
+--- krb5-1.15/src/plugins/kdb/db2/kdb_db2.c.orig	2016-12-01 23:31:25.000000000 +0100
++++ krb5-1.15/src/plugins/kdb/db2/kdb_db2.c	2017-02-18 20:57:18.803990663 +0100
+@@ -57,7 +57,7 @@
+ #include <unistd.h>
+ #endif
+ 
+-#include <db.h>
++#include <db_185.h>
+ #include <stdio.h>
+ #include <errno.h>
+ #include <utime.h>
+--- krb5-1.15/src/plugins/kdb/db2/policy_db.h.orig	2016-12-01 23:31:25.000000000 +0100
++++ krb5-1.15/src/plugins/kdb/db2/policy_db.h	2017-02-18 20:56:51.160657645 +0100
+@@ -30,7 +30,7 @@
+    where we find u_int32_t.  */
+ #include <gssrpc/types.h>
+ #include <gssrpc/xdr.h>
+-#include <db.h>
++#include <db_185.h>
+ #include "adb_err.h"
+ #include <com_err.h>
+ 

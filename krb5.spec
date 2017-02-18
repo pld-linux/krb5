@@ -5,22 +5,30 @@
 # (s)he is on hers/his own.
 #				- baggins/at/pld-linux.org
 #
+# TODO:
+# - fix as-needed (move flags before libs in link commands)
+# - is =-lresolv in --with-netlib needed?
+# - --with-system-verto (pkg-config libverto)
+#
 # Conditional build:
-%bcond_without	doc             # without documentation which needed TeX
+%bcond_without	doc             # documentation [requires TeX]
+%bcond_without	audit		# audit plugin
+%bcond_with	hesiod		# Hesiod support
+%bcond_without	ldap		# OpenLDAP database backend module
+%bcond_with	selinux		# SELinux support
+%bcond_without	system_db	# system Berkeley DB (via DB 1.85 API)
 %bcond_without	tcl		# build without tcl (tcl is needed for tests)
-%bcond_without	openldap	# don't build openldap plugin
-%bcond_with	selinux		# build with selinux support
 %bcond_without	tests		# don't perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.12.1
+Version:	1.15
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.12/%{name}-%{version}-signed.tar
-# Source0-md5:	524b1067b619cb5bf780759b6884c3f5
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.15/%{name}-%{version}.tar.gz
+# Source0-md5:	cd43a3316ebbb86b2a9020b485b1a819
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -34,39 +42,54 @@ Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
 Patch0:		%{name}-manpages.patch
-Patch3:		%{name}-ksu-access.patch
+Patch1:		%{name}-audit.patch
+Patch2:		%{name}-db185.patch
 Patch4:		%{name}-ksu-path.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
 Patch11:	%{name}-brokenrev.patch
 Patch12:	%{name}-dns.patch
 Patch13:	%{name}-enospc.patch
-Patch15:	%{name}-kprop-mktemp.patch
-Patch19:	%{name}-send-pr-tempfile.patch
 Patch23:	%{name}-tests.patch
 Patch24:	%{name}-config.patch
 Patch29:	%{name}-selinux-label.patch
-Patch200:	%{name}-trunk-doublelog.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
+%{?with_audit:BuildRequires:	audit-libs-devel}
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	bison
+%{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
+%{?with_system_db:BuildRequires:	db-devel}
 BuildRequires:	flex
+BuildRequires:	gettext-tools
 BuildRequires:	ghostscript
+%{?with_hesiod:BuildRequires:	hesiod-devel}
 BuildRequires:	keyutils-devel
+BuildRequires:	libcom_err-devel
+# only for internal ss
+#BuildRequires:	libedit-devel
+%{?with_selinux:BuildRequires:	libselinux-devel}
 # for bindir/mk_cmds
 BuildRequires:	libss-devel >= 1.35
 BuildRequires:	ncurses-devel
-%{?with_openldap:BuildRequires:	openldap-devel >= 2.4.6}
-BuildRequires:	openssl-devel >= 0.9.8
-%{?with_selinux:BuildRequires:	libselinux-devel}
+%{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
+BuildRequires:	openssl-devel >= 1.0.0
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	words
 %if %{with doc}
 BuildRequires:	doxygen
 BuildRequires:	sphinx-pdg
+%endif
+%if %{with tests}
+BuildRequires:	cmocka-devel
+BuildRequires:	perl-base
+BuildRequires:	python >= 1:2.5
+# we have "online" tests disabled, so probably not needed
+#BuildRequires:	resolv_wrapper >= 1.1.5
+BuildRequires:	tcl-devel
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -334,6 +357,7 @@ Requires:	%{name}-libs = %{version}-%{release}
 Requires:	keyutils-devel
 Requires:	libcom_err-devel
 Conflicts:	heimdal-devel
+Obsoletes:	krb5-static
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
@@ -365,22 +389,18 @@ MIT Kerberos V5 documentation in HTML format.
 Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 
 %prep
-%setup -q -c
-tar xf %{name}-%{version}.tar.gz
-mv %{name}-%{version}/* .
+%setup -q
 %patch0 -p1
-%patch3 -p1
+%patch1 -p1
+%{?with_system_db:%patch2 -p1}
 %patch4 -p1
 %patch6 -p1
 %patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch15 -p1
-%patch19 -p1
 %patch23 -p1
 %patch24 -p1
 %{?with_selinux:%patch29 -p1}
-%patch200 -p1
 
 %build
 cd src
@@ -405,20 +425,19 @@ done
 	CC=%{__cc} \
 	CFLAGS="$CFLAGS" \
 	CPPFLAGS="$CPPFLAGS" \
-	%{?with_openldap:OPENLDAP_PLUGIN=yes} \
-	%{!?with_openldap:OPENLDAP_PLUGIN=""} \
-	%{?with_selinux:--with-selinux} \
 	--libexecdir=%{_libdir} \
-	--enable-shared \
 	--disable-rpath \
-	--enable-dns \
-	--enable-dns-for-kdc \
+	%{?with_audit:--enable-audit-plugin=simple} \
 	--enable-dns-for-realm \
+	--with-crypto-impl=openssl \
+	%{?with_hesiod:--with-hesiod} \
+	%{?with_ldap:--with-ldap} \
 	--with-netlib=-lresolv \
-	%{?with_tcl:--with-tcl=%{_prefix}} \
-	%{!?with_tcl:--without-tcl} \
+	%{?with_selinux:--with-selinux} \
+	%{?with_system_db:--with-system-db} \
 	--with-system-et \
-	--with-system-ss
+	--with-system-ss \
+	--with-tcl=%{?with_tcl:%{_prefix}}%{!?with_tcl:no}
 
 %{__make} \
 	TCL_LIBPATH="-L%{_libdir}"
@@ -457,7 +476,7 @@ install %{SOURCE2} $RPM_BUILD_ROOT/etc/rc.d/init.d/krb5kdc
 install %{SOURCE16} $RPM_BUILD_ROOT/etc/rc.d/init.d/kpropd
 install %{SOURCE17} $RPM_BUILD_ROOT/etc/rc.d/init.d/kadmind
 
-%if %{with openldap}
+%if %{with ldap}
 install src/plugins/kdb/ldap/libkdb_ldap/kerberos.{schema,ldif} $RPM_BUILD_ROOT%{schemadir}
 %endif
 
@@ -469,7 +488,7 @@ echo '.so man1/kadmin.1' > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 # fix permissions for deps generation
 find $RPM_BUILD_ROOT -type f -name '*.so*' | xargs chmod +x
 
-# the only translation is empty (as of 1.12.1)
+# the only translation is empty (as of 1.15)
 #find_lang mit-krb5
 
 %clean
@@ -589,7 +608,6 @@ fi
 %attr(755,root,root) %{_sbindir}/sserver
 %attr(755,root,root) %{_sbindir}/uuserver
 
-%{_mandir}/man1/krb5-send-pr.1*
 %{_mandir}/man1/k5srvutil.1*
 %{_mandir}/man1/kadmin.1*
 %{_mandir}/man1/ktutil.1*
@@ -599,7 +617,7 @@ fi
 %{_mandir}/man8/kproplog.8*
 %{_mandir}/man8/sserver.8*
 
-%if %{with openldap}
+%if %{with ldap}
 %files server-ldap
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/kldap.so
@@ -622,11 +640,17 @@ fi
 %attr(755,root,root) %{_sbindir}/krb5kdc
 %dir %{_libdir}/krb5
 %dir %{_libdir}/krb5/plugins
+%if %{with audit}
+%dir %{_libdir}/krb5/plugins/audit
+%attr(755,root,root) %{_libdir}/krb5/plugins/audit/k5audit.so
+%endif
 %dir %{_libdir}/krb5/plugins/kdb
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
 %dir %{_libdir}/krb5/plugins/preauth
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/otp.so
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
+%dir %{_libdir}/krb5/plugins/tls
+%attr(755,root,root) %{_libdir}/krb5/plugins/tls/k5tls.so
 %{_mandir}/man5/kdc.conf.5*
 %{_mandir}/man8/krb5kdc.8*
 
@@ -684,7 +708,7 @@ fi
 %files libs
 # -f mit-krb5.lang
 %defattr(644,root,root,755)
-%doc NOTICE README doc/CHANGES
+%doc NOTICE README
 %attr(755,root,root) %{_libdir}/libgssapi_krb5.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libgssapi_krb5.so.2
 %attr(755,root,root) %{_libdir}/libgssrpc.so.*.*
@@ -692,11 +716,11 @@ fi
 %attr(755,root,root) %{_libdir}/libk5crypto.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libk5crypto.so.3
 %attr(755,root,root) %{_libdir}/libkadm5clnt_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5clnt_mit.so.9
+%attr(755,root,root) %ghost %{_libdir}/libkadm5clnt_mit.so.11
 %attr(755,root,root) %{_libdir}/libkadm5srv_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.9
+%attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.11
 %attr(755,root,root) %{_libdir}/libkdb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.7
+%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.8
 %attr(755,root,root) %{_libdir}/libkrad.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkrad.so.0
 %attr(755,root,root) %{_libdir}/libkrb5.so.*.*
@@ -741,13 +765,6 @@ fi
 %{_pkgconfigdir}/mit-krb5.pc
 %{_pkgconfigdir}/mit-krb5-gssapi.pc
 %{_mandir}/man1/krb5-config.1*
-
-%if 0
-configure: error: Sorry, static libraries do not work in this release.
-%files static
-%defattr(644,root,root,755)
-%{_libdir}/*.a
-%endif
 
 %files doc
 %defattr(644,root,root,755)
