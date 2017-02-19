@@ -8,7 +8,6 @@
 # TODO:
 # - fix as-needed (move flags before libs in link commands)
 # - is =-lresolv in --with-netlib needed?
-# - --with-system-verto (pkg-config libverto)
 #
 # Conditional build:
 %bcond_without	doc             # documentation [requires TeX]
@@ -72,6 +71,7 @@ BuildRequires:	libcom_err-devel
 %{?with_selinux:BuildRequires:	libselinux-devel}
 # for bindir/mk_cmds
 BuildRequires:	libss-devel >= 1.35
+BuildRequires:	libverto-devel
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 1.0.0
@@ -85,6 +85,7 @@ BuildRequires:	sphinx-pdg
 %endif
 %if %{with tests}
 BuildRequires:	cmocka-devel
+BuildRequires:	libverto-libev
 BuildRequires:	perl-base
 BuildRequires:	python >= 1:2.5
 # we have "online" tests disabled, so probably not needed
@@ -230,6 +231,7 @@ Summary:	Kerberos V5 AS/KDC Server
 Summary(pl.UTF-8):	Serwer AS/KDC Kerberos V5
 Group:		Networking
 Requires:	%{name}-server = %{version}-%{release}
+Requires:	libverto-libev
 
 %description server-kdc
 This package constains the Kerberos version 5 Authentication Service
@@ -356,6 +358,7 @@ Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	keyutils-devel
 Requires:	libcom_err-devel
+Requires:	libverto-devel
 Conflicts:	heimdal-devel
 Obsoletes:	krb5-static
 
@@ -437,6 +440,7 @@ done
 	%{?with_system_db:--with-system-db} \
 	--with-system-et \
 	--with-system-ss \
+	--with-system-verto \
 	--with-tcl=%{?with_tcl:%{_prefix}}%{!?with_tcl:no}
 
 %{__make} \
@@ -727,8 +731,6 @@ fi
 %attr(755,root,root) %ghost %{_libdir}/libkrb5.so.3
 %attr(755,root,root) %{_libdir}/libkrb5support.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkrb5support.so.0
-%attr(755,root,root) %{_libdir}/libverto.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libverto.so.0
 
 %files devel
 %defattr(644,root,root,755)
@@ -744,7 +746,6 @@ fi
 %attr(755,root,root) %{_libdir}/libkrad.so
 %attr(755,root,root) %{_libdir}/libkrb5.so
 %attr(755,root,root) %{_libdir}/libkrb5support.so
-%attr(755,root,root) %{_libdir}/libverto.so
 %{_includedir}/gssapi
 %{_includedir}/gssrpc
 %{_includedir}/kadm5
@@ -754,8 +755,6 @@ fi
 %{_includedir}/krad.h
 %{_includedir}/krb5.h
 %{_includedir}/profile.h
-%{_includedir}/verto.h
-%{_includedir}/verto-module.h
 %{_pkgconfigdir}/gssrpc.pc
 %{_pkgconfigdir}/kadm-client.pc
 %{_pkgconfigdir}/kadm-server.pc
