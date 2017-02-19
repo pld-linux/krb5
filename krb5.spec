@@ -5,10 +5,6 @@
 # (s)he is on hers/his own.
 #				- baggins/at/pld-linux.org
 #
-# TODO:
-# - fix as-needed (move flags before libs in link commands)
-# - is =-lresolv in --with-netlib needed?
-#
 # Conditional build:
 %bcond_without	doc             # documentation [requires TeX]
 %bcond_without	audit		# audit plugin
@@ -43,6 +39,7 @@ Source18:	kpropd.acl
 Patch0:		%{name}-manpages.patch
 Patch1:		%{name}-audit.patch
 Patch2:		%{name}-db185.patch
+Patch3:		%{name}-as-needed.patch
 Patch4:		%{name}-ksu-path.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
@@ -56,7 +53,6 @@ URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 %{?with_audit:BuildRequires:	audit-libs-devel}
 BuildRequires:	autoconf
-BuildRequires:	automake
 BuildRequires:	bison
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 %{?with_system_db:BuildRequires:	db-devel}
@@ -75,6 +71,7 @@ BuildRequires:	libverto-devel
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 1.0.0
+BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
 %{?with_tcl:BuildRequires:	tcl-devel}
@@ -86,7 +83,6 @@ BuildRequires:	sphinx-pdg
 %if %{with tests}
 BuildRequires:	cmocka-devel
 BuildRequires:	libverto-libev
-BuildRequires:	perl-base
 BuildRequires:	python >= 1:2.5
 # we have "online" tests disabled, so probably not needed
 #BuildRequires:	resolv_wrapper >= 1.1.5
@@ -396,6 +392,7 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch0 -p1
 %patch1 -p1
 %{?with_system_db:%patch2 -p1}
+%patch3 -p1
 %patch4 -p1
 %patch6 -p1
 %patch11 -p1
@@ -407,27 +404,13 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 
 %build
 cd src
-# Get LFS support on systems that need it which aren't already 64-bit.
-%ifarch %{ix86} s390 ppc sparc
-CFLAGS="%{rpmcflags} -D_FILE_OFFSET_BITS=64 -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
-CPPFLAGS="-D_FILE_OFFSET_BITS=64 -I%{_includedir}/et -I%{_includedir}/ncurses"
-%else
-CFLAGS="%{rpmcflags} -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
-CPPFLAGS="-I%{_includedir}/et -I%{_includedir}/ncurses"
-%endif
-
-top=$(pwd)
-for configurein in $(find -name configure.in -type f); do
-	cd $(dirname $configurein)
-	grep -q A._CONFIG_HEADER configure.in && %{__autoheader} -I "$top"
-	%{__autoconf} -I "$top"
-	cd $top
-done
-
+# Get LFS support on systems that need additional flags.
+LFS_CFLAGS="$(getconf LFS_CFLAGS)"
+CFLAGS="%{rpmcflags} $LFS_CFLAGS -fPIC -I%{_includedir}/et -I%{_includedir}/ncurses"
+CPPFLAGS="$LFS_CFLAGS -I%{_includedir}/et -I%{_includedir}/ncurses"
+%{__autoconf}
+%{__autoheader}
 %configure \
-	CC=%{__cc} \
-	CFLAGS="$CFLAGS" \
-	CPPFLAGS="$CPPFLAGS" \
 	--libexecdir=%{_libdir} \
 	--disable-rpath \
 	%{?with_audit:--enable-audit-plugin=simple} \
