@@ -18,12 +18,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.15.1
+Version:	1.16
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.15/%{name}-%{version}.tar.gz
-# Source0-md5:	8022f3a1cde8463e44fd35ef42731f85
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.16/%{name}-%{version}.tar.gz
+# Source0-md5:	23c5e9f07642db4a67f7a5b6168b1319
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -475,8 +475,9 @@ echo '.so man1/kadmin.1' > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 # fix permissions for deps generation
 find $RPM_BUILD_ROOT -type f -name '*.so*' | xargs chmod +x
 
-# the only translation is empty (as of 1.15)
-#find_lang mit-krb5
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/krb5/plugins/preauth/test.so
+
+%find_lang mit-krb5
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -692,8 +693,7 @@ fi
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/krb5.keytab
 %{_mandir}/man5/krb5.conf.5*
 
-%files libs
-# -f mit-krb5.lang
+%files libs -f mit-krb5.lang
 %defattr(644,root,root,755)
 %doc NOTICE README
 %attr(755,root,root) %{_libdir}/libgssapi_krb5.so.*.*
@@ -707,7 +707,7 @@ fi
 %attr(755,root,root) %{_libdir}/libkadm5srv_mit.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.11
 %attr(755,root,root) %{_libdir}/libkdb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.8
+%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.9
 %attr(755,root,root) %{_libdir}/libkrad.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkrad.so.0
 %attr(755,root,root) %{_libdir}/libkrb5.so.*.*

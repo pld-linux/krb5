@@ -79,12 +79,12 @@
  
  install-unix:
  	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
---- krb5-1.15/src/tests/gssapi/Makefile.in.orig	2017-02-18 08:35:55.481165250 +0100
-+++ krb5-1.15/src/tests/gssapi/Makefile.in	2017-02-18 08:37:07.877831093 +0100
-@@ -44,13 +44,15 @@
+--- krb5-1.16/src/tests/gssapi/Makefile.in.orig	2018-04-02 20:00:12.548338898 +0200
++++ krb5-1.16/src/tests/gssapi/Makefile.in	2018-04-02 20:25:00.528321908 +0200
+@@ -45,13 +45,15 @@
  	t_enctypes t_err t_export_cred t_export_name t_imp_cred t_inq_cred \
- 	t_inq_ctx t_inq_mechs_name t_iov t_pcontok t_s4u t_s4u2proxy_krb5 \
- 	t_spnego t_srcattrs
+ 	t_inq_ctx t_inq_mechs_name t_iov t_lifetime t_pcontok t_s4u \
+ 	t_s4u2proxy_krb5 t_spnego t_srcattrs
 -	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS)
@@ -104,36 +104,9 @@
  
  ccinit: ccinit.o $(KRB5_BASE_DEPLIBS)
  	$(CC_LINK) -o ccinit ccinit.o $(KRB5_BASE_LIBS)
-#--- krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in~	2010-12-03 01:05:44.000000000 +0100
-#+++ krb5-1.9.1/src/tests/mkeystash_compat/Makefile.in	2011-08-03 12:55:23.507781811 +0200
-#@@ -37,14 +37,16 @@
-# 
-# # Verify that the mkey stash code is backward compat with old/non-keytab stashfile format
-# mkeystash_check: kdc.conf krb5.conf bigendian
-#-	$(RM) $(TEST_DB)* stash_file
-#-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) create -s -W
-#-	# overwrite keytab stash file with old format stash, depends on endianness of current test system
-#-	./bigendian && cp $(srcdir)/old_stash_bendian stash_file || cp $(srcdir)/old_stash_lendian stash_file
-#-	# getprinc will fail if old stash file can not be read
-#-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/cli/kadmin.local $(KADMIN_OPTS) -q 'getprinc K/M'
-#-	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) destroy -f
-#-	$(RM) $(TEST_DB)* stash_file
-#+	if [ "$(OFFLINE)" = no ]; then \
-#+	$(RM) $(TEST_DB)* stash_file && \
-#+	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) create -s -W && \
-#+	# overwrite keytab stash file with old format stash, depends on endianness of current test system && \
-#+	./bigendian && cp $(srcdir)/old_stash_bendian stash_file || cp $(srcdir)/old_stash_lendian stash_file && \
-#+	# getprinc will fail if old stash file can not be read && \
-#+	$(RUN_SETUP) $(VALGRIND) ../../kadmin/cli/kadmin.local $(KADMIN_OPTS) -q 'getprinc K/M' && \
-#+	$(RUN_SETUP) $(VALGRIND) ../../kadmin/dbutil/kdb5_util $(KDB_OPTS) destroy -f && \
-#+	$(RM) $(TEST_DB)* stash_file ; \
-#+	fi
-# 
-# clean::
-# 	$(RM) kdc.conf krb5.conf bigendian.$(OBJEXT) bigendian
---- krb5-1.15/src/tests/Makefile.in.orig	2017-02-18 08:43:08.467826973 +0100
-+++ krb5-1.15/src/tests/Makefile.in	2017-02-18 09:09:28.181142270 +0100
-@@ -89,84 +89,88 @@
+--- krb5-1.16/src/tests/Makefile.in.orig	2018-04-02 20:00:12.561672231 +0200
++++ krb5-1.16/src/tests/Makefile.in	2018-04-02 20:27:45.764986688 +0200
+@@ -92,89 +92,93 @@
  	mv krb5.new krb5.conf
  
  kdb_check: kdc.conf krb5.conf
@@ -190,8 +163,9 @@
 +	$(RM) $(TEST_DB)* stash_file ; \
 +	fi
  
- check-pytests: adata etinfo forward gcred hist hooks hrealm icred kdbtest
- check-pytests: localauth plugorder rdreq responder s2p s4u2proxy unlockiter
+ check-pytests: adata etinfo forward gcred hist hooks hrealm icinterleave icred
+ check-pytests: kdbtest localauth plugorder rdreq responder s2p s4u2proxy
+ check-pytests: unlockiter
 -	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_hooks.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_dump.py $(PYTESTFLAGS)
@@ -203,6 +177,7 @@
 -	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kadm5_auth.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_pwqual.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_hostrealm.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kdb_locking.py $(PYTESTFLAGS)
@@ -241,6 +216,7 @@
 +	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kadm5_auth.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_pwqual.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_hostrealm.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_kdb_locking.py $(PYTESTFLAGS) && \
@@ -280,6 +256,9 @@
 -	$(RUNPYTEST) $(srcdir)/t_preauth.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_princflags.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_tabdump.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_certauth.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_y2038.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS)
 +			-i au.log && \
 +	$(RUNPYTEST) $(srcdir)/t_salt.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_etype_info.py $(PYTESTFLAGS) && \
@@ -291,8 +270,11 @@
 +	$(RUNPYTEST) $(srcdir)/t_authdata.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_preauth.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_princflags.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_tabdump.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_tabdump.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_certauth.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_y2038.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS) ; \
 +	fi
  
  clean:
- 	$(RM) adata etinfo forward gcred hist hooks hrealm icred kdbtest
+ 	$(RM) adata etinfo forward gcred hist hooks hrealm icinterleave icred
