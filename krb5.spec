@@ -18,12 +18,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.16
+Version:	1.18
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.16/%{name}-%{version}.tar.gz
-# Source0-md5:	23c5e9f07642db4a67f7a5b6168b1319
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.18/%{name}-%{version}.tar.gz
+# Source0-md5:	69a5b165dac5754a5094627ee6df0def
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -40,7 +40,6 @@ Patch0:		%{name}-manpages.patch
 Patch1:		%{name}-audit.patch
 Patch2:		%{name}-db185.patch
 Patch3:		%{name}-as-needed.patch
-Patch4:		%{name}-ksu-path.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
 Patch11:	%{name}-brokenrev.patch
@@ -52,7 +51,7 @@ Patch29:	%{name}-selinux-label.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 %{?with_audit:BuildRequires:	audit-libs-devel}
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	bison
 %{?with_ldap:BuildRequires:	cyrus-sasl-devel >= 2}
 %{?with_system_db:BuildRequires:	db-devel}
@@ -68,6 +67,7 @@ BuildRequires:	libcom_err-devel
 # for bindir/mk_cmds
 BuildRequires:	libss-devel >= 1.35
 BuildRequires:	libverto-devel
+BuildRequires:	lmdb-devel
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 1.0.0
@@ -393,7 +393,6 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch1 -p1
 %{?with_system_db:%patch2 -p1}
 %patch3 -p1
-%patch4 -p1
 %patch6 -p1
 %patch11 -p1
 %patch12 -p1
@@ -634,9 +633,11 @@ fi
 %endif
 %dir %{_libdir}/krb5/plugins/kdb
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/db2.so
+%attr(755,root,root) %{_libdir}/krb5/plugins/kdb/klmdb.so
 %dir %{_libdir}/krb5/plugins/preauth
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/otp.so
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
+%attr(755,root,root) %{_libdir}/krb5/plugins/preauth/spake.so
 %dir %{_libdir}/krb5/plugins/tls
 %attr(755,root,root) %{_libdir}/krb5/plugins/tls/k5tls.so
 %{_mandir}/man5/kdc.conf.5*
@@ -692,6 +693,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/krb5.conf
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/krb5.keytab
 %{_mandir}/man5/krb5.conf.5*
+%{_mandir}/man7/kerberos.7*
 
 %files libs -f mit-krb5.lang
 %defattr(644,root,root,755)
@@ -703,11 +705,11 @@ fi
 %attr(755,root,root) %{_libdir}/libk5crypto.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libk5crypto.so.3
 %attr(755,root,root) %{_libdir}/libkadm5clnt_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5clnt_mit.so.11
+%attr(755,root,root) %ghost %{_libdir}/libkadm5clnt_mit.so.12
 %attr(755,root,root) %{_libdir}/libkadm5srv_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.11
+%attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.12
 %attr(755,root,root) %{_libdir}/libkdb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.9
+%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.10
 %attr(755,root,root) %{_libdir}/libkrad.so.*.*
 %attr(755,root,root) %ghost %{_libdir}/libkrad.so.0
 %attr(755,root,root) %{_libdir}/libkrb5.so.*.*

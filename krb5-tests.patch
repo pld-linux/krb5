@@ -34,34 +34,38 @@
  		DICT=`cd $srcdir/../test && pwd`/dictionary
  	else
  		echo 'run.test: no dictionary'
---- krb5-1.15/src/lib/krb5/krb/Makefile.in.orig	2017-02-16 22:21:37.502572637 +0100
-+++ krb5-1.15/src/lib/krb5/krb/Makefile.in	2017-02-16 22:22:42.059238568 +0100
-@@ -498,9 +498,11 @@
- 	$(RUN_TEST) ./t_sname_match
+--- krb5-1.18/src/lib/krb5/krb/Makefile.in.orig	2020-02-28 17:33:18.936117176 +0100
++++ krb5-1.18/src/lib/krb5/krb/Makefile.in	2020-02-28 18:30:32.414183097 +0100
+@@ -513,10 +513,12 @@
+ 	$(RUN_TEST) ./t_valid_times
  
- check-pytests: t_expire_warn t_vfy_increds
+ check-pytests: t_expire_warn t_get_etype_info t_vfy_increds
 -	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
 +	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS) ; \
 +	fi
  
  check-cmocka: t_parse_host_string
  	$(RUN_TEST) ./t_parse_host_string > /dev/null
---- krb5-1.15/src/kdc/Makefile.in.orig	2017-02-16 22:23:21.009238123 +0100
-+++ krb5-1.15/src/kdc/Makefile.in	2017-02-18 08:23:41.544506963 +0100
-@@ -83,8 +83,10 @@
+--- krb5-1.18/src/kdc/Makefile.in.orig	2020-02-28 17:33:18.936117176 +0100
++++ krb5-1.18/src/kdc/Makefile.in	2020-02-28 18:31:26.797221812 +0100
+@@ -83,9 +83,11 @@
  	$(RUN_TEST) ./t_replay > /dev/null
  
  check-pytests:
 -	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
 +	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS) ; \
 +	fi
  
  install:
@@ -79,12 +83,12 @@
  
  install-unix:
  	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
---- krb5-1.16/src/tests/gssapi/Makefile.in.orig	2018-04-02 20:00:12.548338898 +0200
-+++ krb5-1.16/src/tests/gssapi/Makefile.in	2018-04-02 20:25:00.528321908 +0200
-@@ -45,13 +45,15 @@
- 	t_enctypes t_err t_export_cred t_export_name t_imp_cred t_inq_cred \
- 	t_inq_ctx t_inq_mechs_name t_iov t_lifetime t_pcontok t_s4u \
- 	t_s4u2proxy_krb5 t_spnego t_srcattrs
+--- krb5-1.18/src/tests/gssapi/Makefile.in.orig	2020-02-28 17:33:18.939450491 +0100
++++ krb5-1.18/src/tests/gssapi/Makefile.in	2020-02-28 18:32:46.260124657 +0100
+@@ -47,14 +47,16 @@
+ 	t_context t_credstore t_enctypes t_err t_export_cred t_export_name \
+ 	t_imp_cred t_inq_cred t_inq_ctx t_inq_mechs_name t_iov t_lifetime \
+ 	t_pcontok t_s4u t_s4u2proxy_krb5 t_spnego t_srcattrs
 -	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS)
@@ -92,6 +96,7 @@
 -	$(RUNPYTEST) $(srcdir)/t_export_cred.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_s4u.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_authind.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_negoex.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
 +	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS) && \
@@ -99,14 +104,15 @@
 +	$(RUNPYTEST) $(srcdir)/t_enctypes.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_export_cred.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_s4u.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_authind.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_authind.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_negoex.py $(PYTESTFLAGS) ; \
 +	fi
  
  ccinit: ccinit.o $(KRB5_BASE_DEPLIBS)
  	$(CC_LINK) -o ccinit ccinit.o $(KRB5_BASE_LIBS)
---- krb5-1.16/src/tests/Makefile.in.orig	2018-04-02 20:00:12.561672231 +0200
-+++ krb5-1.16/src/tests/Makefile.in	2018-04-02 20:27:45.764986688 +0200
-@@ -92,89 +92,93 @@
+--- krb5-1.18/src/tests/Makefile.in.orig	2020-02-28 17:33:18.939450491 +0100
++++ krb5-1.18/src/tests/Makefile.in	2020-02-28 18:37:16.285328472 +0100
+@@ -98,87 +98,91 @@
  	mv krb5.new krb5.conf
  
  kdb_check: kdc.conf krb5.conf
@@ -115,7 +121,6 @@
 -	$(RUN_DB_TEST) ../tests/create/kdb5_mkdums $(KTEST_OPTS)
 -	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS)
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump
--	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f
 -	@echo "====> NOTE!"
 -	@echo "The following 'create' command is needed due to a change"
@@ -123,16 +128,11 @@
 -	@echo ====
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load $(TEST_DB).dump
--	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load -update -ov $(TEST_DB).ovdump
 -	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS)
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump2
--	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump2
 -	sort $(TEST_DB).dump > $(TEST_DB).sort
 -	sort $(TEST_DB).dump2 > $(TEST_DB).sort2
--	sort $(TEST_DB).ovdump > $(TEST_DB).ovsort
--	sort $(TEST_DB).ovdump2 > $(TEST_DB).ovsort2
 -	cmp $(TEST_DB).sort $(TEST_DB).sort2
--	cmp $(TEST_DB).ovsort $(TEST_DB).ovsort2
 -	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f
 -	$(RM) $(TEST_DB)* stash_file
 +	if [ "$(OFFLINE)" = no ]; then \
@@ -141,7 +141,6 @@
 +	$(RUN_DB_TEST) ../tests/create/kdb5_mkdums $(KTEST_OPTS) && \
 +	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS) && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump && \
-+	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f && \
 +	@echo "====> NOTE!" ; \
 +	@echo "The following 'create' command is needed due to a change" ; \
@@ -149,23 +148,18 @@
 +	@echo ==== ; \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load $(TEST_DB).dump && \
-+	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load -update -ov $(TEST_DB).ovdump && \
 +	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS) && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump2 && \
-+	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump -ov $(TEST_DB).ovdump2 && \
 +	sort $(TEST_DB).dump > $(TEST_DB).sort && \
 +	sort $(TEST_DB).dump2 > $(TEST_DB).sort2 && \
-+	sort $(TEST_DB).ovdump > $(TEST_DB).ovsort && \
-+	sort $(TEST_DB).ovdump2 > $(TEST_DB).ovsort2 && \
 +	cmp $(TEST_DB).sort $(TEST_DB).sort2 && \
-+	cmp $(TEST_DB).ovsort $(TEST_DB).ovsort2 && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f && \
 +	$(RM) $(TEST_DB)* stash_file ; \
 +	fi
  
  check-pytests: adata etinfo forward gcred hist hooks hrealm icinterleave icred
- check-pytests: kdbtest localauth plugorder rdreq responder s2p s4u2proxy
- check-pytests: unlockiter
+ check-pytests: kdbtest localauth plugorder rdreq replay responder s2p s4u2proxy
+ check-pytests: unlockiter s4u2self
 -	$(RUNPYTEST) $(srcdir)/t_general.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_hooks.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_dump.py $(PYTESTFLAGS)
@@ -175,6 +169,7 @@
 -	$(RUNPYTEST) $(srcdir)/t_changepw.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_pkinit.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_spake.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kadm5_auth.py $(PYTESTFLAGS)
@@ -214,6 +209,7 @@
 +	$(RUNPYTEST) $(srcdir)/t_changepw.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_pkinit.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_otp.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_spake.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_localauth.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_kadm5_hook.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_kadm5_auth.py $(PYTESTFLAGS) && \
@@ -259,6 +255,9 @@
 -	$(RUNPYTEST) $(srcdir)/t_certauth.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_y2038.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_u2u.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_kdcoptions.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_replay.py $(PYTESTFLAGS)
 +			-i au.log && \
 +	$(RUNPYTEST) $(srcdir)/t_salt.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_etype_info.py $(PYTESTFLAGS) && \
@@ -273,7 +272,10 @@
 +	$(RUNPYTEST) $(srcdir)/t_tabdump.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_certauth.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_y2038.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_u2u.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_kdcoptions.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_replay.py $(PYTESTFLAGS) ; \
 +	fi
  
  clean:
