@@ -18,12 +18,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.18
+Version:	1.18.5
 Release:	0.1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.18/%{name}-%{version}.tar.gz
-# Source0-md5:	69a5b165dac5754a5094627ee6df0def
+# Source0-md5:	f7106ab1b5ee31c469f44ac0e64fadd8
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -40,6 +40,7 @@ Patch0:		%{name}-manpages.patch
 Patch1:		%{name}-audit.patch
 Patch2:		%{name}-db185.patch
 Patch3:		%{name}-as-needed.patch
+Patch4:		%{name}-openssl.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
 Patch11:	%{name}-brokenrev.patch
@@ -337,8 +338,8 @@ Group:		Libraries
 Requires(post):	/sbin/ldconfig
 Requires(post,preun):	grep
 Requires(preun):	coreutils
-Obsoletes:	krb5-configs
-Obsoletes:	krb5-lib
+Obsoletes:	krb5-configs < 1.3
+Obsoletes:	krb5-lib < 1.3
 Conflicts:	heimdal-libs < 0.8-0.rc7.2
 
 %description libs
@@ -356,7 +357,7 @@ Requires:	keyutils-devel
 Requires:	libcom_err-devel
 Requires:	libverto-devel
 Conflicts:	heimdal-devel
-Obsoletes:	krb5-static
+Obsoletes:	krb5-static < 1.15
 
 %description devel
 Header files for Kerberos V5 libraries and development documentation.
@@ -393,6 +394,7 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch1 -p1
 %{?with_system_db:%patch2 -p1}
 %patch3 -p1
+%patch4 -p1
 %patch6 -p1
 %patch11 -p1
 %patch12 -p1

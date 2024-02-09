@@ -1,12 +1,12 @@
---- krb5-1.12.1/src/build-tools/krb5-config.in.orig	2007-06-24 18:32:29.495026000 +0200
-+++ krb5-1.12.1/src/build-tools/krb5-config.in	2007-06-24 18:34:33.354085216 +0200
-@@ -35,7 +35,8 @@
- KRB4_LIB=@KRB4_LIB@
- DES425_LIB=@DES425_LIB@
+--- krb5-1.18.5/src/build-tools/krb5-config.in.orig	2024-02-09 18:34:31.674890065 +0100
++++ krb5-1.18.5/src/build-tools/krb5-config.in	2024-02-09 18:49:52.946565774 +0100
+@@ -33,7 +33,8 @@ includedir=@includedir@
+ libdir=@libdir@
+ CC_LINK='@CC_LINK@'
  KDB5_DB_LIB=@KDB5_DB_LIB@
 -LDFLAGS='@LDFLAGS@'
 +LDFLAGS=
 +CFLAGS=
  RPATH_FLAG='@RPATH_FLAG@'
+ PROG_RPATH_FLAGS='@PROG_RPATH_FLAGS@'
  PTHREAD_CFLAGS='@PTHREAD_CFLAGS@'
- DL_LIB='@DL_LIB@'

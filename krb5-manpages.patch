@@ -9,9 +9,9 @@
  .ft P
  .fi
  .UNINDENT
---- krb5-1.15/src/man/kpropd.man.orig	2016-12-01 23:31:25.000000000 +0100
-+++ krb5-1.15/src/man/kpropd.man	2017-02-01 21:32:44.744070801 +0100
-@@ -65,7 +65,7 @@
+--- krb5-1.18.5/src/man/kpropd.man.orig	2022-03-11 07:34:10.000000000 +0100
++++ krb5-1.18.5/src/man/kpropd.man	2024-02-09 17:07:52.703055311 +0100
+@@ -67,7 +67,7 @@ the \fB/etc/inetd.conf\fP file which loo
  .sp
  .nf
  .ft C
@@ -20,12 +20,12 @@
  .ft P
  .fi
  .UNINDENT
-@@ -146,7 +146,7 @@
+@@ -152,7 +152,7 @@ kpropd uses the following environment va
  .TP
  .B kpropd.acl
  Access file for kpropd; the default location is
 -\fB/usr/local/var/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
 +\fB/var/lib/kerberos/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
  containing the principal of a host from which the local machine
- will allow Kerberos database propagation via \fIkprop(8)\fP\&.
+ will allow Kerberos database propagation via kprop(8)\&.
  .UNINDENT

@@ -13,11 +13,11 @@
  
  install:
  
---- krb5-1.6.3/src/plugins/kdb/db2/libdb2/test/run.test~	2007-11-21 17:52:04.000000000 +0100
-+++ krb5-1.6.3/src/plugins/kdb/db2/libdb2/test/run.test	2007-11-21 17:58:16.000000000 +0100
-@@ -12,17 +12,7 @@
- 	TMP2=${TMPDIR-.}/t2
+--- krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test.orig	2024-02-09 17:15:55.150441669 +0100
++++ krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test	2024-02-09 18:29:53.379731052 +0100
+@@ -15,17 +15,7 @@ main()
  	TMP3=${TMPDIR-.}/t3
+ 	BINFILES=${TMPDIR-.}/binfiles
  
 -	if [ \! -z "$WORDLIST" -a -f "$WORDLIST" ]; then
 -		DICT=$WORDLIST
@@ -110,9 +110,9 @@
  
  ccinit: ccinit.o $(KRB5_BASE_DEPLIBS)
  	$(CC_LINK) -o ccinit ccinit.o $(KRB5_BASE_LIBS)
---- krb5-1.18/src/tests/Makefile.in.orig	2020-02-28 17:33:18.939450491 +0100
-+++ krb5-1.18/src/tests/Makefile.in	2020-02-28 18:37:16.285328472 +0100
-@@ -98,87 +98,91 @@
+--- krb5-1.18.5/src/tests/Makefile.in.orig	2024-02-09 18:30:44.222788945 +0100
++++ krb5-1.18.5/src/tests/Makefile.in	2024-02-09 18:33:57.485075287 +0100
+@@ -98,88 +98,92 @@ krb5.conf: Makefile
  	mv krb5.new krb5.conf
  
  kdb_check: kdc.conf krb5.conf
@@ -197,6 +197,7 @@
 -	$(RUNPYTEST) $(srcdir)/t_cve-2012-1015.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_cve-2013-1416.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_cve-2013-1417.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_cve-2021-36222.py $(PYTESTFLAGS)
 -	$(RM) au.log
 -	$(RUNPYTEST) $(srcdir)/t_audit.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
@@ -237,6 +238,7 @@
 +	$(RUNPYTEST) $(srcdir)/t_cve-2012-1015.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_cve-2013-1416.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_cve-2013-1417.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_cve-2021-36222.py $(PYTESTFLAGS) && \
 +	$(RM) au.log && \
 +	$(RUNPYTEST) $(srcdir)/t_audit.py $(PYTESTFLAGS) && \
  	$(RUNPYTEST) $(srcdir)/jsonwalker.py -d $(srcdir)/au_dict.json \

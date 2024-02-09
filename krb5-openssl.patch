@@ -1,0 +1,65 @@
+--- krb5-1.18.5/src/tests/softpkcs11/main.c.orig	2022-03-11 07:34:10.000000000 +0100
++++ krb5-1.18.5/src/tests/softpkcs11/main.c	2024-02-09 19:44:41.605416248 +0100
+@@ -427,7 +427,7 @@ add_pubkey_info(struct st_object *o, CK_
+         RSA *rsa;
+         const BIGNUM *n, *e;
+ 
+-        rsa = EVP_PKEY_get0_RSA(key);
++        rsa = (RSA*)EVP_PKEY_get0_RSA(key);
+         RSA_get0_key(rsa, &n, &e, NULL);
+         modulus_bits = BN_num_bits(n);
+ 
+@@ -680,7 +680,7 @@ add_certificate(char *label,
+             /* XXX verify keytype */
+ 
+             if (key_type == CKK_RSA)
+-                RSA_set_method(EVP_PKEY_get0_RSA(o->u.private_key.key),
++                RSA_set_method((RSA*)EVP_PKEY_get0_RSA(o->u.private_key.key),
+                                RSA_PKCS1_OpenSSL());
+ 
+             if (X509_check_private_key(cert, o->u.private_key.key) != 1) {
+@@ -1224,7 +1224,7 @@ C_Login(CK_SESSION_HANDLE hSession,
+         }
+ 
+         /* XXX check keytype */
+-        RSA_set_method(EVP_PKEY_get0_RSA(o->u.private_key.key),
++        RSA_set_method((RSA*)EVP_PKEY_get0_RSA(o->u.private_key.key),
+                        RSA_PKCS1_OpenSSL());
+ 
+         if (X509_check_private_key(o->u.private_key.cert, o->u.private_key.key) != 1) {
+@@ -1512,7 +1512,7 @@ C_Encrypt(CK_SESSION_HANDLE hSession,
+         return CKR_ARGUMENTS_BAD;
+     }
+ 
+-    rsa = EVP_PKEY_get0_RSA(o->u.public_key);
++    rsa = (RSA*)EVP_PKEY_get0_RSA(o->u.public_key);
+ 
+     if (rsa == NULL)
+         return CKR_ARGUMENTS_BAD;
+@@ -1663,7 +1663,7 @@ C_Decrypt(CK_SESSION_HANDLE hSession,
+         return CKR_ARGUMENTS_BAD;
+     }
+ 
+-    rsa = EVP_PKEY_get0_RSA(o->u.private_key.key);
++    rsa = (RSA*)EVP_PKEY_get0_RSA(o->u.private_key.key);
+ 
+     if (rsa == NULL)
+         return CKR_ARGUMENTS_BAD;
+@@ -1822,7 +1822,7 @@ C_Sign(CK_SESSION_HANDLE hSession,
+         return CKR_ARGUMENTS_BAD;
+     }
+ 
+-    rsa = EVP_PKEY_get0_RSA(o->u.private_key.key);
++    rsa = (RSA*)EVP_PKEY_get0_RSA(o->u.private_key.key);
+ 
+     if (rsa == NULL)
+         return CKR_ARGUMENTS_BAD;
+@@ -1969,7 +1969,7 @@ C_Verify(CK_SESSION_HANDLE hSession,
+         return CKR_ARGUMENTS_BAD;
+     }
+ 
+-    rsa = EVP_PKEY_get0_RSA(o->u.public_key);
++    rsa = (RSA*)EVP_PKEY_get0_RSA(o->u.public_key);
+ 
+     if (rsa == NULL)
+         return CKR_ARGUMENTS_BAD;

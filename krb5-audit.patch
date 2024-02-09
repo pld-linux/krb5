@@ -16,9 +16,9 @@
  
  STOBJLISTS= OBJS.ST ../OBJS.ST
  STLIBOBJS= au_simple_main.o
---- krb5-1.15/src/config/pre.in.orig	2016-12-01 23:31:24.000000000 +0100
-+++ krb5-1.15/src/config/pre.in	2017-02-18 20:50:40.537328544 +0100
-@@ -217,6 +217,8 @@
+--- krb5-1.18.5/src/config/pre.in.orig	2022-03-11 07:34:10.000000000 +0100
++++ krb5-1.18.5/src/config/pre.in	2024-02-09 17:12:29.044891572 +0100
+@@ -220,6 +220,8 @@ KRB5_PA_MODULE_DIR = $(MODULE_DIR)/preau
  KRB5_AD_MODULE_DIR = $(MODULE_DIR)/authdata
  KRB5_LIBKRB5_MODULE_DIR = $(MODULE_DIR)/libkrb5
  KRB5_TLS_MODULE_DIR = $(MODULE_DIR)/tls
@@ -27,23 +27,23 @@
  KRB5_LOCALEDIR = @localedir@
  GSS_MODULE_DIR = @libdir@/gss
  KRB5_INCSUBDIRS = \
-@@ -445,6 +445,8 @@
- TLS_IMPL_CFLAGS = @TLS_IMPL_CFLAGS@
- TLS_IMPL_LIBS	= @TLS_IMPL_LIBS@
+@@ -447,6 +449,8 @@ TLS_IMPL_LIBS	= @TLS_IMPL_LIBS@
+ # SPAKE preauth back-end libraries
+ SPAKE_OPENSSL_LIBS = @SPAKE_OPENSSL_LIBS@
  
 +AUDIT_IMPL_LIBS = @AUDIT_IMPL_LIBS@
 +
  # Whether we have the SASL header file for the LDAP KDB module
  HAVE_SASL = @HAVE_SASL@
  
---- krb5-1.15/src/Makefile.in.orig	2016-12-01 23:31:24.000000000 +0100
-+++ krb5-1.15/src/Makefile.in	2017-02-18 22:24:54.577263986 +0100
-@@ -64,7 +64,7 @@
+--- krb5-1.18.5/src/Makefile.in.orig	2024-02-09 17:09:02.332678095 +0100
++++ krb5-1.18.5/src/Makefile.in	2024-02-09 17:13:51.677777244 +0100
+@@ -70,7 +70,7 @@ INSTALLMKDIRS = $(KRB5ROOT) $(KRB5MANROO
  		$(KRB5_LIBDIR) $(KRB5_INCDIR) \
  		$(KRB5_DB_MODULE_DIR) $(KRB5_PA_MODULE_DIR) \
  		$(KRB5_AD_MODULE_DIR) \
 -		$(KRB5_LIBKRB5_MODULE_DIR) $(KRB5_TLS_MODULE_DIR) \
 +		$(KRB5_LIBKRB5_MODULE_DIR) $(KRB5_TLS_MODULE_DIR) $(KRB5_AUDIT_MODULE_DIR) \
- 		@localstatedir@ @localstatedir@/krb5kdc \
- 		@runstatedir@ @runstatedir@/krb5kdc \
+ 		$(localstatedir) $(localstatedir)/krb5kdc \
+ 		$(runstatedir) $(runstatedir)/krb5kdc \
  		$(KRB5_INCSUBDIRS) $(datadir) $(EXAMPLEDIR) \
