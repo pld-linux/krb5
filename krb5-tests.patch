@@ -1,18 +1,3 @@
---- krb5-1.15/src/tests/resolve/Makefile.in.orig	2017-02-16 22:16:20.209242926 +0100
-+++ krb5-1.15/src/tests/resolve/Makefile.in	2017-02-16 22:20:24.069240143 +0100
-@@ -17,9 +17,9 @@
- 	$(CC_LINK) -o $@ fake-addrinfo-test.o $(SUPPORT_LIB) $(LIBS)
- 
- check: resolve addrinfo-test fake-addrinfo-test
--	$(RUN_TEST) ./resolve
--	$(RUN_TEST) ./addrinfo-test -p telnet
--	$(RUN_TEST) ./fake-addrinfo-test -p telnet
-+	if [ "$(OFFLINE)" = no ]; then $(RUN_TEST) ./resolve ; fi
-+	if [ "$(OFFLINE)" = no ]; then $(RUN_TEST) ./addrinfo-test -p telnet ; fi
-+	if [ "$(OFFLINE)" = no ]; then $(RUN_TEST) ./fake-addrinfo-test -p telnet ; fi
- 
- install:
- 
 --- krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test.orig	2024-02-09 17:15:55.150441669 +0100
 +++ krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test	2024-02-09 18:29:53.379731052 +0100
 @@ -15,17 +15,7 @@ main()
@@ -83,13 +68,15 @@
  
  install-unix:
  	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
---- krb5-1.18/src/tests/gssapi/Makefile.in.orig	2020-02-28 17:33:18.939450491 +0100
-+++ krb5-1.18/src/tests/gssapi/Makefile.in	2020-02-28 18:32:46.260124657 +0100
-@@ -47,14 +47,16 @@
- 	t_context t_credstore t_enctypes t_err t_export_cred t_export_name \
- 	t_imp_cred t_inq_cred t_inq_ctx t_inq_mechs_name t_iov t_lifetime \
- 	t_pcontok t_s4u t_s4u2proxy_krb5 t_spnego t_srcattrs
+--- krb5-1.19.4/src/tests/gssapi/Makefile.in.orig	2024-02-09 22:08:23.525373967 +0100
++++ krb5-1.19.4/src/tests/gssapi/Makefile.in	2024-02-09 22:09:44.368269336 +0100
+@@ -49,16 +49,18 @@ check-pytests: ccinit ccrefresh t_accnam
+ 	t_ciflags t_context t_credstore t_enctypes t_err t_export_cred \
+ 	t_export_name t_imp_cred t_inq_cred t_inq_ctx t_inq_mechs_name t_iov \
+ 	t_lifetime t_pcontok t_s4u t_s4u2proxy_krb5 t_spnego t_srcattrs
 -	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_credstore.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_bindings.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_enctypes.py $(PYTESTFLAGS)
@@ -99,6 +86,8 @@
 -	$(RUNPYTEST) $(srcdir)/t_negoex.py $(PYTESTFLAGS)
 +	if [ "$(OFFLINE)" = no ]; then \
 +	$(RUNPYTEST) $(srcdir)/t_gssapi.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_credstore.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_bindings.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_ccselect.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_client_keytab.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_enctypes.py $(PYTESTFLAGS) && \
