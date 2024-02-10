@@ -18,12 +18,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.20.2
+Version:	1.21.2
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.20/%{name}-%{version}.tar.gz
-# Source0-md5:	7ac456e97c4959ebe5c836dc2f5aab2c
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.21/%{name}-%{version}.tar.gz
+# Source0-md5:	97d5f3a48235c53f6d537c877290d2af
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -46,7 +46,6 @@ Patch11:	%{name}-brokenrev.patch
 Patch12:	%{name}-dns.patch
 Patch13:	%{name}-enospc.patch
 Patch23:	%{name}-tests.patch
-Patch24:	%{name}-config.patch
 Patch29:	%{name}-selinux-label.patch
 URL:		http://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
@@ -398,7 +397,6 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch12 -p1
 %patch13 -p1
 %patch23 -p1
-%patch24 -p1
 %{?with_selinux:%patch29 -p1}
 
 %build
