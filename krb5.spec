@@ -18,12 +18,12 @@
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.19.4
+Version:	1.20.2
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.19/%{name}-%{version}.tar.gz
-# Source0-md5:	ef76083e58f8c49066180642d7c2814a
+Source0:	http://web.mit.edu/kerberos/dist/krb5/1.20/%{name}-%{version}.tar.gz
+# Source0-md5:	7ac456e97c4959ebe5c836dc2f5aab2c
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -40,7 +40,6 @@ Patch0:		%{name}-manpages.patch
 Patch1:		%{name}-audit.patch
 Patch2:		%{name}-db185.patch
 Patch3:		%{name}-as-needed.patch
-Patch4:		%{name}-openssl.patch
 # http://lite.mit.edu/
 Patch6:		%{name}-ktany.patch
 Patch11:	%{name}-brokenrev.patch
@@ -394,7 +393,6 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch1 -p1
 %{?with_system_db:%patch2 -p1}
 %patch3 -p1
-%patch4 -p1
 %patch6 -p1
 %patch11 -p1
 %patch12 -p1

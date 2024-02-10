@@ -1,21 +1,17 @@
 If the error message is going to be ambiguous, try to give the user some clue
 by returning the last error reported by the OS.
 
---- krb5-1.16/src/clients/kinit/kinit.c.orig	2018-04-02 19:53:38.218343400 +0200
-+++ krb5-1.16/src/clients/kinit/kinit.c	2018-04-02 19:59:46.085005866 +0200
-@@ -820,9 +820,15 @@
-         ret = krb5_cc_initialize(k5->ctx, k5->out_cc, opts->canonicalize ?
-                                  my_creds.client : k5->me);
+--- krb5-1.20.2/src/clients/kinit/kinit.c.orig	2024-02-10 08:00:10.543015960 +0100
++++ krb5-1.20.2/src/clients/kinit/kinit.c	2024-02-10 08:08:02.060461532 +0100
+@@ -800,7 +800,11 @@ k5_kinit(struct k_opts *opts, struct k5_
+         if (!ret)
+             ret = krb5_cc_initialize(k5->ctx, mcc, cprinc);
          if (ret) {
-+	  if ((ret == KRB5_CC_IO) && (errno != 0)) {
-+	    com_err(progname, ret, "when initializing cache %s: %s",
-+		    opts->k5_out_cache_name ? opts->k5_out_cache_name : "",
-+		    strerror(errno));
-+	  } else {
-             com_err(progname, ret, _("when initializing cache %s"),
-                     opts->k5_out_cache_name ? opts->k5_out_cache_name : "");
++          if ((ret == KRB5_CC_IO) && (errno != 0)) {
++            com_err(progname, ret, _("when creating temporary cache: %s"), strerror(errno));
++          } else {
+             com_err(progname, ret, _("when creating temporary cache"));
++          }
              goto cleanup;
-+	  }
          }
          if (opts->verbose)
-             fprintf(stderr, _("Initialized cache\n"));
