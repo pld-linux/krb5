@@ -12,18 +12,17 @@
 %bcond_without	ldap		# OpenLDAP database backend module
 %bcond_with	selinux		# SELinux support
 %bcond_without	system_db	# system Berkeley DB (via DB 1.85 API)
-%bcond_without	tcl		# build without tcl (tcl is needed for tests)
 %bcond_without	tests		# don't perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.21.2
+Version:	1.21.3
 Release:	0.1
 License:	MIT
 Group:		Networking
 Source0:	http://web.mit.edu/kerberos/dist/krb5/1.21/%{name}-%{version}.tar.gz
-# Source0-md5:	97d5f3a48235c53f6d537c877290d2af
+# Source0-md5:	beb34d1dfc72ba0571ce72bed03e06eb
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -73,7 +72,6 @@ BuildRequires:	openssl-devel >= 1.0.0
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
-%{?with_tcl:BuildRequires:	tcl-devel}
 BuildRequires:	words
 %if %{with doc}
 BuildRequires:	doxygen
@@ -85,7 +83,6 @@ BuildRequires:	libverto-libev
 BuildRequires:	python >= 1:2.5
 # we have "online" tests disabled, so probably not needed
 #BuildRequires:	resolv_wrapper >= 1.1.5
-BuildRequires:	tcl-devel
 %endif
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -420,11 +417,9 @@ CPPFLAGS="$LFS_CFLAGS -I%{_includedir}/et -I%{_includedir}/ncurses"
 	%{?with_system_db:--with-system-db} \
 	--with-system-et \
 	--with-system-ss \
-	--with-system-verto \
-	--with-tcl=%{?with_tcl:%{_prefix}}%{!?with_tcl:no}
+	--with-system-verto
 
-%{__make} \
-	TCL_LIBPATH="-L%{_libdir}"
+%{__make}
 
 %if %{with doc}
 %{__make} -C doc
@@ -433,7 +428,6 @@ CPPFLAGS="$LFS_CFLAGS -I%{_includedir}/et -I%{_includedir}/ncurses"
 %if %{with tests}
 %{__make} check \
 	OFFLINE=yes \
-	TCL_LIBPATH="-L%{_libdir}" \
 	PYTESTFLAGS="-v"
 %endif
 
@@ -444,7 +438,6 @@ install -d $RPM_BUILD_ROOT{%{_sysconfdir},%{_localstatedir},/var/log/kerberos} \
 	$RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig/rc-inetd,shrc.d,logrotate.d}
 
 %{__make} -C src install \
-	TCL_LIBPATH="-L%{_libdir}" \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sysconfdir}
