@@ -385,15 +385,15 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 
 %prep
 %setup -q
-%patch0 -p1
-%patch1 -p1
+%patch -P0 -p1
+%patch -P1 -p1
 %{?with_system_db:%patch2 -p1}
-%patch3 -p1
-%patch6 -p1
-%patch11 -p1
-%patch12 -p1
-%patch13 -p1
-%patch23 -p1
+%patch -P3 -p1
+%patch -P6 -p1
+%patch -P11 -p1
+%patch -P12 -p1
+%patch -P13 -p1
+%patch -P23 -p1
 %{?with_selinux:%patch29 -p1}
 
 %build
