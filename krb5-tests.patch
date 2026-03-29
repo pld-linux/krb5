@@ -1,6 +1,75 @@
---- krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test.orig	2024-02-09 17:15:55.150441669 +0100
-+++ krb5-1.18.5/src/plugins/kdb/db2/libdb2/test/run.test	2024-02-09 18:29:53.379731052 +0100
-@@ -15,17 +15,7 @@ main()
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/appl/gss-sample/Makefile.in krb5-1.22.2/src/appl/gss-sample/Makefile.in
+--- krb5-1.22.2.orig/src/appl/gss-sample/Makefile.in	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/appl/gss-sample/Makefile.in	2026-03-29 22:54:58.299741822 +0200
+@@ -43,7 +43,9 @@
+ 	$(RM) gss-server gss-client
+ 
+ check-pytests:
+-	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ install-unix:
+ 	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/kdc/Makefile.in krb5-1.22.2/src/kdc/Makefile.in
+--- krb5-1.22.2.orig/src/kdc/Makefile.in	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/kdc/Makefile.in	2026-03-29 22:54:58.299896058 +0200
+@@ -86,10 +86,12 @@
+ 	$(RUN_TEST) ./t_replay > /dev/null
+ 
+ check-pytests: t_sockact
+-	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_sockact.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_sockact.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ install:
+ 	$(INSTALL_PROGRAM) krb5kdc ${DESTDIR}$(SERVER_BINDIR)/krb5kdc
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/lib/krb5/ccache/Makefile.in krb5-1.22.2/src/lib/krb5/ccache/Makefile.in
+--- krb5-1.22.2.orig/src/lib/krb5/ccache/Makefile.in	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/lib/krb5/ccache/Makefile.in	2026-03-29 22:54:58.300032993 +0200
+@@ -149,7 +149,9 @@
+ 	$(RUN_TEST) ./t_marshal testcache
+ 
+ check-pytests: t_cccursor t_cccol
+-	$(RUNPYTEST) $(srcdir)/t_cccol.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_cccol.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ clean-unix::
+ 	$(RM) t_cc t_cc.o t_cccursor t_cccursor.o t_cccol t_cccol.o
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/lib/krb5/krb/Makefile.in krb5-1.22.2/src/lib/krb5/krb/Makefile.in
+--- krb5-1.22.2.orig/src/lib/krb5/krb/Makefile.in	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/lib/krb5/krb/Makefile.in	2026-03-29 22:54:58.300166095 +0200
+@@ -513,10 +513,12 @@
+ 	$(RUN_TEST) ./t_valid_times
+ 
+ check-pytests: t_expire_warn t_get_etype_info t_vfy_increds
+-	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS)
++	if [ "$(OFFLINE)" = no ]; then \
++	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS) ; \
++	fi
+ 
+ check-cmocka: t_parse_host_string
+ 	$(RUN_TEST) ./t_parse_host_string > /dev/null
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/plugins/kdb/db2/libdb2/test/run.test krb5-1.22.2/src/plugins/kdb/db2/libdb2/test/run.test
+--- krb5-1.22.2.orig/src/plugins/kdb/db2/libdb2/test/run.test	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/plugins/kdb/db2/libdb2/test/run.test	2026-03-29 22:54:58.300355135 +0200
+@@ -15,17 +15,7 @@
  	TMP3=${TMPDIR-.}/t3
  	BINFILES=${TMPDIR-.}/binfiles
  
@@ -19,58 +88,10 @@
  		DICT=`cd $srcdir/../test && pwd`/dictionary
  	else
  		echo 'run.test: no dictionary'
---- krb5-1.18/src/lib/krb5/krb/Makefile.in.orig	2020-02-28 17:33:18.936117176 +0100
-+++ krb5-1.18/src/lib/krb5/krb/Makefile.in	2020-02-28 18:30:32.414183097 +0100
-@@ -513,10 +513,12 @@
- 	$(RUN_TEST) ./t_valid_times
- 
- check-pytests: t_expire_warn t_get_etype_info t_vfy_increds
--	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS)
-+	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_expire_warn.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_vfy_increds.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_in_ccache_patypes.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_get_etype_info.py $(PYTESTFLAGS) ; \
-+	fi
- 
- check-cmocka: t_parse_host_string
- 	$(RUN_TEST) ./t_parse_host_string > /dev/null
---- krb5-1.18/src/kdc/Makefile.in.orig	2020-02-28 17:33:18.936117176 +0100
-+++ krb5-1.18/src/kdc/Makefile.in	2020-02-28 18:31:26.797221812 +0100
-@@ -83,9 +83,11 @@
- 	$(RUN_TEST) ./t_replay > /dev/null
- 
- check-pytests:
--	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS)
--	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS)
-+	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_workers.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_emptytgt.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_bigreply.py $(PYTESTFLAGS) ; \
-+	fi
- 
- install:
- 	$(INSTALL_PROGRAM) krb5kdc ${DESTDIR}$(SERVER_BINDIR)/krb5kdc
---- krb5-1.15/src/appl/gss-sample/Makefile.in.orig	2017-02-18 08:24:33.754506368 +0100
-+++ krb5-1.15/src/appl/gss-sample/Makefile.in	2017-02-18 08:35:02.454499191 +0100
-@@ -43,7 +43,9 @@
- 	$(RM) gss-server gss-client
- 
- check-pytests:
--	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS)
-+	if [ "$(OFFLINE)" = no ]; then \
-+	$(RUNPYTEST) $(srcdir)/t_gss_sample.py $(PYTESTFLAGS) ; \
-+	fi
- 
- install-unix:
- 	$(INSTALL_PROGRAM) gss-client $(DESTDIR)$(CLIENT_BINDIR)/gss-client
---- krb5-1.20.2/src/tests/gssapi/Makefile.in.orig	2024-02-10 08:09:57.599835601 +0100
-+++ krb5-1.20.2/src/tests/gssapi/Makefile.in	2024-02-10 08:13:56.875206002 +0100
-@@ -50,17 +50,19 @@ check-pytests: ccinit ccrefresh t_accnam
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/tests/gssapi/Makefile.in krb5-1.22.2/src/tests/gssapi/Makefile.in
+--- krb5-1.22.2.orig/src/tests/gssapi/Makefile.in	2026-01-30 00:18:10.000000000 +0100
++++ krb5-1.22.2/src/tests/gssapi/Makefile.in	2026-03-29 22:54:58.300517091 +0200
+@@ -51,17 +51,19 @@
  	t_export_name t_imp_cred t_inq_cred t_inq_ctx t_inq_mechs_name t_iov \
  	t_lifetime t_pcontok t_s4u t_s4u2proxy_krb5 t_spnego t_srcattrs \
  	t_store_cred
@@ -101,9 +122,10 @@
  
  ccinit: ccinit.o $(KRB5_BASE_DEPLIBS)
  	$(CC_LINK) -o ccinit ccinit.o $(KRB5_BASE_LIBS)
---- krb5-1.20.2/src/tests/Makefile.in.orig	2024-02-10 08:09:57.603168916 +0100
-+++ krb5-1.20.2/src/tests/Makefile.in	2024-02-10 08:18:52.493604500 +0100
-@@ -108,89 +108,93 @@ krb5.conf: Makefile
+diff -ruN '--exclude=*.orig' '--exclude=*.rej' '--exclude=*.fedora' krb5-1.22.2.orig/src/tests/Makefile.in krb5-1.22.2/src/tests/Makefile.in
+--- krb5-1.22.2.orig/src/tests/Makefile.in	2026-03-29 22:54:58.103715678 +0200
++++ krb5-1.22.2/src/tests/Makefile.in	2026-03-29 22:55:14.196366305 +0200
+@@ -108,92 +108,96 @@
  	mv krb5.new krb5.conf
  
  kdb_check: kdc.conf krb5.conf
@@ -133,10 +155,10 @@
 +	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS) && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) dump $(TEST_DB).dump && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) destroy -f && \
-+	@echo "====> NOTE!" ; \
-+	@echo "The following 'create' command is needed due to a change" ; \
-+	@echo "in functionality caused by DAL integration.  See ticket 3973." ; \
-+	@echo ==== ; \
++	echo "====> NOTE!" && \
++	echo "The following 'create' command is needed due to a change" && \
++	echo "in functionality caused by DAL integration.  See ticket 3973." && \
++	echo ==== && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) create -W && \
 +	$(RUN_DB_TEST) ../kadmin/dbutil/kdb5_util $(KADMIN_OPTS) load $(TEST_DB).dump && \
 +	$(RUN_DB_TEST) ../tests/verify/kdb5_verify $(KTEST_OPTS) && \
@@ -253,6 +275,9 @@
 -	$(RUNPYTEST) $(srcdir)/t_u2u.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_kdcoptions.py $(PYTESTFLAGS)
 -	$(RUNPYTEST) $(srcdir)/t_replay.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_sendto_kdc.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_alias.py $(PYTESTFLAGS)
+-	$(RUNPYTEST) $(srcdir)/t_xrealmauthz.py $(PYTESTFLAGS)
 +			-i au.log && \
 +	$(RUNPYTEST) $(srcdir)/t_salt.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_etype_info.py $(PYTESTFLAGS) && \
@@ -270,7 +295,10 @@
 +	$(RUNPYTEST) $(srcdir)/t_kdcpolicy.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_u2u.py $(PYTESTFLAGS) && \
 +	$(RUNPYTEST) $(srcdir)/t_kdcoptions.py $(PYTESTFLAGS) && \
-+	$(RUNPYTEST) $(srcdir)/t_replay.py $(PYTESTFLAGS) ; \
++	$(RUNPYTEST) $(srcdir)/t_replay.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_sendto_kdc.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_alias.py $(PYTESTFLAGS) && \
++	$(RUNPYTEST) $(srcdir)/t_xrealmauthz.py $(PYTESTFLAGS) ; \
 +	fi
  
  clean:

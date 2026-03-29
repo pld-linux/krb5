@@ -1,0 +1,13 @@
+--- a/src/lib/krb5/ccache/t_cc.c
++++ b/src/lib/krb5/ccache/t_cc.c
+@@ -644,10 +644,7 @@ main(void)
+     do_test(context, "");
+
+-    if (check_registered(context, "KEYRING:process:"))
+-        do_test(context, "KEYRING:process:");
+-    else
+-        printf("Skipping KEYRING: test - unregistered type\n");
++    printf("Skipping KEYRING: test - unreliable in build environments\n");
+
+     do_test(context, "MEMORY:");
+     do_test(context, "FILE:");

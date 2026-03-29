@@ -1,31 +1,31 @@
---- krb5-1.12.1/src/man/sserver.man.orig	2014-01-16 01:44:15.000000000 +0100
-+++ krb5-1.12.1/src/man/sserver.man	2014-03-13 16:34:04.903857332 +0100
-@@ -59,7 +59,7 @@
+--- krb5-1.22.2/src/man/sserver.man.orig	2024-09-18 21:42:21.000000000 +0200
++++ krb5-1.22.2/src/man/sserver.man	2024-09-18 21:42:21.000000000 +0200
+@@ -58,7 +58,7 @@
+ .INDENT 3.5
  .sp
- .nf
- .ft C
+ .EX
 -sample stream tcp nowait root /usr/local/sbin/sserver sserver
 +sample stream tcp nowait root /usr/sbin/sserver sserver
- .ft P
- .fi
+ .EE
  .UNINDENT
---- krb5-1.18.5/src/man/kpropd.man.orig	2022-03-11 07:34:10.000000000 +0100
-+++ krb5-1.18.5/src/man/kpropd.man	2024-02-09 17:07:52.703055311 +0100
-@@ -67,7 +67,7 @@ the \fB/etc/inetd.conf\fP file which loo
+ .UNINDENT
+--- krb5-1.22.2/src/man/kpropd.man.orig	2024-09-18 21:42:21.000000000 +0200
++++ krb5-1.22.2/src/man/kpropd.man	2024-09-18 21:42:21.000000000 +0200
+@@ -67,7 +67,7 @@
+ .INDENT 3.5
  .sp
- .nf
- .ft C
+ .EX
 -kprop  stream  tcp  nowait  root  /usr/local/sbin/kpropd  kpropd
 +kprop  stream  tcp  nowait  root  /usr/sbin/kpropd  kpropd
- .ft P
- .fi
+ .EE
  .UNINDENT
-@@ -152,7 +152,7 @@ kpropd uses the following environment va
+ .UNINDENT
+@@ -149,7 +149,7 @@
  .TP
  .B kpropd.acl
  Access file for kpropd; the default location is
 -\fB/usr/local/var/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
 +\fB/var/lib/kerberos/krb5kdc/kpropd.acl\fP\&.  Each entry is a line
  containing the principal of a host from which the local machine
- will allow Kerberos database propagation via kprop(8)\&.
+ will allow Kerberos database propagation via \fI\%kprop\fP\&.
  .UNINDENT

@@ -7,22 +7,21 @@
 #
 # Conditional build:
 %bcond_without	doc             # documentation [requires TeX]
-%bcond_without	audit		# audit plugin
+%bcond_without	audit		# audit plugin (simple, requires libaudit)
 %bcond_with	hesiod		# Hesiod support
 %bcond_without	ldap		# OpenLDAP database backend module
-%bcond_with	selinux		# SELinux support
 %bcond_without	system_db	# system Berkeley DB (via DB 1.85 API)
 %bcond_without	tests		# don't perform make check
 #
 Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
-Version:	1.21.3
+Version:	1.22.2
 Release:	0.1
 License:	MIT
 Group:		Networking
-Source0:	http://web.mit.edu/kerberos/dist/krb5/1.21/%{name}-%{version}.tar.gz
-# Source0-md5:	beb34d1dfc72ba0571ce72bed03e06eb
+Source0:	https://web.mit.edu/kerberos/dist/krb5/1.22/%{name}-%{version}.tar.gz
+# Source0-md5:	42472b11771d074329e0cc776d2eb5fd
 Source2:	%{name}kdc.init
 Source4:	kadm5.acl
 Source5:	kerberos.logrotate
@@ -35,18 +34,22 @@ Source15:	propagation
 Source16:	kpropd.init
 Source17:	kadmind.init
 Source18:	kpropd.acl
-Patch0:		%{name}-manpages.patch
-Patch1:		%{name}-audit.patch
-Patch2:		%{name}-db185.patch
-Patch3:		%{name}-as-needed.patch
+# Fedora downstream patches (FIPS, 3DES removal, PAM/ksu, SELinux, PKINIT, etc.)
+Patch0:		%{name}-fedora.patch
+# Patch0-md5:	7f9ca340e514cf59e472f6845c9e2786
+# PLD patches
+Patch1:		%{name}-manpages.patch
+Patch2:		%{name}-audit.patch
+Patch3:		%{name}-db185.patch
+Patch4:		%{name}-as-needed.patch
 # http://lite.mit.edu/
-Patch6:		%{name}-ktany.patch
-Patch11:	%{name}-brokenrev.patch
-Patch12:	%{name}-dns.patch
-Patch13:	%{name}-enospc.patch
-Patch23:	%{name}-tests.patch
-Patch29:	%{name}-selinux-label.patch
-URL:		http://web.mit.edu/kerberos/www/
+Patch5:		%{name}-ktany.patch
+Patch6:		%{name}-brokenrev.patch
+Patch7:		%{name}-dns.patch
+Patch8:		%{name}-enospc.patch
+Patch9:		%{name}-tests.patch
+Patch10:	%{name}-keyring-test.patch
+URL:		https://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 %{?with_audit:BuildRequires:	audit-libs-devel}
 BuildRequires:	autoconf >= 2.50
@@ -69,6 +72,7 @@ BuildRequires:	lmdb-devel
 BuildRequires:	ncurses-devel
 %{?with_ldap:BuildRequires:	openldap-devel >= 2.4.6}
 BuildRequires:	openssl-devel >= 1.0.0
+BuildRequires:	pam-devel
 BuildRequires:	perl-base
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.268
@@ -87,7 +91,7 @@ BuildRequires:	python >= 1:2.5
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_localstatedir	/var/lib/kerberos
-# doesn't handle %{__cc} with spaces properly
+# doesn't handle %%{__cc} with spaces properly
 %undefine	with_ccache
 # mungles cflags
 %undefine	configure_cache
@@ -156,6 +160,7 @@ Summary(pl.UTF-8):	Oprogramowanie klienckie dla stacji roboczej kerberosa
 Group:		Networking
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	%{name}-common = %{version}-%{release}
+Requires:	pam
 Conflicts:	heimdal
 
 %description client
@@ -387,14 +392,15 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %setup -q
 %patch -P0 -p1
 %patch -P1 -p1
-%{?with_system_db:%patch2 -p1}
-%patch -P3 -p1
+%patch -P2 -p1
+%{?with_system_db:%patch -P3 -p1}
+%patch -P4 -p1
+%patch -P5 -p1
 %patch -P6 -p1
-%patch -P11 -p1
-%patch -P12 -p1
-%patch -P13 -p1
-%patch -P23 -p1
-%{?with_selinux:%patch29 -p1}
+%patch -P7 -p1
+%patch -P8 -p1
+%patch -P9 -p1
+%patch -P10 -p1
 
 %build
 cd src
@@ -412,12 +418,15 @@ CPPFLAGS="$LFS_CFLAGS -I%{_includedir}/et -I%{_includedir}/ncurses"
 	--with-crypto-impl=openssl \
 	%{?with_hesiod:--with-hesiod} \
 	%{?with_ldap:--with-ldap} \
+	--with-lmdb \
 	--with-netlib=-lresolv \
-	%{?with_selinux:--with-selinux} \
+	--with-pam \
+	--with-selinux \
 	%{?with_system_db:--with-system-db} \
 	--with-system-et \
 	--with-system-ss \
-	--with-system-verto
+	--with-system-verto \
+	--with-tls-impl=openssl
 
 %{__make}
 
@@ -466,6 +475,9 @@ echo '.so man1/kadmin.1' > $RPM_BUILD_ROOT%{_mandir}/man8/kadmin.local.8
 find $RPM_BUILD_ROOT -type f -name '*.so*' | xargs chmod +x
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/krb5/plugins/preauth/test.so
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/examples
+# en_US locale not useful, and find_lang doesn't handle it
+%{__rm} $RPM_BUILD_ROOT%{_localedir}/en_US/LC_MESSAGES/mit-krb5.mo
 
 %find_lang mit-krb5
 
@@ -600,8 +612,8 @@ fi
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/krb5/plugins/kdb/kldap.so
 %attr(755,root,root) %{_libdir}/libkdb_ldap.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkdb_ldap.so.1
-%attr(755,root,root) %{_libdir}/libkdb_ldap.so
+%ghost %{_libdir}/libkdb_ldap.so.1
+%{_libdir}/libkdb_ldap.so
 %attr(755,root,root) %{_sbindir}/kdb5_ldap_util
 %{_mandir}/man8/kdb5_ldap_util.8*
 
@@ -629,6 +641,8 @@ fi
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/otp.so
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/pkinit.so
 %attr(755,root,root) %{_libdir}/krb5/plugins/preauth/spake.so
+%dir %{_libdir}/krb5/plugins/kdcpolicy
+%attr(755,root,root) %{_libdir}/krb5/plugins/kdcpolicy/xrealmauthz.so
 %dir %{_libdir}/krb5/plugins/tls
 %attr(755,root,root) %{_libdir}/krb5/plugins/tls/k5tls.so
 %{_mandir}/man5/kdc.conf.5*
@@ -638,7 +652,7 @@ fi
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/kadmind
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kadm5.acl
-%attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kadm5.dict
+%config(noreplace) %verify(not md5 mtime size) %{_localstatedir}/krb5kdc/kadm5.dict
 %attr(755,root,root) %{_sbindir}/kadmind
 %{_mandir}/man5/kadm5.acl.5*
 %{_mandir}/man8/kadmind.8*
@@ -690,38 +704,38 @@ fi
 %defattr(644,root,root,755)
 %doc NOTICE README
 %attr(755,root,root) %{_libdir}/libgssapi_krb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgssapi_krb5.so.2
+%ghost %{_libdir}/libgssapi_krb5.so.2
 %attr(755,root,root) %{_libdir}/libgssrpc.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libgssrpc.so.4
+%ghost %{_libdir}/libgssrpc.so.4
 %attr(755,root,root) %{_libdir}/libk5crypto.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libk5crypto.so.3
+%ghost %{_libdir}/libk5crypto.so.3
 %attr(755,root,root) %{_libdir}/libkadm5clnt_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5clnt_mit.so.12
+%ghost %{_libdir}/libkadm5clnt_mit.so.12
 %attr(755,root,root) %{_libdir}/libkadm5srv_mit.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkadm5srv_mit.so.12
+%ghost %{_libdir}/libkadm5srv_mit.so.12
 %attr(755,root,root) %{_libdir}/libkdb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkdb5.so.10
+%ghost %{_libdir}/libkdb5.so.10
 %attr(755,root,root) %{_libdir}/libkrad.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkrad.so.0
+%ghost %{_libdir}/libkrad.so.0
 %attr(755,root,root) %{_libdir}/libkrb5.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkrb5.so.3
+%ghost %{_libdir}/libkrb5.so.3
 %attr(755,root,root) %{_libdir}/libkrb5support.so.*.*
-%attr(755,root,root) %ghost %{_libdir}/libkrb5support.so.0
+%ghost %{_libdir}/libkrb5support.so.0
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/krb5-config
-%attr(755,root,root) %{_libdir}/libgssapi_krb5.so
-%attr(755,root,root) %{_libdir}/libgssrpc.so
-%attr(755,root,root) %{_libdir}/libk5crypto.so
-%attr(755,root,root) %{_libdir}/libkadm5clnt_mit.so
-%attr(755,root,root) %{_libdir}/libkadm5clnt.so
-%attr(755,root,root) %{_libdir}/libkadm5srv_mit.so
-%attr(755,root,root) %{_libdir}/libkadm5srv.so
-%attr(755,root,root) %{_libdir}/libkdb5.so
-%attr(755,root,root) %{_libdir}/libkrad.so
-%attr(755,root,root) %{_libdir}/libkrb5.so
-%attr(755,root,root) %{_libdir}/libkrb5support.so
+%{_libdir}/libgssapi_krb5.so
+%{_libdir}/libgssrpc.so
+%{_libdir}/libk5crypto.so
+%{_libdir}/libkadm5clnt_mit.so
+%{_libdir}/libkadm5clnt.so
+%{_libdir}/libkadm5srv_mit.so
+%{_libdir}/libkadm5srv.so
+%{_libdir}/libkdb5.so
+%{_libdir}/libkrad.so
+%{_libdir}/libkrb5.so
+%{_libdir}/libkrb5support.so
 %{_includedir}/gssapi
 %{_includedir}/gssrpc
 %{_includedir}/kadm5
