@@ -1,0 +1,34 @@
+From 9d9487956766f74485a32de6ad0f628f4251a6f0 Mon Sep 17 00:00:00 2001
+From: Rahul Hoysala <rahulhoysala07@gmail.com>
+Date: Sat, 21 Mar 2026 12:29:44 +0530
+Subject: [PATCH] Prevent read overrun in svc_auth_gssapi
+
+In gssrpc__svcauth_gssapi(), check that the client handle length is at
+least 4, to prevent an out-of-bounds read by get_client().
+
+[ghudson@mit.edu: combined length<4 check with length==0 check;
+rewrote commit message]
+
+(cherry picked from commit f8a0bee0a54ba0d96804631a3261ecd233051863)
+
+ticket: 9201
+version_fixed: 1.22.3
+---
+ src/lib/rpc/svc_auth_gssapi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/rpc/svc_auth_gssapi.c b/src/lib/rpc/svc_auth_gssapi.c
+index 267c1545bdf..4be1e04331e 100644
+--- a/src/lib/rpc/svc_auth_gssapi.c
++++ b/src/lib/rpc/svc_auth_gssapi.c
+@@ -253,8 +253,8 @@ enum auth_stat gssrpc__svcauth_gssapi(
+ 	       goto error;
+ 	  }
+      } else {
+-	  if (creds.client_handle.length == 0) {
+-	       PRINTF(("svcauth_gssapi: expected non-empty creds\n"));
++	  if (creds.client_handle.length < 4) {
++	       PRINTF(("svcauth_gssapi: expected creds length at least 4\n"));
+ 	       LOG_MISCERR("protocol error in client credentials");
+ 	       ret = AUTH_FAILED;
+ 	       goto error;

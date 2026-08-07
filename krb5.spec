@@ -17,7 +17,7 @@ Summary:	Kerberos V5 System
 Summary(pl.UTF-8):	System Kerberos V5
 Name:		krb5
 Version:	1.22.2
-Release:	0.1
+Release:	0.2
 License:	MIT
 Group:		Networking
 Source0:	https://web.mit.edu/kerberos/dist/krb5/1.22/%{name}-%{version}.tar.gz
@@ -49,6 +49,11 @@ Patch7:		%{name}-dns.patch
 Patch8:		%{name}-enospc.patch
 Patch9:		%{name}-tests.patch
 Patch10:	%{name}-keyring-test.patch
+# fixes from krb5-1.22 branch, unreleased (1.22.3)
+# CVE-2026-40355 patch also fixes CVE-2026-40356
+Patch11:	CVE-2026-40355.patch
+Patch12:	CVE-2026-11850.patch
+Patch13:	%{name}-svc_auth_gssapi-overrun.patch
 URL:		https://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 %{?with_audit:BuildRequires:	audit-libs-devel}
@@ -401,6 +406,9 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch -P8 -p1
 %patch -P9 -p1
 %patch -P10 -p1
+%patch -P11 -p1
+%patch -P12 -p1
+%patch -P13 -p1
 
 %build
 cd src
