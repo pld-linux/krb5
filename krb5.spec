@@ -370,18 +370,6 @@ Header files for Kerberos V5 libraries and development documentation.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe i dokumentacja do bibliotek Kerberosa V5.
 
-%package static
-Summary:	Static Kerberos V5 libraries
-Summary(pl.UTF-8):	Biblioteki statyczne Kerberosa V5
-Group:		Development/Libraries
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description static
-Static Kerberos V5 libraries.
-
-%description static -l pl.UTF-8
-Biblioteki statyczne Kerberosa V5.
-
 %package doc
 Summary:	MIT Kerberos V5 documentation in HTML format
 Summary(pl.UTF-8):	Dokumentacja systemu MIT Kerberos V5 w formacie HTML
