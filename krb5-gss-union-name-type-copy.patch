@@ -1,0 +1,53 @@
+From eb6c0b3a6f6233a5ace983ff043f635823ffcac8 Mon Sep 17 00:00:00 2001
+From: Greg Hudson <ghudson@mit.edu>
+Date: Sat, 23 May 2026 17:07:10 -0400
+Subject: [PATCH] Always copy mech name_type for GSS union names
+
+In gssint_convert_name_to_union_name(), make a copy of the name_type
+OID yielded by the mechanism's gss_display_name(), as it will later be
+released with gss_release_oid().  We usually get away with not copying
+the name type because gss_release_oid() usually ignores static
+mechanism OIDs, but this property is fragile (it relies on mechanisms
+implementing gss_internal_release_oid()).
+
+Reported by Daniel Sands.
+
+(cherry picked from commit 15a8dea777012268311c106e08d324acdfd8b13c)
+
+ticket: 9216
+version_fixed: 1.22.3
+---
+ src/lib/gssapi/mechglue/g_glue.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/gssapi/mechglue/g_glue.c b/src/lib/gssapi/mechglue/g_glue.c
+index 76da8a83c1d..9a6671e0a4f 100644
+--- a/src/lib/gssapi/mechglue/g_glue.c
++++ b/src/lib/gssapi/mechglue/g_glue.c
+@@ -372,6 +372,7 @@ gssint_convert_name_to_union_name(OM_uint32 *minor_status, gss_mechanism mech,
+ {
+     OM_uint32 major_status,tmp;
+     gss_union_name_t union_name;
++    gss_OID name_type;
+ 
+     union_name = (gss_union_name_t) malloc (sizeof(gss_union_name_desc));
+     if (!union_name) {
+@@ -404,11 +405,17 @@ gssint_convert_name_to_union_name(OM_uint32 *minor_status, gss_mechanism mech,
+     major_status = mech->gss_display_name(minor_status,
+ 					  internal_name,
+ 					  union_name->external_name,
+-					  &union_name->name_type);
++					  &name_type);
+     if (major_status != GSS_S_COMPLETE) {
+ 	map_error(minor_status, mech);
+ 	goto allocation_failure;
+     }
++    major_status = generic_gss_copy_oid(minor_status, name_type,
++					&union_name->name_type);
++    if (major_status != GSS_S_COMPLETE) {
++	map_errcode(minor_status);
++	goto allocation_failure;
++    }
+ 
+     union_name->loopback = union_name;
+     *external_name = /*(gss_name_t) CHECK */union_name;

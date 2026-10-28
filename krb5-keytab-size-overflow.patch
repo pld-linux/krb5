@@ -1,0 +1,32 @@
+From 8eab516421b6b1fee2482194cd4bedcfc552bfeb Mon Sep 17 00:00:00 2001
+From: Greg Hudson <ghudson@mit.edu>
+Date: Sat, 11 Jul 2026 19:43:08 -0400
+Subject: [PATCH] Prevent integer overrun in keytab parsing
+
+In krb5_ktfileint_internal_read_entry(), once we have read the size
+and determined the starting point of a keytab record, bounds-check the
+size to prevent an integer overflow when we seek to the next record.
+
+(Discovered by OSS-Fuzz.)
+
+(cherry picked from commit c5629fdffee70a296429d580a890e21c6fa17665)
+
+ticket: 9224
+version_fixed: 1.22.3
+---
+ src/lib/krb5/keytab/kt_file.c                      |   2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/lib/krb5/keytab/kt_file.c b/src/lib/krb5/keytab/kt_file.c
+index 993f902c7cf..ff9fa230936 100644
+--- a/src/lib/krb5/keytab/kt_file.c
++++ b/src/lib/krb5/keytab/kt_file.c
+@@ -935,6 +935,8 @@ krb5_ktfileint_internal_read_entry(krb5_context context, krb5_keytab id, krb5_ke
+     }
+ 
+     start_pos = ftell(KTFILEP(id));
++    if (size > INT32_MAX - start_pos)
++        return KRB5_KT_FORMAT;
+ 
+     /* deal with guts of parsing... */
+ 

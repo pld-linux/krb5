@@ -1,0 +1,37 @@
+From a42fb6d76ecc7b45fd5cac6025204ae883b0d0a5 Mon Sep 17 00:00:00 2001
+From: Greg Hudson <ghudson@mit.edu>
+Date: Thu, 4 Jun 2026 13:46:34 -0400
+Subject: [PATCH] Better validate key_data_ver in iprop decoding
+
+In ulog_conv_2dbentry(), when decoding an update's AT_KEYDATA
+attribute, the decoded key_data_ver value is used as a bound on the
+enctype and contents fields.  Verify that this value does not exceed
+the sizes of the update's enctype and contents XDR arrays, to prevent
+reading past the end of those arrays.  Also check against the expected
+lower bound.  Reported by Haruki Oyama.
+
+(cherry picked from commit 7262b0f49e3c37b7237280a1b2e38228831a795d)
+
+ticket: 9218
+version_fixed: 1.22.3
+---
+ src/lib/kdb/kdb_convert.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/src/lib/kdb/kdb_convert.c b/src/lib/kdb/kdb_convert.c
+index 59952f55e39..1231abc4ffb 100644
+--- a/src/lib/kdb/kdb_convert.c
++++ b/src/lib/kdb/kdb_convert.c
+@@ -677,8 +677,10 @@ ulog_conv_2dbentry(krb5_context context, krb5_db_entry **entry,
+                 kdbe_key_t *kv = &ULOG_ENTRY_KEYVAL(update, i, j);
+                 kp->key_data_ver = (krb5_int16)kv->k_ver;
+                 kp->key_data_kvno = (krb5_ui_2)kv->k_kvno;
+-                if (kp->key_data_ver > 2) {
+-                    ret = EINVAL; /* XXX ? */
++                if (kp->key_data_ver < 1 || kp->key_data_ver > 2 ||
++                    (u_int)kp->key_data_ver > kv->k_enctype.k_enctype_len ||
++                    (u_int)kp->key_data_ver > kv->k_contents.k_contents_len) {
++                    ret = EINVAL;
+                     goto cleanup;
+                 }
+ 

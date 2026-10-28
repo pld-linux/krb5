@@ -54,6 +54,18 @@ Patch10:	%{name}-keyring-test.patch
 Patch11:	CVE-2026-40355.patch
 Patch12:	CVE-2026-11850.patch
 Patch13:	%{name}-svc_auth_gssapi-overrun.patch
+Patch14:	CVE-2026-107708.patch
+Patch15:	CVE-2026-107778.patch
+Patch16:	%{name}-rd_cred-optional-names.patch
+Patch17:	%{name}-ser-validate-lengths.patch
+Patch18:	%{name}-spnego-mechlistmic-null-deref.patch
+Patch19:	%{name}-gss_add_cred-fallback.patch
+Patch20:	%{name}-gss-union-name-type-copy.patch
+Patch21:	%{name}-import_name-reachable-assert.patch
+Patch22:	%{name}-iprop-key_data_ver.patch
+Patch23:	%{name}-gss-empty-forwarded-creds.patch
+Patch24:	%{name}-keytab-size-overflow.patch
+Patch25:	%{name}-ldap-tl_data2berval-double-free.patch
 URL:		https://web.mit.edu/kerberos/www/
 BuildRequires:	/bin/csh
 %{?with_audit:BuildRequires:	audit-libs-devel}
@@ -397,6 +409,18 @@ Dokumentacja systemu MIT Kerberos V5 w formacie HTML.
 %patch -P11 -p1
 %patch -P12 -p1
 %patch -P13 -p1
+%patch -P14 -p1
+%patch -P15 -p1
+%patch -P16 -p1
+%patch -P17 -p1
+%patch -P18 -p1
+%patch -P19 -p1
+%patch -P20 -p1
+%patch -P21 -p1
+%patch -P22 -p1
+%patch -P23 -p1
+%patch -P24 -p1
+%patch -P25 -p1
 
 %build
 cd src

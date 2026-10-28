@@ -1,0 +1,456 @@
+From 0ee8617c6f789a2221b5305149c7633edd4c3935 Mon Sep 17 00:00:00 2001
+From: TristanInSec <tristan.mtn@gmail.com>
+Date: Tue, 12 May 2026 05:42:36 -0400
+Subject: [PATCH] Validate lengths when deserializing
+
+When unmarshalling data structures using the krb5_ser_ functions,
+bound-check lengths (including array counts) against the remaining
+number of bytes to prevent large allocations, integer overflows, and a
+potential read overrun in mspac_internalize().  Add an internal helper
+function k5_ser_unpack_len() for this purpose.
+
+[ghudson@mit.edu: added helper; added bounds checks for additional
+lengths; rewrote commit message]
+
+(cherry picked from commit 63ae6a8d99ce89258d732f7561233f60df533fa9)
+
+ticket: 9209
+version_fixed: 1.22.3
+---
+ src/include/k5-int.h                      |  3 +++
+ src/lib/gssapi/krb5/ser_sctx.c            |  6 ++++++
+ src/lib/krb5/krb/authdata.c               |  5 ++---
+ src/lib/krb5/krb/pac.c                    | 13 ++++++-------
+ src/lib/krb5/krb/ser_actx.c               |  5 ++---
+ src/lib/krb5/krb/ser_adata.c              | 13 ++++++-------
+ src/lib/krb5/krb/ser_addr.c               | 12 ++++++------
+ src/lib/krb5/krb/ser_auth.c               | 15 +++++----------
+ src/lib/krb5/krb/ser_cksum.c              | 14 ++++++--------
+ src/lib/krb5/krb/ser_ctx.c                | 18 +++++++++---------
+ src/lib/krb5/krb/ser_key.c                | 11 +++++------
+ src/lib/krb5/krb/ser_princ.c              | 11 +++++------
+ src/lib/krb5/krb/serialize.c              | 18 ++++++++++++++++++
+ src/lib/krb5/libkrb5.exports              |  1 +
+ src/plugins/authdata/greet_client/greet.c |  2 ++
+ 15 files changed, 82 insertions(+), 65 deletions(-)
+
+diff --git a/src/include/k5-int.h b/src/include/k5-int.h
+index cfd2cc9393d..5b2e9e6a1ec 100644
+--- a/src/include/k5-int.h
++++ b/src/include/k5-int.h
+@@ -1882,6 +1882,9 @@ krb5_ser_pack_int64(int64_t, krb5_octet **, size_t *);
+ krb5_error_code KRB5_CALLCONV
+ krb5_ser_unpack_int64(int64_t *, krb5_octet **, size_t *);
+ 
++krb5_error_code
++k5_ser_unpack_len(size_t *len_out, krb5_octet **bufp, size_t *remainp);
++
+ /* [De]serialize byte string */
+ krb5_error_code KRB5_CALLCONV
+ krb5_ser_pack_bytes(krb5_octet *, size_t, krb5_octet **, size_t *);
+diff --git a/src/lib/gssapi/krb5/ser_sctx.c b/src/lib/gssapi/krb5/ser_sctx.c
+index 1129b6a1aaa..2e82be903db 100644
+--- a/src/lib/gssapi/krb5/ser_sctx.c
++++ b/src/lib/gssapi/krb5/ser_sctx.c
+@@ -84,6 +84,10 @@ kg_oid_internalize(gss_OID *argp, krb5_octet **buffer, size_t *lenremain)
+         free(oid);
+         return EINVAL;
+     }
++    if (ibuf < 0 || (size_t)ibuf > remain) {
++        free(oid);
++        return EINVAL;
++    }
+     oid->length = ibuf;
+     oid->elements = malloc((size_t)ibuf);
+     if (oid->elements == 0) {
+@@ -632,6 +636,8 @@ kg_ctx_internalize(krb5_context kcontext, krb5_gss_ctx_id_t *argp,
+             /* authdata */
+             if (!kret)
+                 kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain);
++            if (!kret && (ibuf < 0 || (size_t)ibuf > remain))
++                kret = ENOMEM;
+             if (!kret) {
+                 krb5_int32 nadata = ibuf, i;
+ 
+diff --git a/src/lib/krb5/krb/authdata.c b/src/lib/krb5/krb/authdata.c
+index b5659c2ebdc..9b61ef185e5 100644
+--- a/src/lib/krb5/krb/authdata.c
++++ b/src/lib/krb5/krb/authdata.c
+@@ -314,14 +314,13 @@ k5_ad_internalize(krb5_context kcontext,
+                   size_t *lenremain)
+ {
+     krb5_error_code code = 0;
+-    krb5_int32 i, count;
+     krb5_octet *bp;
+-    size_t remain;
++    size_t remain, count, i;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+ 
+-    code = krb5_ser_unpack_int32(&count, &bp, &remain);
++    code = k5_ser_unpack_len(&count, &bp, &remain);
+     if (code != 0)
+         return code;
+ 
+diff --git a/src/lib/krb5/krb/pac.c b/src/lib/krb5/krb/pac.c
+index 7e333874546..51c4b6a1c94 100644
+--- a/src/lib/krb5/krb/pac.c
++++ b/src/lib/krb5/krb/pac.c
+@@ -1196,24 +1196,23 @@ mspac_internalize(krb5_context context, krb5_authdata_context actx,
+     krb5_error_code ret;
+     int32_t ibuf;
+     uint8_t *bp;
+-    size_t remain;
++    size_t remain, len;
+     krb5_pac pac = NULL;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+ 
+-    /* length */
+-    ret = krb5_ser_unpack_int32(&ibuf, &bp, &remain);
++    ret = k5_ser_unpack_len(&len, &bp, &remain);
+     if (ret)
+         return ret;
+ 
+-    if (ibuf != 0) {
+-        ret = krb5_pac_parse(context, bp, ibuf, &pac);
++    if (len > 0) {
++        ret = krb5_pac_parse(context, bp, len, &pac);
+         if (ret)
+             return ret;
+ 
+-        bp += ibuf;
+-        remain -= ibuf;
++        bp += len;
++        remain -= len;
+     }
+ 
+     /* verified */
+diff --git a/src/lib/krb5/krb/ser_actx.c b/src/lib/krb5/krb/ser_actx.c
+index ed8e25596b5..f35894a1021 100644
+--- a/src/lib/krb5/krb/ser_actx.c
++++ b/src/lib/krb5/krb/ser_actx.c
+@@ -255,8 +255,7 @@ k5_internalize_auth_context(krb5_auth_context *argp,
+     krb5_auth_context   auth_context;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
+-    krb5_int32          cstate_len;
++    size_t              remain, cstate_len;
+     krb5_int32          tag;
+ 
+     bp = *buffer;
+@@ -294,7 +293,7 @@ k5_internalize_auth_context(krb5_auth_context *argp,
+             auth_context->safe_cksumtype = (krb5_cksumtype) ibuf;
+ 
+             /* Get length of cstate */
+-            (void) krb5_ser_unpack_int32(&cstate_len, &bp, &remain);
++            (void) k5_ser_unpack_len(&cstate_len, &bp, &remain);
+ 
+             if (cstate_len) {
+                 kret = alloc_data(&auth_context->cstate, cstate_len);
+diff --git a/src/lib/krb5/krb/ser_adata.c b/src/lib/krb5/krb/ser_adata.c
+index 2c0094df26e..9a6237f7070 100644
+--- a/src/lib/krb5/krb/ser_adata.c
++++ b/src/lib/krb5/krb/ser_adata.c
+@@ -102,7 +102,7 @@ k5_internalize_authdata(krb5_authdata **argp,
+     krb5_authdata       *authdata;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
++    size_t              remain, len;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -122,14 +122,13 @@ k5_internalize_authdata(krb5_authdata **argp,
+             authdata->ad_type = (krb5_authdatatype) ibuf;
+ 
+             /* Get the length */
+-            (void) krb5_ser_unpack_int32(&ibuf, &bp, &remain);
+-            authdata->length = (int) ibuf;
++            (void) k5_ser_unpack_len(&len, &bp, &remain);
++            authdata->length = len;
+ 
+             /* Get the string */
+-            if ((authdata->contents = (krb5_octet *)
+-                 malloc((size_t) (ibuf))) &&
+-                !(kret = krb5_ser_unpack_bytes(authdata->contents,
+-                                               (size_t) ibuf,
++            authdata->contents = malloc(len);
++            if (authdata->contents != NULL &&
++                !(kret = krb5_ser_unpack_bytes(authdata->contents, len,
+                                                &bp, &remain))) {
+                 if ((kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain)))
+                     ibuf = 0;
+diff --git a/src/lib/krb5/krb/ser_addr.c b/src/lib/krb5/krb/ser_addr.c
+index 52aa6f2a8f8..ed849b31464 100644
+--- a/src/lib/krb5/krb/ser_addr.c
++++ b/src/lib/krb5/krb/ser_addr.c
+@@ -103,7 +103,7 @@ k5_internalize_address(krb5_address **argp,
+     krb5_address        *address;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
++    size_t              remain, len;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -125,13 +125,13 @@ k5_internalize_address(krb5_address **argp,
+             address->addrtype = (krb5_addrtype) ibuf;
+ 
+             /* Get the length */
+-            (void) krb5_ser_unpack_int32(&ibuf, &bp, &remain);
+-            address->length = (int) ibuf;
++            (void) k5_ser_unpack_len(&len, &bp, &remain);
++            address->length = len;
+ 
+             /* Get the string */
+-            if ((address->contents = (krb5_octet *) malloc((size_t) (ibuf))) &&
+-                !(kret = krb5_ser_unpack_bytes(address->contents,
+-                                               (size_t) ibuf,
++            address->contents = malloc(len);
++            if (address->contents != NULL &&
++                !(kret = krb5_ser_unpack_bytes(address->contents, len,
+                                                &bp, &remain))) {
+                 /* Get the trailer */
+                 if ((kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain)))
+diff --git a/src/lib/krb5/krb/ser_auth.c b/src/lib/krb5/krb/ser_auth.c
+index f835a793b78..27d5d87e728 100644
+--- a/src/lib/krb5/krb/ser_auth.c
++++ b/src/lib/krb5/krb/ser_auth.c
+@@ -168,10 +168,7 @@ k5_internalize_authenticator(krb5_authenticator **argp,
+     krb5_authenticator  *authenticator;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
+-    int                 i;
+-    krb5_int32          nadata;
+-    size_t              len;
++    size_t              remain, len, i;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -224,14 +221,12 @@ k5_internalize_authenticator(krb5_authenticator **argp,
+             }
+ 
+             /* Attempt to read in the authorization data count */
+-            if (!(kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain))) {
+-                nadata = ibuf;
+-                len = (size_t) (nadata + 1);
+-
++            kret = k5_ser_unpack_len(&len, &bp, &remain);
++            if (!kret) {
+                 /* Get memory for the authorization data pointers */
+                 if ((authenticator->authorization_data = (krb5_authdata **)
+-                     calloc(len, sizeof(krb5_authdata *)))) {
+-                    for (i=0; !kret && (i<nadata); i++) {
++                     calloc(len + 1, sizeof(krb5_authdata *)))) {
++                    for (i = 0; !kret && i < len; i++) {
+                         kret = k5_internalize_authdata(&authenticator->
+                                                        authorization_data[i],
+                                                        &bp, &remain);
+diff --git a/src/lib/krb5/krb/ser_cksum.c b/src/lib/krb5/krb/ser_cksum.c
+index de8cb2b9e0c..3bba753ae6f 100644
+--- a/src/lib/krb5/krb/ser_cksum.c
++++ b/src/lib/krb5/krb/ser_cksum.c
+@@ -103,7 +103,7 @@ k5_internalize_checksum(krb5_checksum **argp,
+     krb5_checksum       *checksum;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
++    size_t              remain, len;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -122,15 +122,13 @@ k5_internalize_checksum(krb5_checksum **argp,
+             checksum->checksum_type = (krb5_cksumtype) ibuf;
+ 
+             /* Get the length */
+-            (void) krb5_ser_unpack_int32(&ibuf, &bp, &remain);
+-            checksum->length = (int) ibuf;
++            (void) k5_ser_unpack_len(&len, &bp, &remain);
++            checksum->length = len;
+ 
+             /* Get the string */
+-            if (!ibuf ||
+-                ((checksum->contents = (krb5_octet *)
+-                  malloc((size_t) (ibuf))) &&
+-                 !(kret = krb5_ser_unpack_bytes(checksum->contents,
+-                                                (size_t) ibuf,
++            if (!len ||
++                ((checksum->contents = malloc(len)) &&
++                 !(kret = krb5_ser_unpack_bytes(checksum->contents, len,
+                                                 &bp, &remain)))) {
+ 
+                 /* Get the trailer */
+diff --git a/src/lib/krb5/krb/ser_ctx.c b/src/lib/krb5/krb/ser_ctx.c
+index 5f266a3dfa2..aab1920836f 100644
+--- a/src/lib/krb5/krb/ser_ctx.c
++++ b/src/lib/krb5/krb/ser_ctx.c
+@@ -211,8 +211,7 @@ k5_internalize_context(krb5_context *argp,
+     krb5_context        context;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
+-    unsigned int        i, count;
++    size_t              remain, len, count, i;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -230,28 +229,29 @@ k5_internalize_context(krb5_context *argp,
+         return (ENOMEM);
+ 
+     /* Get the size of the default realm */
+-    if ((kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain)))
++    kret = k5_ser_unpack_len(&len, &bp, &remain);
++    if (kret)
+         goto cleanup;
+ 
+-    if (ibuf) {
+-        context->default_realm = (char *) malloc((size_t) ibuf+1);
++    if (len > 0) {
++        context->default_realm = malloc(len + 1);
+         if (!context->default_realm) {
+             kret = ENOMEM;
+             goto cleanup;
+         }
+ 
+         kret = krb5_ser_unpack_bytes((krb5_octet *) context->default_realm,
+-                                     (size_t) ibuf, &bp, &remain);
++                                     len, &bp, &remain);
+         if (kret)
+             goto cleanup;
+ 
+-        context->default_realm[ibuf] = '\0';
++        context->default_realm[len] = '\0';
+     }
+ 
+     /* Get the tgs_etypes */
+-    if ((kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain)))
++    kret = k5_ser_unpack_len(&count, &bp, &remain);
++    if (kret)
+         goto cleanup;
+-    count = ibuf;
+     if (count > 0) {
+         context->tgs_etypes = calloc(count + 1, sizeof(krb5_enctype));
+         if (!context->tgs_etypes) {
+diff --git a/src/lib/krb5/krb/ser_key.c b/src/lib/krb5/krb/ser_key.c
+index 7a294d680f2..49526cd62b7 100644
+--- a/src/lib/krb5/krb/ser_key.c
++++ b/src/lib/krb5/krb/ser_key.c
+@@ -99,7 +99,7 @@ k5_internalize_keyblock(krb5_keyblock **argp,
+     krb5_keyblock       *keyblock;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
++    size_t              remain, len;
+ 
+     bp = *buffer;
+     remain = *lenremain;
+@@ -118,13 +118,12 @@ k5_internalize_keyblock(krb5_keyblock **argp,
+             keyblock->enctype = (krb5_enctype) ibuf;
+ 
+             /* Get the length */
+-            (void) krb5_ser_unpack_int32(&ibuf, &bp, &remain);
+-            keyblock->length = (int) ibuf;
++            (void) k5_ser_unpack_len(&len, &bp, &remain);
++            keyblock->length = len;
+ 
+             /* Get the string */
+-            if ((keyblock->contents = (krb5_octet *) malloc((size_t) (ibuf)))&&
+-                !(kret = krb5_ser_unpack_bytes(keyblock->contents,
+-                                               (size_t) ibuf,
++            if ((keyblock->contents = malloc(len)) &&
++                !(kret = krb5_ser_unpack_bytes(keyblock->contents, len,
+                                                &bp, &remain))) {
+                 kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain);
+                 if (!kret && (ibuf == KV5M_KEYBLOCK)) {
+diff --git a/src/lib/krb5/krb/ser_princ.c b/src/lib/krb5/krb/ser_princ.c
+index fc564997984..c2f7d7b28e7 100644
+--- a/src/lib/krb5/krb/ser_princ.c
++++ b/src/lib/krb5/krb/ser_princ.c
+@@ -92,7 +92,7 @@ k5_internalize_principal(krb5_principal *argp,
+     krb5_principal      principal = NULL;
+     krb5_int32          ibuf;
+     krb5_octet          *bp;
+-    size_t              remain;
++    size_t              remain, len;
+     char                *tmpname = NULL;
+ 
+     *argp = NULL;
+@@ -104,15 +104,14 @@ k5_internalize_principal(krb5_principal *argp,
+         return EINVAL;
+ 
+     /* Read the principal name */
+-    kret = krb5_ser_unpack_int32(&ibuf, &bp, &remain);
++    kret = k5_ser_unpack_len(&len, &bp, &remain);
+     if (kret)
+         return kret;
+-    tmpname = malloc(ibuf + 1);
+-    kret = krb5_ser_unpack_bytes((krb5_octet *) tmpname, (size_t) ibuf,
+-                                 &bp, &remain);
++    tmpname = malloc(len + 1);
++    kret = krb5_ser_unpack_bytes((krb5_octet *) tmpname, len, &bp, &remain);
+     if (kret)
+         goto cleanup;
+-    tmpname[ibuf] = '\0';
++    tmpname[len] = '\0';
+ 
+     /* Parse the name to a principal structure */
+     kret = krb5_parse_name_flags(NULL, tmpname,
+diff --git a/src/lib/krb5/krb/serialize.c b/src/lib/krb5/krb/serialize.c
+index 8934cf1548a..75ec6959157 100644
+--- a/src/lib/krb5/krb/serialize.c
++++ b/src/lib/krb5/krb/serialize.c
+@@ -108,6 +108,24 @@ krb5_ser_unpack_int64(int64_t *intp, krb5_octet **bufp, size_t *remainp)
+         return(ENOMEM);
+ }
+ 
++/* Unpack a 4-byte integer and verify that it is no larger than the number of
++ * remaining bytes. */
++krb5_error_code
++k5_ser_unpack_len(size_t *len_out, krb5_octet **bufp, size_t *remainp)
++{
++    krb5_error_code ret;
++    int32_t n;
++
++    *len_out = 0;
++    ret = krb5_ser_unpack_int32(&n, bufp, remainp);
++    if (ret)
++        return ret;
++    if (n < 0 || (size_t)n > *remainp)
++        return ENOMEM;
++    *len_out = n;
++    return 0;
++}
++
+ /*
+  * krb5_ser_unpack_bytes()      - Unpack a byte string if it's there.
+  */
+diff --git a/src/lib/krb5/libkrb5.exports b/src/lib/krb5/libkrb5.exports
+index 1e7076d3ce2..107e139e255 100644
+--- a/src/lib/krb5/libkrb5.exports
++++ b/src/lib/krb5/libkrb5.exports
+@@ -177,6 +177,7 @@ k5_rc_close
+ k5_rc_get_name
+ k5_rc_resolve
+ k5_rc_store
++k5_ser_unpack_len
+ k5_size_auth_context
+ k5_size_authdata
+ k5_size_authdata_context
+diff --git a/src/plugins/authdata/greet_client/greet.c b/src/plugins/authdata/greet_client/greet.c
+index 2aae2ddd63b..bafff837c63 100644
+--- a/src/plugins/authdata/greet_client/greet.c
++++ b/src/plugins/authdata/greet_client/greet.c
+@@ -319,6 +319,8 @@ greet_internalize(krb5_context kcontext,
+     code = krb5_ser_unpack_int32(&length, &bp, &remain);
+     if (code != 0)
+         return code;
++    if (length < 0 || (size_t)length > remain)
++        return ENOMEM;
+ 
+     /* Greeting Contents */
+     if (length != 0) {

@@ -1,0 +1,126 @@
+From 71bac89803b614701491dbe52db556fc99a370fa Mon Sep 17 00:00:00 2001
+From: Greg Hudson <ghudson@mit.edu>
+Date: Sun, 14 Jun 2026 17:01:34 -0400
+Subject: [PATCH] Check for empty forwarded creds in krb5 GSS mech
+
+In rd_and_store_for_creds(), do not dereference the first element of
+the forwarded credential list if it is empty.  In addition, if an
+application passes a null delegated_cred_handle to
+gss_accept_sec_context(), do not call krb5_rd_cred() in the krb5 GSS
+mech.
+
+(cherry picked from commit 690cbe7d9b6d095cbeb77fe3e4d0c910f97bbb3e)
+
+ticket: 9220
+version_fixed: 1.22.3
+---
+ src/lib/gssapi/krb5/accept_sec_context.c | 70 ++++++++++--------------
+ 1 file changed, 29 insertions(+), 41 deletions(-)
+
+diff --git a/src/lib/gssapi/krb5/accept_sec_context.c b/src/lib/gssapi/krb5/accept_sec_context.c
+index c9987b757b3..3a7fb4e89fa 100644
+--- a/src/lib/gssapi/krb5/accept_sec_context.c
++++ b/src/lib/gssapi/krb5/accept_sec_context.c
+@@ -170,6 +170,10 @@ rd_and_store_for_creds(krb5_context context, krb5_auth_context auth_context,
+     krb5_auth_context new_auth_ctx = NULL;
+     krb5_int32 flags_org;
+ 
++    /* Ignore the forwarded creds if the application doesn't want them. */
++    if (out_cred == NULL)
++        return 0;
++
+     if ((retval = krb5_auth_con_getflags(context, auth_context, &flags_org)))
+         return retval;
+     krb5_auth_con_setflags(context, auth_context,
+@@ -205,6 +209,9 @@ rd_and_store_for_creds(krb5_context context, krb5_auth_context auth_context,
+             goto cleanup;
+     }
+ 
++    if (creds[0] == NULL)
++        goto cleanup;
++
+     if ((retval = krb5_cc_new_unique(context, "MEMORY", NULL, &ccache))) {
+         ccache = NULL;
+         goto cleanup;
+@@ -216,50 +223,32 @@ rd_and_store_for_creds(krb5_context context, krb5_auth_context auth_context,
+     if ((retval = k5_cc_store_primary_cred(context, ccache, creds[0])))
+         goto cleanup;
+ 
+-    /* generate a delegated credential handle */
+-    if (out_cred) {
+-        /* allocate memory for a cred_t... */
+-        if (!(cred =
+-              (krb5_gss_cred_id_t) xmalloc(sizeof(krb5_gss_cred_id_rec)))) {
+-            retval = ENOMEM; /* out of memory? */
+-            goto cleanup;
+-        }
++    cred = k5alloc(sizeof(*cred), &retval);
++    if (cred == NULL)
++        goto cleanup;
+ 
+-        /* zero it out... */
+-        memset(cred, 0, sizeof(krb5_gss_cred_id_rec));
++    retval = k5_mutex_init(&cred->lock);
++    if (retval)
++        goto cleanup;
+ 
+-        retval = k5_mutex_init(&cred->lock);
+-        if (retval) {
+-            xfree(cred);
+-            cred = NULL;
+-            goto cleanup;
+-        }
++    retval = kg_init_name(context, creds[0]->client, NULL, NULL, NULL, 0,
++                          &cred->name);
++    if (retval) {
++        k5_mutex_destroy(&cred->lock);
++        goto cleanup;
++    }
+ 
+-        /* copy the client principle into it... */
+-        if ((retval =
+-             kg_init_name(context, creds[0]->client, NULL, NULL, NULL, 0,
+-                          &cred->name))) {
+-            k5_mutex_destroy(&cred->lock);
+-            retval = ENOMEM; /* out of memory? */
+-            xfree(cred); /* clean up memory on failure */
+-            cred = NULL;
+-            goto cleanup;
+-        }
++    cred->usage = GSS_C_INITIATE;
++    cred->keytab = NULL;
++    cred->expire = creds[0]->times.endtime;
++    /* Transfer ownership of ccache to cred. */
++    cred->ccache = ccache;
++    cred->destroy_ccache = 1;
++    ccache = NULL;
+ 
+-        cred->usage = GSS_C_INITIATE; /* we can't accept with this */
+-        /* cred->name already set */
+-        cred->keytab = NULL; /* no keytab associated with this... */
+-        cred->expire = creds[0]->times.endtime; /* store the end time */
+-        cred->ccache = ccache; /* the ccache containing the credential */
+-        cred->destroy_ccache = 1;
+-        ccache = NULL; /* cred takes ownership so don't destroy */
+-    }
++    *out_cred = cred;
++    cred = NULL;
+ 
+-    /* If there were errors, there might have been a memory leak
+-       if (!cred)
+-       if ((retval = krb5_cc_close(context, ccache)))
+-       goto cleanup;
+-    */
+ cleanup:
+     if (creds)
+         krb5_free_tgt_creds(context, creds);
+@@ -267,8 +256,7 @@ rd_and_store_for_creds(krb5_context context, krb5_auth_context auth_context,
+     if (ccache)
+         (void)krb5_cc_destroy(context, ccache);
+ 
+-    if (out_cred)
+-        *out_cred = cred; /* return credential */
++    free(cred);
+ 
+     if (new_auth_ctx)
+         krb5_auth_con_free(context, new_auth_ctx);

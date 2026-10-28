@@ -1,0 +1,32 @@
+From 74f3cc6a79d5c2058af59025a148588c05fb8c8e Mon Sep 17 00:00:00 2001
+From: Greg Hudson <ghudson@mit.edu>
+Date: Mon, 1 Jun 2026 08:59:34 -0400
+Subject: [PATCH] Fix reachable assert when importing krb5 names
+
+If a name token contains trailing garbage, error out from
+krb5_gss_import_name() instead of crashing the process with an
+assertion failure.  Reported by Aisle Research (Ze Sheng, Dmitrijs
+Trizna, Luigino Camastra, Guido Vranken).
+
+(cherry picked from commit 07818f1fd34560dbfd87c2f65bf8cd705be0e1d2)
+
+ticket: 9217
+version_fixed: 1.22.3
+---
+ src/lib/gssapi/krb5/import_name.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/src/lib/gssapi/krb5/import_name.c b/src/lib/gssapi/krb5/import_name.c
+index a067d07423..9a27b1468a 100644
+--- a/src/lib/gssapi/krb5/import_name.c
++++ b/src/lib/gssapi/krb5/import_name.c
+@@ -297,7 +297,8 @@ import_name(OM_uint32 *minor_status, gss_buffer_t input_name_buffer,
+                     goto fail_name;
+                 cp += length;
+             }
+-            assert(cp == end);
++            if (cp != end)
++                goto fail_name;
+         } else {
+             status = GSS_S_BAD_NAMETYPE;
+             goto cleanup;
